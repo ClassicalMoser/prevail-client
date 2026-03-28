@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "moduleDetection": "force",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "@application": ["./src/application/index"],
+      "@application/*": ["./src/application/*"],
+      "@composition": ["./src/composition/index"],
+      "@composition/*": ["./src/composition/*"],
+      "@domain": ["./src/domain/index"],
+      "@domain/*": ["./src/domain/*"],
+      "@infrastructure": ["./src/infrastructure/index"],
+      "@infrastructure/*": ["./src/infrastructure/*"],
+      "@interface": ["./src/interface/index"],
+      "@interface/*": ["./src/interface/*"]
+    },
+    "types": ["vite/client"],
+    "allowImportingTsExtensions": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules"]
+}
