@@ -4,7 +4,7 @@ import type {
   EventType,
 } from "@classicalmoser/prevail-rules/domain";
 import type { EventStreamStorage, PortResponse } from "@domain";
-import { compositeRoundKey } from "./compositeRoundKey";
+import { composeRoundKey } from "./composeRoundKey";
 
 function frozenCopy<T>(items: readonly T[]): readonly T[] {
   return Object.freeze([...items]);
@@ -20,7 +20,7 @@ export const useEventStreamStorage = (): EventStreamStorage => {
     gameId: string,
     roundNumber: number,
   ): Promise<PortResponse<readonly Event<Board, EventType>[] | undefined>> => {
-    const key = compositeRoundKey(gameId, roundNumber);
+    const key = composeRoundKey(gameId, roundNumber);
     if (!streams.has(key)) {
       return { result: true, data: undefined };
     }
@@ -36,7 +36,7 @@ export const useEventStreamStorage = (): EventStreamStorage => {
     roundNumber: number,
     event: Event<Board, EventType>,
   ): Promise<PortResponse<readonly Event<Board>[] | undefined>> => {
-    const key = compositeRoundKey(gameId, roundNumber);
+    const key = composeRoundKey(gameId, roundNumber);
     let list = streams.get(key);
     if (!list) {
       list = [];
@@ -54,7 +54,7 @@ export const useEventStreamStorage = (): EventStreamStorage => {
     gameId: string,
     roundNumber: number,
   ): Promise<PortResponse<void>> => {
-    streams.delete(compositeRoundKey(gameId, roundNumber));
+    streams.delete(composeRoundKey(gameId, roundNumber));
     return { result: true, data: undefined };
   };
 
@@ -65,7 +65,7 @@ export const useEventStreamStorage = (): EventStreamStorage => {
     gameId: string,
     roundNumber: number,
   ): Promise<PortResponse<readonly Event<Board, EventType>[]>> => {
-    const key = compositeRoundKey(gameId, roundNumber);
+    const key = composeRoundKey(gameId, roundNumber);
     if (streams.has(key)) {
       return {
         result: false,
@@ -85,7 +85,7 @@ export const useEventStreamStorage = (): EventStreamStorage => {
     roundNumber: number,
     firstEventToRemove: number,
   ): Promise<PortResponse<readonly Event<Board, EventType>[]>> => {
-    const key = compositeRoundKey(gameId, roundNumber);
+    const key = composeRoundKey(gameId, roundNumber);
     const list = streams.get(key);
     if (!list) {
       return { result: false, errorReason: "Event stream not found" };

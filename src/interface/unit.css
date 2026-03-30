@@ -1,0 +1,44 @@
+.unit-component {
+  position: absolute;
+  z-index: 100;
+  width: 100%;
+  max-height: 100%;
+  top: 25%;
+  left: 0;
+}
+
+.unit-component img {
+  object-fit: contain;
+}
+
+.facing-north {
+  transform: rotate(0deg);
+}
+
+.facing-northEast {
+  transform: rotate(45deg) translate(0, 25%);
+}
+
+.facing-east {
+  transform: rotate(90deg);
+}
+
+.facing-southEast {
+  transform: rotate(135deg) translate(0, 25%);
+}
+
+.facing-south {
+  transform: rotate(180deg);
+}
+
+.facing-southWest {
+  transform: rotate(225deg) translate(0, 25%);
+}
+
+.facing-west {
+  transform: rotate(270deg);
+}
+
+.facing-northWest {
+  transform: rotate(315deg) translate(0, 25%);
+}

@@ -1,18 +1,12 @@
-import type { Board } from "@classicalmoser/prevail-rules/domain";
 import { useCore } from "@application";
 import { BoardComponent } from "@interface";
-import { createMemo, Show } from "solid-js";
 
 function App() {
   const core = useCore();
 
   const handleButtonClick = async () => {
-    await core.startNewGame("standard");
+    await core.startNewGame("tutorial");
   };
-
-  const boardState = createMemo<Board | undefined>(
-    () => core.subscribedGameState()?.boardState,
-  );
 
   return (
     <main class="container">
@@ -22,7 +16,10 @@ function App() {
         Create New Game
       </button>
       <div class="board-host">
-        <Show when={boardState()}>{(b) => <BoardComponent board={b()} />}</Show>
+        <BoardComponent
+          board={core.subscribedBoard}
+          cellDemo={core.boardCellDemo}
+        />
       </div>
     </main>
   );

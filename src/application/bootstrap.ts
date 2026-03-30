@@ -1,5 +1,8 @@
-import type { GameType } from "@classicalmoser/prevail-rules/domain";
+import type { Board, GameType } from "@classicalmoser/prevail-rules/domain";
+import type { Accessor } from "solid-js";
 import { useEngine } from "@domain";
+import { createMemo } from "solid-js";
+import { boardCellDemo } from "./boardCellDemo";
 import { useEngineServices } from "./repositories";
 
 /**
@@ -9,19 +12,28 @@ import { useEngineServices } from "./repositories";
  */
 const TEMP_STUB_GAME_ID = "00000000-0000-0000-0000-000000000000";
 
-export const useCore = () => {
-  const engineServices = useEngineServices();
-  const engine = useEngine(engineServices);
+export const createCore = () => {
+  const { ports, subscriberUi } = useEngineServices();
+  const engine = useEngine(ports);
 
   const startNewGame = async (gameType: GameType) => {
-    engineServices.setSubscribedGame(TEMP_STUB_GAME_ID, gameType);
+    subscriberUi.setSubscribedGame(TEMP_STUB_GAME_ID, gameType);
     await engine.startNewGame(gameType);
   };
+
+  const subscribedBoard: Accessor<Board | undefined> = createMemo(
+    () => subscriberUi.subscribedGameState()?.boardState,
+  );
 
   return {
     startNewGame,
     handlePlayerChoiceSubmission: engine.handlePlayerChoiceSubmission,
-    setSubscribedGame: engineServices.setSubscribedGame,
-    subscribedGameState: engineServices.subscribedGameState,
+    setSubscribedGame: subscriberUi.setSubscribedGame,
+    subscribedGameState: subscriberUi.subscribedGameState,
+    subscribedBoard,
+    /** Optional placeholder unit visuals; pass into {@link BoardComponent} only from composition. */
+    boardCellDemo,
   };
 };
+
+export type Core = ReturnType<typeof createCore>;

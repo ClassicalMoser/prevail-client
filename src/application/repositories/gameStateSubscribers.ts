@@ -35,9 +35,13 @@ export const useGameStateSubscribers = (): GameStateSubscriberBundle => {
   >(undefined);
 
   const setSubscribedGame = (gameId: string, gameType: GameType) => {
+    const prevId = subscribedGameId();
+    const prevType = subscribedGameType();
     setSubscribedGameId(gameId);
     setSubscribedGameType(gameType);
-    setSubscribedGameState(undefined);
+    if (prevId !== gameId || prevType !== gameType) {
+      setSubscribedGameState(undefined);
+    }
   };
 
   const gameStateSubscriber: GameStateSubscriber = {

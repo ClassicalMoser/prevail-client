@@ -1,11 +1,27 @@
-import type { Board } from "@classicalmoser/prevail-rules/domain";
-import { createMemo, For } from "solid-js";
+import type { Board, UnitFacing } from "@classicalmoser/prevail-rules/domain";
+import type { Accessor } from "solid-js";
+import { createMemo, For, Show } from "solid-js";
 import singleTile from "../assets/singleTile.png";
+import { UnitComponent } from "./unit";
 import "./board.css";
 
-export const BoardComponent = (props: { board: Board }) => {
+/** Optional demo hooks supplied by the application layer (not imported from `@application` here). */
+export interface BoardCellDemoProps {
+  shouldShowUnit: () => boolean;
+  randomFacing: () => UnitFacing;
+  randomUnitImageSrc: () => string;
+}
+
+export const BoardComponent = (props: {
+  board: Accessor<Board | undefined>;
+  cellDemo?: BoardCellDemoProps;
+}) => {
   const layout = createMemo(() => {
-    const boardMap = props.board.board;
+    const b = props.board();
+    const boardMap = b?.board;
+    if (!boardMap) {
+      return { rows: [] as string[][], rowCount: 0, colCount: 0 };
+    }
     const cellCoordinates = Object.keys(boardMap);
 
     const getCoordinateRow = (cellCoordinate: string) =>
@@ -42,29 +58,43 @@ export const BoardComponent = (props: { board: Board }) => {
   const rows = createMemo(() => layout().rows);
 
   return (
-    <div
-      class="board-shell"
-      style={{
-        "--board-cols": layout().colCount,
-        "--board-rows": layout().rowCount,
-      }}
-    >
-      <h2 class="board-title">Board</h2>
-      <div class="board-grid">
-        <For each={rows()}>
-          {(row) => (
-            <div class="board-row">
-              <For each={row}>
-                {(cell) => (
-                  <div class="board-cell">
-                    <img src={singleTile} alt={cell} />
-                  </div>
-                )}
-              </For>
-            </div>
-          )}
-        </For>
-      </div>
-    </div>
+    <Show when={props.board()}>
+      {(_board) => (
+        <div
+          class="board-shell"
+          style={{
+            "--board-cols": layout().colCount,
+            "--board-rows": layout().rowCount,
+          }}
+        >
+          <h2 class="board-title">Board</h2>
+          <div class="board-grid">
+            <For each={rows()}>
+              {(row) => (
+                <div class="board-row">
+                  <For each={row}>
+                    {(cell) => (
+                      <div class="board-cell">
+                        <img src={singleTile} alt={cell} />
+                        <Show
+                          when={
+                            props.cellDemo && props.cellDemo.shouldShowUnit()
+                          }
+                        >
+                          <UnitComponent
+                            facing={props.cellDemo!.randomFacing()}
+                            imageSrc={props.cellDemo!.randomUnitImageSrc()}
+                          />
+                        </Show>
+                      </div>
+                    )}
+                  </For>
+                </div>
+              )}
+            </For>
+          </div>
+        </div>
+      )}
+    </Show>
   );
 };
