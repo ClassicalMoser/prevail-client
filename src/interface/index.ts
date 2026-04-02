@@ -1,1 +1,3 @@
-export { BoardComponent, type BoardCellDemoProps } from "./board";
+export type { BoardCellDemoProps } from "./board";
+export { BoardComponent } from "./board";
+export { CardComponent } from "./card";

@@ -36,7 +36,7 @@ Wiring is easy to find: either a thin root that only passes props/handlers into 
 
 ## Current status
 
-**Aligned:** The core stack is created once in `CoreProvider` (`src/index.tsx`); `useCore()` reads that instance. Board-level state derivation (`subscribedBoard`) and demo-only unit visuals live in `createCore` / `boardCellDemo.ts`. `App` only pulls from context and passes accessors plus demo props into the interface.
+**Aligned:** The core stack is created once in `CoreProvider` (`src/index.tsx`); `useCore()` reads that instance. Board-level state derivation (`subscribedBoard`) lives in `createCore`. Demo-only unit visuals are a separate concern in `boardCellDemo.ts` and are wired from the composition root (`App`), not from `Core`.
 
 **Still evolving:** `BoardComponent` still derives grid layout from `board` via local `createMemo` (acceptable as presentation-only, but could move if you want the interface even thinner). Further features should extend the `Core` API or dedicated application modules rather than re-calling `useEngineServices` from the UI.
 

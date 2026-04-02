@@ -10,11 +10,11 @@ import Velites from "../assets/units/Velites.png";
  * Impure placeholder visuals for empty board cells until real unit state exists.
  * Lives in application so the interface stays free of demo policy.
  */
-export type BoardCellDemo = {
+export interface BoardCellDemo {
   shouldShowUnit: () => boolean;
   randomFacing: () => UnitFacing;
   randomUnitImageSrc: () => string;
-};
+}
 
 const randomFacing = (): UnitFacing => {
   const randomNumber = Math.random();

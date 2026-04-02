@@ -29,7 +29,7 @@ export interface GameStateSubscriberBundle {
 export const useGameStateSubscribers = (): GameStateSubscriberBundle => {
   const [subscribedGameId, setSubscribedGameId] = createSignal("");
   const [subscribedGameType, setSubscribedGameType] =
-    createSignal<GameType>("standard");
+    createSignal<GameType>("mini");
   const [subscribedGameState, setSubscribedGameState] = createSignal<
     GameState<BoardForGameType[GameType]> | undefined
   >(undefined);

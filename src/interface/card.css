@@ -1,0 +1,116 @@
+/* Super-basic playing-card-ish frame (demo / placeholder art direction). */
+.card-component {
+  --card-border: #2c241c;
+  --card-face: linear-gradient(165deg, #faf6ef 0%, #efe8dc 45%, #e8dfd0 100%);
+  --card-accent: #6b4c2a;
+  --card-shadow: rgba(20, 12, 8, 0.35);
+
+  width: 100%;
+  max-width: 16rem;
+  aspect-ratio: 5 / 7;
+  margin: 0 auto;
+  box-sizing: border-box;
+  border-radius: 0.65rem;
+  border: 2px solid var(--card-border);
+  background: var(--card-face);
+  box-shadow:
+    0 0.15rem 0.05rem rgba(255, 255, 255, 0.45) inset,
+    0 0.35rem 1rem var(--card-shadow);
+  color: #1a1410;
+  text-align: left;
+  overflow: hidden;
+}
+
+.card-component-inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem 0.75rem;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.card-component-initiative {
+  margin: 0;
+  align-self: center;
+  min-width: 2.25rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 2px solid var(--card-accent);
+  background: rgba(255, 255, 255, 0.55);
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--card-accent);
+}
+
+.card-component-name {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+  color: var(--card-border);
+  border-bottom: 1px solid rgba(44, 36, 28, 0.2);
+  padding-bottom: 0.35rem;
+}
+
+.card-component-commit-modifiers,
+.card-component-command,
+.card-component-unit-preservation {
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+
+.card-component-commit-modifiers h3,
+.card-component-command h3,
+.card-component-command h4,
+.card-component-unit-preservation h3 {
+  margin: 0 0 0.2rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--card-accent);
+}
+
+.card-component-command h4 {
+  margin-top: 0.35rem;
+  font-size: 0.6rem;
+}
+
+.card-component-command h3 strong {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--card-border);
+}
+
+.card-component-commit-modifiers .card-component-modifier-row,
+.card-component-command p,
+.card-component-unit-preservation p {
+  margin: 0 0 0.2rem;
+}
+
+.card-component-modifier-row {
+  display: flex;
+  gap: 0.35rem;
+  align-items: baseline;
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(44, 36, 28, 0.12);
+}
+
+.card-component-modifier-row p {
+  margin: 0;
+  font-size: 0.68rem;
+}
+
+.card-component-modifier-row p:first-child {
+  font-weight: 700;
+  text-transform: capitalize;
+  color: var(--card-accent);
+}

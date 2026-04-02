@@ -1,8 +1,13 @@
-import { useCore } from "@application";
-import { BoardComponent } from "@interface";
+import type { Card } from "@classicalmoser/prevail-rules/domain";
+import { boardCellDemo, useCore } from "@application";
+import { tempCommandCards } from "@classicalmoser/prevail-rules/domain";
+import { BoardComponent, CardComponent } from "@interface";
+import { For } from "solid-js";
 
 function App() {
   const core = useCore();
+
+  const cardStubs: Card[] = [...tempCommandCards.slice(7, 13)];
 
   const handleButtonClick = async () => {
     await core.startNewGame("tutorial");
@@ -16,10 +21,10 @@ function App() {
         Create New Game
       </button>
       <div class="board-host">
-        <BoardComponent
-          board={core.subscribedBoard}
-          cellDemo={core.boardCellDemo}
-        />
+        <BoardComponent board={core.subscribedBoard} cellDemo={boardCellDemo} />
+        <For each={cardStubs}>
+          {(cardStub) => <CardComponent card={cardStub} />}
+        </For>
       </div>
     </main>
   );
