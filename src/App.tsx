@@ -7,7 +7,7 @@ import { For } from "solid-js";
 function App() {
   const core = useCore();
 
-  const cardStubs: Card[] = [...tempCommandCards.slice(7, 13)];
+  const cardStubs: Card[] = [...tempCommandCards];
 
   const handleButtonClick = async () => {
     await core.startNewGame("tutorial");

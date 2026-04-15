@@ -1,0 +1,13 @@
+.modifier-component {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.modifier-icon {
+  display: inline-block;
+  max-width: 20px;
+  max-height: 20px;
+  object-fit: contain;
+}

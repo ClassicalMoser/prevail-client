@@ -1,4 +1,6 @@
 import type { Card } from "@classicalmoser/prevail-rules/domain";
+import { tempUnits } from "@classicalmoser/prevail-rules/domain";
+import { ModifierComponent } from "./modifier";
 import "./card.css";
 
 /** Dumb, non-reactive component that renders a card. */
@@ -23,88 +25,103 @@ export const CardComponent = (props: { card: Card }) => {
 
   const unitPreservation = card.unitPreservation;
 
+  const getUnitNameFromId = (id: string): string => {
+    const foundUnit = tempUnits.find((unit) => unit.id === id);
+    return foundUnit?.name ?? id;
+  };
+
   //
   return (
     <div class="card-component" data-card-id={id}>
-      <div class="card-component-inner">
-        <h1 class="card-component-initiative">{initiative}</h1>
-        <h2 class="card-component-name">{name}</h2>
-        <div class="card-component-commit-modifiers">
-          <h3>Commit Modifiers</h3>
-          {commitModifiers.map((modifier) => (
-            <div class="card-component-modifier-row">
-              <p>{modifier.type}</p>
-              <p>{modifier.value}</p>
-            </div>
-          ))}
-        </div>
-        <div class="card-component-command">
-          <h3>
-            <strong>
-              {`Perform ${commandType === "movement" ? "Movement" : "Ranged Attack"}`}
-            </strong>
-          </h3>
-          <h4>
-            With {commandNumber} {commandSize}
-          </h4>
-          <h4>Restrictions</h4>
-          {commandRestrictions.inspirationRangeRestriction !== undefined ? (
-            <p>
-              Inspiration: {commandRestrictions.inspirationRangeRestriction}
-            </p>
-          ) : null}
+      <h1 class="card-component-initiative">{initiative}</h1>
+      <h2 class="card-component-name">{name}</h2>
+      <div class="card-component-commit-modifiers">
+        {commitModifiers.map((modifier) => (
+          <ModifierComponent modifier={modifier} />
+        ))}
+      </div>
+      <div class="card-component-command">
+        <h3>
+          <strong>
+            {`Perform ${commandType === "movement" ? "Movement" : "Ranged Attack"}`}
+          </strong>
+        </h3>
+        <p>
+          <span>
+            {"With "}
+            {commandNumber} {commandSize}
+          </span>
           {commandRestrictions.unitRestrictions.length > 0 ? (
-            <p>Units: {commandRestrictions.unitRestrictions.join(", ")}</p>
+            <span>
+              {" of "}
+              {commandRestrictions.unitRestrictions
+                .map((id) => getUnitNameFromId(id))
+                .join(" and ")}
+            </span>
           ) : null}
           {commandRestrictions.traitRestrictions.length > 0 ? (
-            <p>Traits: {commandRestrictions.traitRestrictions.join(", ")}</p>
+            <span>
+              {" with traits: "}
+              {commandRestrictions.traitRestrictions.join(", ")}
+            </span>
           ) : null}
-          {commandModifiers.length > 0 ? (
-            <p>
-              Command Modifiers:{" "}
-              {commandModifiers
-                .map((modifier) => `${modifier.type}: ${modifier.value}`)
-                .join(", ")}
-            </p>
+          {commandRestrictions.inspirationRangeRestriction !== undefined ? (
+            <span>
+              {" within range "}
+              {commandRestrictions.inspirationRangeRestriction}
+            </span>
           ) : null}
-          {roundEffectModifiers !== undefined &&
-          roundEffectModifiers.length > 0 ? (
-            <div class="card-component-round-effect-modifiers">
-              <h4>Round Effect Modifiers</h4>
+        </p>
+        {commandModifiers.length > 0 ? (
+          <div class="card-component-command-modifiers">
+            {commandModifiers.map((modifier) => (
+              <ModifierComponent modifier={modifier} />
+            ))}
+          </div>
+        ) : null}
+        <h3>
+          <strong>Round Effect</strong>
+        </h3>
+        {roundEffectModifiers !== undefined &&
+        roundEffectModifiers.length > 0 ? (
+          <div class="card-component-round-effect-modifiers">
+            <h4>Modifiers</h4>
+            {roundEffectModifiers.map((modifier) => (
+              <ModifierComponent modifier={modifier} />
+            ))}
+          </div>
+        ) : null}
+        {roundEffectRestrictions !== undefined ? (
+          <div class="card-component-round-effect-restrictions">
+            <h4>Restrictions</h4>
+            {roundEffectRestrictions.inspirationRangeRestriction !==
+            undefined ? (
               <p>
-                {roundEffectModifiers
-                  .map((modifier) => `${modifier.type}: ${modifier.value}`)
+                Inspiration:{" "}
+                {roundEffectRestrictions.inspirationRangeRestriction}
+              </p>
+            ) : null}
+            {roundEffectRestrictions.unitRestrictions.length > 0 ? (
+              <p>
+                Units:{" "}
+                {roundEffectRestrictions.unitRestrictions
+                  .map((id) => getUnitNameFromId(id))
                   .join(", ")}
               </p>
-            </div>
-          ) : null}
-          {roundEffectRestrictions !== undefined ? (
-            <div class="card-component-round-effect-restrictions">
-              <h4>Round Effect Restrictions</h4>
-              {roundEffectRestrictions.inspirationRangeRestriction !==
-              undefined ? (
-                <p>
-                  Inspiration:{" "}
-                  {roundEffectRestrictions.inspirationRangeRestriction}
-                </p>
-              ) : null}
-              {roundEffectRestrictions.unitRestrictions.length > 0 ? (
-                <p>
-                  Units: {roundEffectRestrictions.unitRestrictions.join(", ")}
-                </p>
-              ) : null}
-              {roundEffectRestrictions.traitRestrictions.length > 0 ? (
-                <p>
-                  Traits: {roundEffectRestrictions.traitRestrictions.join(", ")}
-                </p>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
-        <div class="card-component-unit-preservation">
-          <h3>Unit Preservation</h3>
-          <p>{unitPreservation.join(", ")}</p>
-        </div>
+            ) : null}
+            {roundEffectRestrictions.traitRestrictions.length > 0 ? (
+              <p>
+                Traits: {roundEffectRestrictions.traitRestrictions.join(", ")}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+      <div class="card-component-unit-preservation">
+        <h3>
+          <strong>Unit Preservation</strong>
+        </h3>
+        <p>{unitPreservation.map((id) => getUnitNameFromId(id)).join(", ")}</p>
       </div>
     </div>
   );
