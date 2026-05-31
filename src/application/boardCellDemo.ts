@@ -19,22 +19,30 @@ export interface BoardCellDemo {
 const randomFacing = (): UnitFacing => {
   const randomNumber = Math.random();
   switch (true) {
-    case randomNumber > 0.8:
+    case randomNumber > 0.8: {
       return "north";
-    case randomNumber > 0.7:
+    }
+    case randomNumber > 0.7: {
       return "northEast";
-    case randomNumber > 0.6:
+    }
+    case randomNumber > 0.6: {
       return "east";
-    case randomNumber > 0.5:
+    }
+    case randomNumber > 0.5: {
       return "southEast";
-    case randomNumber > 0.4:
+    }
+    case randomNumber > 0.4: {
       return "southWest";
-    case randomNumber > 0.3:
+    }
+    case randomNumber > 0.3: {
       return "west";
-    case randomNumber > 0.2:
+    }
+    case randomNumber > 0.2: {
       return "northWest";
-    default:
+    }
+    default: {
       return "south";
+    }
   }
 };
 

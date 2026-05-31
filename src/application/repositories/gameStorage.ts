@@ -1,9 +1,4 @@
-import type {
-  Board,
-  Game,
-  GameState,
-  GameType,
-} from "@classicalmoser/prevail-rules/domain";
+import type { Game, GameState, GameModeName } from "@classicalmoser/prevail-rules/domain";
 import type { GameStorage, PortResponse } from "@domain";
 
 export const useGameStorage = (): GameStorage => {
@@ -12,18 +7,15 @@ export const useGameStorage = (): GameStorage => {
   /**
    * Get a game from the storage.
    * @param gameId - The ID of the game to get.
-   * @param gameType - The type of the game to get.
+   * @param gameMode - The type of the game to get.
    * @returns The game if it exists and is of the correct type, otherwise an error.
    */
-  const getGame = async (
-    gameId: string,
-    gameType: GameType,
-  ): Promise<PortResponse<Game | undefined>> => {
+  const getGame = async (gameId: string, gameMode: GameModeName): Promise<PortResponse<Game>> => {
     const foundGame = games.get(gameId);
     if (!foundGame) {
       return { result: false, errorReason: "Game not found" };
     }
-    if (foundGame.gameType !== gameType) {
+    if (foundGame.gameMode !== gameMode) {
       return { result: false, errorReason: "Game type mismatch" };
     }
     return { result: true, data: foundGame };
@@ -50,7 +42,7 @@ export const useGameStorage = (): GameStorage => {
    */
   const updateGameState = async (
     gameId: string,
-    gameState: GameState<Board>,
+    gameState: GameState,
   ): Promise<PortResponse<void>> => {
     const existing = games.get(gameId);
     if (!existing) {

@@ -1,9 +1,5 @@
 import type { GameStateChange } from "@classicalmoser/prevail-rules/application";
-import type {
-  BoardForGameType,
-  GameState,
-  GameType,
-} from "@classicalmoser/prevail-rules/domain";
+import type { GameState, GameModeName } from "@classicalmoser/prevail-rules/domain";
 import type { GameStateSubscriber } from "@domain";
 import type { Accessor } from "solid-js";
 import { createSignal } from "solid-js";
@@ -13,14 +9,12 @@ export interface GameStateSubscriberBundle {
   gameStateSubscriber: GameStateSubscriber;
   /**
    * Which game the UI follows;
-   * must match {@link GameStateSubscriber.gameId} / {@link GameStateSubscriber.gameType} when the engine notifies.
+   * must match {@link GameStateSubscriber.gameId} / {@link GameStateSubscriber.gameMode} when the engine notifies.
    * @param gameId - The ID of the game to subscribe to.
-   * @param gameType - The type of the game to subscribe to.
+   * @param gameMode - The mode of the game to subscribe to.
    */
-  setSubscribedGame: (gameId: string, gameType: GameType) => void;
-  subscribedGameState: Accessor<
-    GameState<BoardForGameType[GameType]> | undefined
-  >;
+  setSubscribedGame: (gameId: string, gameMode: GameModeName) => void;
+  subscribedGameState: Accessor<GameState | undefined>;
 }
 
 /**
@@ -28,37 +22,28 @@ export interface GameStateSubscriberBundle {
  */
 export const useGameStateSubscribers = (): GameStateSubscriberBundle => {
   const [subscribedGameId, setSubscribedGameId] = createSignal("");
-  const [subscribedGameType, setSubscribedGameType] =
-    createSignal<GameType>("mini");
-  const [subscribedGameState, setSubscribedGameState] = createSignal<
-    GameState<BoardForGameType[GameType]> | undefined
-  >(undefined);
+  const [subscribedGameMode, setSubscribedGameMode] = createSignal<GameModeName>("mini");
+  const [subscribedGameState, setSubscribedGameState] = createSignal<GameState | undefined>();
 
-  const setSubscribedGame = (gameId: string, gameType: GameType) => {
+  const setSubscribedGame = (gameId: string, gameMode: GameModeName) => {
     const prevId = subscribedGameId();
-    const prevType = subscribedGameType();
+    const prevType = subscribedGameMode();
     setSubscribedGameId(gameId);
-    setSubscribedGameType(gameType);
-    if (prevId !== gameId || prevType !== gameType) {
+    setSubscribedGameMode(gameMode);
+    if (prevId !== gameId || prevType !== gameMode) {
       setSubscribedGameState(undefined);
     }
   };
 
   const gameStateSubscriber: GameStateSubscriber = {
-    get gameId() {
-      return subscribedGameId();
-    },
-    get gameType() {
-      return subscribedGameType();
-    },
+    gameId: subscribedGameId(),
+    gameMode: subscribedGameMode(),
     onGameStateChange: (change: GameStateChange) => {
-      const { gameId, gameType, gameState } = change;
-      if (gameId !== subscribedGameId() || gameType !== subscribedGameType()) {
+      const { gameId, gameMode, gameState } = change;
+      if (gameId !== subscribedGameId() || gameMode !== subscribedGameMode()) {
         return;
       }
-      setSubscribedGameState(
-        () => gameState as GameState<BoardForGameType[GameType]>,
-      );
+      setSubscribedGameState(() => gameState);
     },
     onError: (error: Error) => {
       console.error(error);

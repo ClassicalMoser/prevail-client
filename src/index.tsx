@@ -2,7 +2,7 @@ import { CoreProvider } from "@application";
 /* @refresh reload */
 import { render } from "solid-js/web";
 import App from "./App";
-import "./App.css";
+import "./styles/app.css";
 
 render(
   () => (
@@ -10,5 +10,5 @@ render(
       <App />
     </CoreProvider>
   ),
-  document.getElementById("root") as HTMLElement,
+  document.querySelector("#root") as HTMLElement,
 );

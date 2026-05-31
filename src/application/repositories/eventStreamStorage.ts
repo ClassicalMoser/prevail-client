@@ -1,8 +1,4 @@
-import type {
-  Board,
-  Event,
-  EventType,
-} from "@classicalmoser/prevail-rules/domain";
+import type { Event } from "@classicalmoser/prevail-rules/domain";
 import type { EventStreamStorage, PortResponse } from "@domain";
 import { composeRoundKey } from "./composeRoundKey";
 
@@ -11,7 +7,7 @@ function frozenCopy<T>(items: readonly T[]): readonly T[] {
 }
 
 export const useEventStreamStorage = (): EventStreamStorage => {
-  const streams = new Map<string, Event<Board, EventType>[]>();
+  const streams = new Map<string, Event[]>();
 
   /**
    * Load the ordered event list for a game round, or `undefined` if no stream exists yet.
@@ -19,11 +15,12 @@ export const useEventStreamStorage = (): EventStreamStorage => {
   const getEventStream = async (
     gameId: string,
     roundNumber: number,
-  ): Promise<PortResponse<readonly Event<Board, EventType>[] | undefined>> => {
+  ): Promise<PortResponse<readonly Event[] | undefined>> => {
     const key = composeRoundKey(gameId, roundNumber);
     if (!streams.has(key)) {
       return { result: true, data: undefined };
     }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const events = streams.get(key)!;
     return { result: true, data: frozenCopy(events) };
   };
@@ -34,8 +31,8 @@ export const useEventStreamStorage = (): EventStreamStorage => {
   const addEventToStream = async (
     gameId: string,
     roundNumber: number,
-    event: Event<Board, EventType>,
-  ): Promise<PortResponse<readonly Event<Board>[] | undefined>> => {
+    event: Event,
+  ): Promise<PortResponse<readonly Event[] | undefined>> => {
     const key = composeRoundKey(gameId, roundNumber);
     let list = streams.get(key);
     if (!list) {
@@ -64,7 +61,7 @@ export const useEventStreamStorage = (): EventStreamStorage => {
   const newEventStream = async (
     gameId: string,
     roundNumber: number,
-  ): Promise<PortResponse<readonly Event<Board, EventType>[]>> => {
+  ): Promise<PortResponse<readonly Event[]>> => {
     const key = composeRoundKey(gameId, roundNumber);
     if (streams.has(key)) {
       return {
@@ -72,7 +69,7 @@ export const useEventStreamStorage = (): EventStreamStorage => {
         errorReason: "Event stream already exists for this game and round",
       };
     }
-    const empty: Event<Board, EventType>[] = [];
+    const empty: Event[] = [];
     streams.set(key, empty);
     return { result: true, data: frozenCopy(empty) };
   };
@@ -84,7 +81,7 @@ export const useEventStreamStorage = (): EventStreamStorage => {
     gameId: string,
     roundNumber: number,
     firstEventToRemove: number,
-  ): Promise<PortResponse<readonly Event<Board, EventType>[]>> => {
+  ): Promise<PortResponse<readonly Event[]>> => {
     const key = composeRoundKey(gameId, roundNumber);
     const list = streams.get(key);
     if (!list) {

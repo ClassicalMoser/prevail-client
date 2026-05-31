@@ -1,11 +1,11 @@
 import type { Modifier } from "@classicalmoser/prevail-rules/domain";
 import type { JSX } from "solid-js";
-import AttackIcon from "../assets/icons/attackIcon.svg";
-import FlexibilityIcon from "../assets/icons/flexibilityIcon.svg";
-import RangeIcon from "../assets/icons/rangedIcon.svg";
+import AttackIcon from "../assets/icons/Attack Icon.svg";
+import FlexibilityIcon from "../assets/icons/Flexibility Icon.svg";
+import RangeIcon from "../assets/icons/Ranged Icon.svg";
 import "./modifier.css";
 
-export const ModifierComponent = (props: { modifier: Modifier }) => {
+export const ModifierComponent = (props: { modifier: Modifier }): JSX.Element => {
   const modifierType = props.modifier.type;
   const modifierValue = props.modifier.value;
   const zeroModifier = modifierValue === 0;
@@ -14,14 +14,18 @@ export const ModifierComponent = (props: { modifier: Modifier }) => {
   const displaySign = modifierPositive ? "+" : "-";
   const getDisplayIcon = (): string | null => {
     switch (modifierType) {
-      case "attack":
+      case "attack": {
         return AttackIcon;
-      case "range":
+      }
+      case "range": {
         return RangeIcon;
-      case "flexibility":
+      }
+      case "flexibility": {
         return FlexibilityIcon;
-      default:
+      }
+      default: {
         return null;
+      }
     }
   };
 
@@ -31,7 +35,7 @@ export const ModifierComponent = (props: { modifier: Modifier }) => {
     const displayArray: JSX.Element[] = [];
     for (let i = 0; i < modifierNumber; i++) {
       displayArray.push(
-        displayIcon != null ? (
+        displayIcon !== null ? (
           <img src={displayIcon} alt={modifierType} class="modifier-icon" />
         ) : (
           <p>{modifierType}</p>

@@ -1,4 +1,6 @@
-export const boundaries = [
+import type { BoundaryConfig } from "eslint-plugin-import-boundaries";
+
+export const boundaries: BoundaryConfig[] = [
   {
     identifier: "@assets",
     dir: "assets",
