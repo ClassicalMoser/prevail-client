@@ -1,8 +1,11 @@
-import type { GameStateChange } from "@classicalmoser/prevail-rules/application";
-import type { GameState, GameModeName } from "@classicalmoser/prevail-rules/domain";
-import type { GameStateSubscriber } from "@domain";
-import type { Accessor } from "solid-js";
-import { createSignal } from "solid-js";
+import type { GameStateChange } from '@classicalmoser/prevail-rules/application';
+import type {
+  GameState,
+  GameModeName,
+} from '@classicalmoser/prevail-rules/domain';
+import type { GameStateSubscriber } from '@domain';
+import type { Accessor } from 'solid-js';
+import { createSignal } from 'solid-js';
 
 export interface GameStateSubscriberBundle {
   /** One UI subscriber; compose into `EnginePorts.gameStateSubscribers` with other listeners at the runner. */
@@ -21,9 +24,12 @@ export interface GameStateSubscriberBundle {
  * Stateful UI bridge: Solid signals reflect engine-driven state for one subscriber.
  */
 export const useGameStateSubscribers = (): GameStateSubscriberBundle => {
-  const [subscribedGameId, setSubscribedGameId] = createSignal("");
-  const [subscribedGameMode, setSubscribedGameMode] = createSignal<GameModeName>("mini");
-  const [subscribedGameState, setSubscribedGameState] = createSignal<GameState | undefined>();
+  const [subscribedGameId, setSubscribedGameId] = createSignal('');
+  const [subscribedGameMode, setSubscribedGameMode] =
+    createSignal<GameModeName>('mini');
+  const [subscribedGameState, setSubscribedGameState] = createSignal<
+    GameState | undefined
+  >();
 
   const setSubscribedGame = (gameId: string, gameMode: GameModeName) => {
     const prevId = subscribedGameId();

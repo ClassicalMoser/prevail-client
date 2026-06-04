@@ -1,6 +1,6 @@
 // https://github.com/solidjs-community/solid-primitives/blob/main/packages/props/src/combineProps.ts
 
-import type { JSX } from "solid-js";
+import type { JSX } from 'solid-js';
 
 const extractCSSregex = /((?:--)?\w+(?:-\w+)*)\s*:\s*([^;]*)/gu;
 
@@ -30,13 +30,13 @@ export function combineStyle(
 ): JSX.CSSProperties | string {
   let aString = a;
   let bString = b;
-  if (typeof aString === "string") {
-    if (typeof bString === "string") {
+  if (typeof aString === 'string') {
+    if (typeof bString === 'string') {
       return `${aString};${bString}`;
     }
 
     aString = stringStyleToObject(aString);
-  } else if (typeof bString === "string") {
+  } else if (typeof bString === 'string') {
     bString = stringStyleToObject(bString);
   }
 

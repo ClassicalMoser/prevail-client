@@ -1,6 +1,6 @@
-import type { GameState } from "@classicalmoser/prevail-rules/domain";
-import type { PortResponse, RoundSnapshotStorage } from "@domain";
-import { composeRoundKey } from "./composeRoundKey";
+import type { GameState } from '@classicalmoser/prevail-rules/domain';
+import type { PortResponse, RoundSnapshotStorage } from '@domain';
+import { composeRoundKey } from './composeRoundKey';
 
 export const useRoundSnapshotStorage = (): RoundSnapshotStorage => {
   const snapshots = new Map<string, GameState>();

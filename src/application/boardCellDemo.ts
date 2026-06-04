@@ -1,10 +1,10 @@
-import type { UnitFacing } from "@classicalmoser/prevail-rules/domain";
-import AfricanElephants from "../assets/units/African Elephants.png";
-import AlaeSocii from "../assets/units/Alae Socii.png";
-import LybianSpearmen from "../assets/units/Lybian Spearmen.png";
-import ManipularLegions from "../assets/units/Manipular Legions.png";
-import NumidianCavalry from "../assets/units/Numidian Cavalry.png";
-import Velites from "../assets/units/Velites.png";
+import type { UnitFacing } from '@classicalmoser/prevail-rules/domain';
+import AfricanElephants from '../assets/units/African Elephants.png';
+import AlaeSocii from '../assets/units/Alae Socii.png';
+import LybianSpearmen from '../assets/units/Lybian Spearmen.png';
+import ManipularLegions from '../assets/units/Manipular Legions.png';
+import NumidianCavalry from '../assets/units/Numidian Cavalry.png';
+import Velites from '../assets/units/Velites.png';
 
 /**
  * Impure placeholder visuals for empty board cells until real unit state exists.
@@ -20,28 +20,28 @@ const randomFacing = (): UnitFacing => {
   const randomNumber = Math.random();
   switch (true) {
     case randomNumber > 0.8: {
-      return "north";
+      return 'north';
     }
     case randomNumber > 0.7: {
-      return "northEast";
+      return 'northEast';
     }
     case randomNumber > 0.6: {
-      return "east";
+      return 'east';
     }
     case randomNumber > 0.5: {
-      return "southEast";
+      return 'southEast';
     }
     case randomNumber > 0.4: {
-      return "southWest";
+      return 'southWest';
     }
     case randomNumber > 0.3: {
-      return "west";
+      return 'west';
     }
     case randomNumber > 0.2: {
-      return "northWest";
+      return 'northWest';
     }
     default: {
-      return "south";
+      return 'south';
     }
   }
 };

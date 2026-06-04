@@ -1,9 +1,9 @@
-import type { EnginePorts, GameStateSubscriber } from "@domain";
-import type { GameStateSubscriberBundle } from "./gameStateSubscribers";
-import { useEventStreamStorage } from "./eventStreamStorage";
-import { useGameStateSubscribers } from "./gameStateSubscribers";
-import { useGameStorage } from "./gameStorage";
-import { useRoundSnapshotStorage } from "./roundSnapshotStorage";
+import type { EnginePorts, GameStateSubscriber } from '@domain';
+import type { GameStateSubscriberBundle } from './gameStateSubscribers';
+import { useEventStreamStorage } from './eventStreamStorage';
+import { useGameStateSubscribers } from './gameStateSubscribers';
+import { useGameStorage } from './gameStorage';
+import { useRoundSnapshotStorage } from './roundSnapshotStorage';
 
 export interface EngineServicesBundle {
   ports: EnginePorts;

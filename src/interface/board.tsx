@@ -1,9 +1,9 @@
-import type { Board, UnitFacing } from "@classicalmoser/prevail-rules/domain";
-import type { Accessor, JSX } from "solid-js";
-import { createMemo, For, Show } from "solid-js";
-import singleTile from "../assets/singleTile.png";
-import { UnitComponent } from "./unit";
-import "./board.css";
+import type { Board, UnitFacing } from '@classicalmoser/prevail-rules/domain';
+import type { Accessor, JSX } from 'solid-js';
+import { createMemo, For, Show } from 'solid-js';
+import singleTile from '../assets/singleTile.png';
+import { UnitComponent } from './unit';
+import './board.css';
 
 /** Optional demo hooks supplied by the application layer (not imported from `@application` here). */
 export interface BoardCellDemoProps {
@@ -24,10 +24,12 @@ export const BoardComponent = (props: {
     }
     const cellCoordinates = Object.keys(boardMap);
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const getCoordinateRow = (cellCoordinate: string) => cellCoordinate.split("-")[0]!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const getCoordinateColumn = (cellCoordinate: string) => cellCoordinate.split("-")[1]!;
+    const getCoordinateRow = (cellCoordinate: string) =>
+      // oxlint-disable-next-line no-non-null-assertion
+      cellCoordinate.split('-')[0]!;
+    const getCoordinateColumn = (cellCoordinate: string) =>
+      // oxlint-disable-next-line no-non-null-assertion
+      cellCoordinate.split('-')[1]!;
 
     const sorted = cellCoordinates.toSorted((a, b) => {
       const rowA = getCoordinateRow(a);
@@ -64,8 +66,8 @@ export const BoardComponent = (props: {
         <div
           class="board-shell"
           style={{
-            "--board-cols": layout().colCount,
-            "--board-rows": layout().rowCount,
+            '--board-cols': layout().colCount,
+            '--board-rows': layout().rowCount,
           }}
         >
           <h2 class="board-title">Board</h2>
@@ -77,11 +79,15 @@ export const BoardComponent = (props: {
                     {(cell) => (
                       <div class="board-cell">
                         <img src={singleTile} alt={cell} />
-                        <Show when={props.cellDemo && props.cellDemo.shouldShowUnit()}>
+                        <Show
+                          when={
+                            props.cellDemo && props.cellDemo.shouldShowUnit()
+                          }
+                        >
                           <UnitComponent
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            // oxlint-disable-next-line no-non-null-assertion
                             facing={props.cellDemo!.randomFacing()}
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            // oxlint-disable-next-line no-non-null-assertion
                             imageSrc={props.cellDemo!.randomUnitImageSrc()}
                           />
                         </Show>

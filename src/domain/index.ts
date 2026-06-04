@@ -1,4 +1,4 @@
-export { useEngine } from "./engine";
+export { useEngine } from './engine';
 export type {
   EnginePorts,
   EventStreamStorage,
@@ -7,4 +7,4 @@ export type {
   GameStorage,
   PortResponse,
   RoundSnapshotStorage,
-} from "@classicalmoser/prevail-rules/application";
+} from '@classicalmoser/prevail-rules/application';

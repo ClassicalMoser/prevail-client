@@ -8,6 +8,7 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "rootDir": "src",
     "paths": {
       "@application": ["./src/application/index"],
       "@application/*": ["./src/application/*"],

@@ -1,6 +1,6 @@
-import type { Event } from "@classicalmoser/prevail-rules/domain";
-import type { EventStreamStorage, PortResponse } from "@domain";
-import { composeRoundKey } from "./composeRoundKey";
+import type { Event } from '@classicalmoser/prevail-rules/domain';
+import type { EventStreamStorage, PortResponse } from '@domain';
+import { composeRoundKey } from './composeRoundKey';
 
 function frozenCopy<T>(items: readonly T[]): readonly T[] {
   return Object.freeze([...items]);
@@ -66,7 +66,7 @@ export const useEventStreamStorage = (): EventStreamStorage => {
     if (streams.has(key)) {
       return {
         result: false,
-        errorReason: "Event stream already exists for this game and round",
+        errorReason: 'Event stream already exists for this game and round',
       };
     }
     const empty: Event[] = [];
@@ -85,12 +85,12 @@ export const useEventStreamStorage = (): EventStreamStorage => {
     const key = composeRoundKey(gameId, roundNumber);
     const list = streams.get(key);
     if (!list) {
-      return { result: false, errorReason: "Event stream not found" };
+      return { result: false, errorReason: 'Event stream not found' };
     }
     if (firstEventToRemove < 0 || firstEventToRemove > list.length) {
       return {
         result: false,
-        errorReason: "firstEventToRemove out of range for event stream",
+        errorReason: 'firstEventToRemove out of range for event stream',
       };
     }
     list.splice(firstEventToRemove);

@@ -1,4 +1,4 @@
-import type { JSX } from "solid-js";
+import type { JSX } from 'solid-js';
 
 type HandlerEvent<T, E extends Event> = E & {
   currentTarget: T;
@@ -17,7 +17,7 @@ export function callHandler<T, E extends Event>(
     return event.defaultPrevented;
   }
 
-  if (typeof handler === "function") {
+  if (typeof handler === 'function') {
     handler(event);
   } else {
     // BoundEventHandler uses numeric keys, not a tuple (see solid-js JSX types).

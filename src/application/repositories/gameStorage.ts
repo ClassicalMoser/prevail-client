@@ -1,5 +1,9 @@
-import type { Game, GameState, GameModeName } from "@classicalmoser/prevail-rules/domain";
-import type { GameStorage, PortResponse } from "@domain";
+import type {
+  Game,
+  GameState,
+  GameModeName,
+} from '@classicalmoser/prevail-rules/domain';
+import type { GameStorage, PortResponse } from '@domain';
 
 export const useGameStorage = (): GameStorage => {
   const games = new Map<string, Game>();
@@ -10,13 +14,16 @@ export const useGameStorage = (): GameStorage => {
    * @param gameMode - The type of the game to get.
    * @returns The game if it exists and is of the correct type, otherwise an error.
    */
-  const getGame = async (gameId: string, gameMode: GameModeName): Promise<PortResponse<Game>> => {
+  const getGame = async (
+    gameId: string,
+    gameMode: GameModeName,
+  ): Promise<PortResponse<Game>> => {
     const foundGame = games.get(gameId);
     if (!foundGame) {
-      return { result: false, errorReason: "Game not found" };
+      return { result: false, errorReason: 'Game not found' };
     }
     if (foundGame.gameMode !== gameMode) {
-      return { result: false, errorReason: "Game type mismatch" };
+      return { result: false, errorReason: 'Game type mismatch' };
     }
     return { result: true, data: foundGame };
   };
@@ -28,7 +35,7 @@ export const useGameStorage = (): GameStorage => {
    */
   const saveNewGame = async (game: Game): Promise<PortResponse<void>> => {
     if (games.has(game.id)) {
-      return { result: false, errorReason: "Game already exists" };
+      return { result: false, errorReason: 'Game already exists' };
     }
     games.set(game.id, game);
     return { result: true, data: undefined };
@@ -46,7 +53,7 @@ export const useGameStorage = (): GameStorage => {
   ): Promise<PortResponse<void>> => {
     const existing = games.get(gameId);
     if (!existing) {
-      return { result: false, errorReason: "Game not found" };
+      return { result: false, errorReason: 'Game not found' };
     }
     games.set(gameId, { ...existing, gameState } as Game);
     return { result: true, data: undefined };
