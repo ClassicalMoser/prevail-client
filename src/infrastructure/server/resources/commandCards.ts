@@ -4,14 +4,17 @@ import {
   createEmptyCommandCardContract,
   getCommandCardByIdContract,
   getCurrentCommandCardsContract,
+  previewCommandCardContract,
 } from '@classicalmoser/prevail-contracts/contracts';
-import type {
-  CertificationResults,
-  GetByIdParams,
-} from '@classicalmoser/prevail-contracts';
+import type { CertificationResults } from '@classicalmoser/prevail-contracts/contracts';
+import type { GetByIdParams } from '@classicalmoser/prevail-contracts/domain';
 import type { Card } from '@classicalmoser/prevail-rules/domain';
-import { callGet, callPost } from '../callers';
-import type { CreatedPostResponse, GetResponse } from '../http';
+import { callGet, callMediaPost, callPost } from '../callers';
+import type {
+  CreatedPostResponse,
+  GetResponse,
+  MediaPostResponse,
+} from '../http';
 
 export function getCommandCardById(
   params: GetByIdParams,
@@ -48,5 +51,15 @@ export function certifyLatestCommandCardVersions(): Promise<
     params: {},
     query: {},
     body: {},
+  });
+}
+
+export function previewCommandCard(
+  card: Card,
+): Promise<MediaPostResponse<string>> {
+  return callMediaPost(previewCommandCardContract, {
+    params: {},
+    query: {},
+    body: card,
   });
 }

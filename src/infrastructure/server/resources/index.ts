@@ -4,4 +4,5 @@ export {
   createEmptyCommandCard,
   getCommandCardById,
   getCurrentCommandCards,
+  previewCommandCard,
 } from './commandCards';

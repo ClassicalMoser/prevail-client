@@ -24,11 +24,13 @@ type PutResponse<T> = Response200<T>;
 type PatchResponse<T> = Response200<T>;
 type PostResponse<T> = Response200<T>;
 type CreatedPostResponse<T> = Response201<T>;
+type MediaPostResponse<T> = Response200<T>;
 
 export type {
   CreatedPostResponse,
   ErrorResponse,
   GetResponse,
+  MediaPostResponse,
   PatchResponse,
   PostResponse,
   PutResponse,

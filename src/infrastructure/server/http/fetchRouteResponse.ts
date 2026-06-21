@@ -2,6 +2,9 @@ import type {
   CreatedPostRoute,
   DeleteRoute,
   GetRoute,
+  MediaContentType,
+  MediaPayload,
+  MediaPostRoute,
   PatchRoute,
   PostRoute,
   PutRoute,
@@ -11,6 +14,7 @@ import type {
   CreatedPostResponse,
   ErrorResponse,
   GetResponse,
+  MediaPostResponse,
   PatchResponse,
   PostResponse,
   PutResponse,
@@ -156,6 +160,87 @@ export async function fetchCreatedPostResponse<
   });
 
   return parseRouteEnvelope201(response, route);
+}
+
+function isMediaPayload(
+  result: MediaPayload<MediaContentType> | ErrorResponse,
+): result is MediaPayload<MediaContentType> {
+  return typeof result === 'string' || result instanceof Uint8Array;
+}
+
+async function parseMediaPayload<TContentType extends MediaContentType>(
+  response: Response,
+  contentType: TContentType,
+): Promise<MediaPayload<TContentType> | ErrorResponse> {
+  const responseContentType = response.headers.get('content-type');
+
+  if (!responseContentType?.startsWith(contentType)) {
+    return {
+      message: 'Unexpected response content type',
+      statusCode: response.status,
+    };
+  }
+
+  let payload: MediaPayload<TContentType>;
+
+  switch (contentType) {
+    case 'image/svg+xml': {
+      payload = (await response.text()) as MediaPayload<TContentType>;
+      break;
+    }
+    case 'application/pdf':
+    case 'image/png': {
+      const buffer = await response.arrayBuffer();
+      payload = new Uint8Array(buffer) as MediaPayload<TContentType>;
+      break;
+    }
+    default: {
+      const exhaustiveCheck: never = contentType;
+      throw new Error(`Unsupported media content type: ${exhaustiveCheck}`);
+    }
+  }
+
+  if (
+    (typeof payload === 'string' && payload.length === 0) ||
+    (payload instanceof Uint8Array && payload.length === 0)
+  ) {
+    return {
+      message: 'Empty media response',
+      statusCode: response.status,
+    };
+  }
+
+  return payload;
+}
+
+export async function fetchMediaPostResponse<
+  TContentType extends MediaContentType,
+  TParams extends Record<string, unknown>,
+  TQuery extends Record<string, unknown>,
+  TBody,
+>(
+  url: string,
+  route: MediaPostRoute<TParams, TQuery, TBody, TContentType>,
+  body: TBody,
+): Promise<MediaPostResponse<MediaPayload<TContentType>>> {
+  const response = await sendRouteRequest(url, route.auth, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (response.ok) {
+    const result = await parseMediaPayload(response, route.successContentType);
+
+    if (!isMediaPayload(result)) {
+      return result;
+    }
+
+    return { data: result, statusCode: 200 };
+  }
+
+  const json: unknown = await response.json();
+  return { message: parseErrorMessage(json), statusCode: response.status };
 }
 
 export async function fetchPutResponse<
