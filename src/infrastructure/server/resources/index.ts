@@ -1,1 +1,7 @@
-export { getCommandCardById, getCurrentCommandCards } from './commandCards';
+export {
+  certifyLatestCommandCardVersions,
+  createCommandCardVersion,
+  createEmptyCommandCard,
+  getCommandCardById,
+  getCurrentCommandCards,
+} from './commandCards';
