@@ -12,6 +12,8 @@
     "paths": {
       "@application": ["./src/application/index"],
       "@application/*": ["./src/application/*"],
+      "@ports": ["./src/ports/index"],
+      "@ports/*": ["./src/ports/*"],
       "@composition": ["./src/composition/index"],
       "@composition/*": ["./src/composition/*"],
       "@domain": ["./src/domain/index"],

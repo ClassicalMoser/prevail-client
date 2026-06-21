@@ -29,8 +29,10 @@ export default defineConfig({
     alias: {
       '@assets': path.resolve(import.meta.dirname, 'src/assets/'),
       '@application': path.resolve(import.meta.dirname, 'src/application/'),
+      '@ports': path.resolve(import.meta.dirname, 'src/ports/'),
       '@domain': path.resolve(import.meta.dirname, 'src/domain/'),
       '@interface': path.resolve(import.meta.dirname, 'src/interface/'),
+      '@composition': path.resolve(import.meta.dirname, 'src/composition/'),
       '@infrastructure': path.resolve(
         import.meta.dirname,
         'src/infrastructure/',

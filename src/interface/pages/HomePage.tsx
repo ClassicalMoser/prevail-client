@@ -2,7 +2,7 @@ import { boardCellDemo, useCore } from '@application';
 import { BoardComponent, Button } from '@interface';
 import type { JSX } from 'solid-js';
 
-function App(): JSX.Element {
+export function HomePage(): JSX.Element {
   const core = useCore();
 
   const handleButtonClick = async () => {
@@ -22,6 +22,3 @@ function App(): JSX.Element {
     </main>
   );
 }
-
-// eslint-disable-next-line import/no-default-export
-export default App;
