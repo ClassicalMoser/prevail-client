@@ -1,6 +1,6 @@
 import type { DeleteRoute } from '@classicalmoser/prevail-contracts';
-import { buildRequestUrl, fetchDeleteResponse } from '../http';
 import type { ErrorResponse, RouteCallArgs } from '../http';
+import { buildRequestUrl, fetchDeleteResponse } from '../http';
 
 interface DeleteCallerConfig {
   serverUrl: string;

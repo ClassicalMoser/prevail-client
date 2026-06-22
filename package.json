@@ -23,6 +23,7 @@
     "@classicalmoser/prevail-rules": "link:../prevail-rules",
     "@kobalte/core": "^0.13.11",
     "@tailwindcss/vite": "^4.2.2",
+    "@tanstack/solid-query": "^5.101.0",
     "@tanstack/solid-router": "^1.170.11",
     "@tauri-apps/api": "^2.10.1",
     "@tauri-apps/plugin-dialog": "^2.6.0",

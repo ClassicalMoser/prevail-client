@@ -20,6 +20,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.2.2
         version: 4.2.2(vite@8.0.8(@types/node@25.6.0)(jiti@2.6.1)(yaml@2.8.3))
+      '@tanstack/solid-query':
+        specifier: ^5.101.0
+        version: 5.101.0(solid-js@1.9.12)
       '@tanstack/solid-router':
         specifier: ^1.170.11
         version: 1.170.11(solid-js@1.9.12)
@@ -1109,9 +1112,17 @@ packages:
     resolution: {integrity: sha512-79pf/RkhteYZTRgcR4F9kbk84P2N8rugQJswxfIqovlbRiT3yI7eBE+5QorIrZaOKktsgzRlXh1l/du/xpl4iA==}
     engines: {node: '>=20.19'}
 
+  '@tanstack/query-core@5.101.0':
+    resolution: {integrity: sha512-cQetA74EB+seWySv1TTKr828TnP0u39m6LykwDXIo84SNortpDkp30TMEjkqtYCNP9c40uT/iwl6MLiufEt0Ow==}
+
   '@tanstack/router-core@1.171.9':
     resolution: {integrity: sha512-QM5ZwLT9c5ZcTJW0QQZRRIBC4qjImUyUCXCVyuYVOF9xr76XLsJSX4F2dOxr9VptAv+W+TkWNOYdX8VaO9kdgA==}
     engines: {node: '>=20.19'}
+
+  '@tanstack/solid-query@5.101.0':
+    resolution: {integrity: sha512-XoPWynbaWquvSisMvUirakfD9OmLas1cOwt1gBDUTn8HC2CVkZm+O/jBgEa5SL5LrY6vxmWjzzskhXkywLfymw==}
+    peerDependencies:
+      solid-js: ^1.6.0
 
   '@tanstack/solid-router@1.170.11':
     resolution: {integrity: sha512-YTHU4OB74KUj30dBco0rBiw8GGiUHK4849TfLWrPFmcVDUpWcKMz49O1hqEPYP7rLqp/poICvZdTZVDRMG5bUQ==}
@@ -3737,12 +3748,19 @@ snapshots:
 
   '@tanstack/history@1.162.0': {}
 
+  '@tanstack/query-core@5.101.0': {}
+
   '@tanstack/router-core@1.171.9':
     dependencies:
       '@tanstack/history': 1.162.0
       cookie-es: 3.1.1
       seroval: 1.5.4
       seroval-plugins: 1.5.4(seroval@1.5.4)
+
+  '@tanstack/solid-query@5.101.0(solid-js@1.9.12)':
+    dependencies:
+      '@tanstack/query-core': 5.101.0
+      solid-js: 1.9.12
 
   '@tanstack/solid-router@1.170.11(solid-js@1.9.12)':
     dependencies:

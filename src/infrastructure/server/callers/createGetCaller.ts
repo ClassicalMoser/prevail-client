@@ -1,6 +1,6 @@
 import type { GetRoute } from '@classicalmoser/prevail-contracts';
-import { buildRequestUrl, fetchGetResponse } from '../http';
 import type { GetResponse, RouteCallArgs } from '../http';
+import { buildRequestUrl, fetchGetResponse } from '../http';
 
 interface GetCallerConfig {
   serverUrl: string;

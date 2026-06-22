@@ -1,6 +1,6 @@
 import type { PatchRoute } from '@classicalmoser/prevail-contracts';
-import { buildRequestUrl, fetchPatchResponse } from '../http';
 import type { BodyRouteCallArgs, PatchResponse } from '../http';
+import { buildRequestUrl, fetchPatchResponse } from '../http';
 
 interface PatchCallerConfig {
   serverUrl: string;

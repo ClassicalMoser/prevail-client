@@ -3,8 +3,8 @@ import type {
   MediaPayload,
   MediaPostRoute,
 } from '@classicalmoser/prevail-contracts';
-import { buildRequestUrl, fetchMediaPostResponse } from '../http';
 import type { BodyRouteCallArgs, MediaPostResponse } from '../http';
+import { buildRequestUrl, fetchMediaPostResponse } from '../http';
 
 interface MediaPostCallerConfig {
   serverUrl: string;

@@ -1,6 +1,6 @@
 import type { PutRoute } from '@classicalmoser/prevail-contracts';
-import { buildRequestUrl, fetchPutResponse } from '../http';
 import type { BodyRouteCallArgs, PutResponse } from '../http';
+import { buildRequestUrl, fetchPutResponse } from '../http';
 
 interface PutCallerConfig {
   serverUrl: string;

@@ -22,3 +22,7 @@ export type {
   SuccessResponse201,
 } from './responseTypes';
 export type { BodyRouteCallArgs, RouteCallArgs } from './routeCallArgs';
+export {
+  unwrapCreatedRouteResponsePromise,
+  unwrapRouteResponsePromise,
+} from './unwrapRouteResponse';

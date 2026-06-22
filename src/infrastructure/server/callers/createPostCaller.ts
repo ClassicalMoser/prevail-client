@@ -2,15 +2,15 @@ import type {
   CreatedPostRoute,
   PostRoute,
 } from '@classicalmoser/prevail-contracts';
-import {
-  buildRequestUrl,
-  fetchCreatedPostResponse,
-  fetchPostResponse,
-} from '../http';
 import type {
   BodyRouteCallArgs,
   CreatedPostResponse,
   PostResponse,
+} from '../http';
+import {
+  buildRequestUrl,
+  fetchCreatedPostResponse,
+  fetchPostResponse,
 } from '../http';
 
 interface PostCallerConfig {
