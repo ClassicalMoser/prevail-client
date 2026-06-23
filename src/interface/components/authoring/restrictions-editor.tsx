@@ -55,8 +55,8 @@ export const RestrictionsEditor = (props: {
               <label class="flex items-center gap-2 text-sm">
                 <Checkbox
                   checked={props.restrictions.traitRestrictions.includes(trait)}
-                  onChange={(event) => {
-                    toggleTrait(trait, event.currentTarget.checked);
+                  onChange={(checked) => {
+                    toggleTrait(trait, checked);
                   }}
                 />
                 <span class="capitalize">{trait}</span>

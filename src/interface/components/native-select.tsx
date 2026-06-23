@@ -1,24 +1,54 @@
+import { ChevronDown } from 'lucide-solid';
 import type { ComponentProps, JSX } from 'solid-js';
 import { cx } from '@interface/lib';
-import { splitProps } from 'solid-js';
+import { mergeProps, splitProps } from 'solid-js';
 
+/** Zaidan vega — https://zaidan.carere.dev/r/kobalte/native-select.json */
 export type NativeSelectProps = ComponentProps<'select'> & {
-  class?: string;
+  size?: 'sm' | 'default';
 };
 
 export const NativeSelect = (props: NativeSelectProps): JSX.Element => {
-  const [local, rest] = splitProps(props, ['class']);
+  const mergedProps = mergeProps({ size: 'default' }, props);
+  const [local, others] = splitProps(mergedProps, ['class', 'size']);
 
   return (
-    <select
-      data-slot="native-select"
+    <div
       class={cx(
-        'flex h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm',
-        'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
-        'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
+        'group/native-select relative z-native-select-wrapper w-full has-[select:disabled]:opacity-50',
         local.class,
       )}
-      {...rest}
+      data-slot="native-select-wrapper"
+      data-size={local.size}
+    >
+      <select
+        data-slot="native-select"
+        data-size={local.size}
+        class="z-native-select outline-none disabled:pointer-events-none disabled:cursor-not-allowed"
+        {...others}
+      />
+      <ChevronDown
+        class="pointer-events-none absolute z-native-select-icon select-none"
+        data-slot="native-select-icon"
+      />
+    </div>
+  );
+};
+
+export const NativeSelectOption = (
+  props: ComponentProps<'option'>,
+): JSX.Element => <option data-slot="native-select-option" {...props} />;
+
+export const NativeSelectOptGroup = (
+  props: ComponentProps<'optgroup'>,
+): JSX.Element => {
+  const [local, others] = splitProps(props, ['class']);
+
+  return (
+    <optgroup
+      data-slot="native-select-optgroup"
+      class={cx(local.class)}
+      {...others}
     />
   );
 };

@@ -2,6 +2,19 @@
 
 @import 'tw-animate-css';
 
+/* Zaidan style-vega registry theme (https://zaidan.carere.dev/r/kobalte/style-vega.json) */
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Zaidan component styles (vega preset); see src/styles/zaidan-vega.css */
+@import './zaidan-vega.css';
+
 @font-face {
   font-family: 'Cinzel';
   src: url('../assets/fonts/cinzel-regular.woff2') format('woff2');
@@ -41,6 +54,7 @@
 
 @theme inline {
   --font-display: 'Cinzel', serif;
+  --font-heading: 'Cinzel', serif;
   --font-body: 'Pagella', serif;
   --font-sans: 'Pagella', serif;
   --radius-sm: calc(var(--radius) - 4px);
@@ -172,5 +186,9 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  .z-font-heading {
+    @apply font-heading;
   }
 }
