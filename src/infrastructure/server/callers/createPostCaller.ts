@@ -7,17 +7,10 @@ import type {
   CreatedPostResponse,
   PostResponse,
 } from '../http';
-import {
-  buildRequestUrl,
-  fetchCreatedPostResponse,
-  fetchPostResponse,
-} from '../http';
+import { buildRequestUrl } from '../http';
+import type { CallerDependencies } from './callerDependencies';
 
-interface PostCallerConfig {
-  serverUrl: string;
-}
-
-interface PostCaller {
+export interface CallPost {
   <
     TData,
     TParams extends Record<string, unknown>,
@@ -38,7 +31,11 @@ interface PostCaller {
   ): Promise<CreatedPostResponse<TData>>;
 }
 
-export function createPostCaller({ serverUrl }: PostCallerConfig): PostCaller {
+/** POST caller: picks 200 vs 201 fetch based on contract `successStatus`. */
+export function createPostCaller({
+  serverUrl,
+  routeFetch,
+}: CallerDependencies): CallPost {
   async function callPost<
     TData,
     TParams extends Record<string, unknown>,
@@ -73,10 +70,10 @@ export function createPostCaller({ serverUrl }: PostCallerConfig): PostCaller {
     const url = buildRequestUrl(serverUrl, route.path, args.params, args.query);
 
     if (route.successStatus === 201) {
-      return fetchCreatedPostResponse(url, route, args.body);
+      return routeFetch.fetchCreatedPostResponse(url, route, args.body);
     }
 
-    return fetchPostResponse(url, route, args.body);
+    return routeFetch.fetchPostResponse(url, route, args.body);
   }
 
   return callPost;

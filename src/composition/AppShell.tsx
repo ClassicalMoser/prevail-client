@@ -1,21 +1,49 @@
-import { CoreProvider, ServerPortsProvider } from '@application';
-import { createServerPorts } from '@infrastructure';
+import { AuthProvider, CoreProvider, ServerPortsProvider } from '@application';
+import { createAuth0Port, createServerPorts } from '@infrastructure';
 import { router } from '@interface/routes';
 import { QueryClientProvider } from '@tanstack/solid-query';
 import { RouterProvider } from '@tanstack/solid-router';
 import type { JSX } from 'solid-js';
+import { createMemo, createResource, Show } from 'solid-js';
 import { queryClient } from './queryClient';
 
-const serverPorts = createServerPorts();
-
 export function AppShell(): JSX.Element {
+  const [authPort] = createResource(createAuth0Port);
+
+  const boot = createMemo(() => {
+    const port = authPort();
+    if (!port) {
+      return null;
+    }
+
+    return {
+      port,
+      serverPorts: createServerPorts((permissions) =>
+        port.getAccessToken(permissions),
+      ),
+    };
+  });
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <ServerPortsProvider value={serverPorts}>
-        <CoreProvider>
-          <RouterProvider router={router} />
-        </CoreProvider>
-      </ServerPortsProvider>
-    </QueryClientProvider>
+    <Show
+      when={boot()}
+      fallback={
+        <div class="flex min-h-screen items-center justify-center bg-background text-foreground">
+          Loading…
+        </div>
+      }
+    >
+      {(ready) => (
+        <AuthProvider value={ready().port}>
+          <QueryClientProvider client={queryClient}>
+            <ServerPortsProvider value={ready().serverPorts}>
+              <CoreProvider>
+                <RouterProvider router={router} />
+              </CoreProvider>
+            </ServerPortsProvider>
+          </QueryClientProvider>
+        </AuthProvider>
+      )}
+    </Show>
   );
 }

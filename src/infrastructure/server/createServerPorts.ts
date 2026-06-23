@@ -1,9 +1,34 @@
-import type { ServerPorts } from '@ports';
-import { commandCards, unitCards } from './adapters';
+import type { AccessTokenGetter, ServerPorts } from '@ports';
+import { createCommandCardsAdapter, createUnitCardsAdapter } from './adapters';
+import { createCallers } from './callers';
+import { createRouteFetch } from './http';
+import {
+  createCommandCardResources,
+  createUnitCardResources,
+} from './resources';
 
-export function createServerPorts(): ServerPorts {
+const SERVER_URL = import.meta.env.VITE_SERVER_URL ?? 'http://localhost:7412';
+
+/**
+ * Composition root for outbound server access.
+ *
+ * Stack (outside → in):
+ * 1. **Ports** (`@ports`) — plain domain types; errors throw {@link RouteResponseError}
+ * 2. **Adapters** — unwrap HTTP envelopes into port shapes
+ * 3. **Resources** — map each prevail-contracts route to a caller invocation
+ * 4. **Callers** — build request URLs from contract paths/args
+ * 5. **RouteFetch** — `fetch`, auth headers, response parsing/validation
+ */
+export function createServerPorts(
+  getAccessToken: AccessTokenGetter,
+): ServerPorts {
+  const routeFetch = createRouteFetch(getAccessToken);
+  const callers = createCallers(SERVER_URL, routeFetch);
+  const commandCardResources = createCommandCardResources(callers);
+  const unitCardResources = createUnitCardResources(callers);
+
   return {
-    commandCards,
-    unitCards,
+    commandCards: createCommandCardsAdapter(commandCardResources),
+    unitCards: createUnitCardsAdapter(unitCardResources),
   };
 }

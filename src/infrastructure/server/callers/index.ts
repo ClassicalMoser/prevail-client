@@ -1,11 +1,4 @@
-export {
-  callDelete,
-  callGet,
-  callMediaPost,
-  callPatch,
-  callPost,
-  callPut,
-} from './callers';
+export { createCallers, type Callers } from './callers';
 export { createDeleteCaller } from './createDeleteCaller';
 export { createGetCaller } from './createGetCaller';
 export { createMediaPostCaller } from './createMediaPostCaller';

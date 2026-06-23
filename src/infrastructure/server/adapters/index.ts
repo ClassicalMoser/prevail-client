@@ -1,2 +1,2 @@
-export { commandCards } from './commandCards';
-export { unitCards } from './unitCards';
+export { createCommandCardsAdapter } from './commandCards';
+export { createUnitCardsAdapter } from './unitCards';

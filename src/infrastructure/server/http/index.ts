@@ -1,13 +1,6 @@
 export { buildRequestUrl } from './buildRequestUrl';
-export {
-  fetchCreatedPostResponse,
-  fetchDeleteResponse,
-  fetchGetResponse,
-  fetchMediaPostResponse,
-  fetchPatchResponse,
-  fetchPostResponse,
-  fetchPutResponse,
-} from './fetchRouteResponse';
+export { createRouteFetch } from './fetchRouteResponse';
+export type { RouteFetch } from './routeFetch';
 export type {
   CreatedPostResponse,
   ErrorResponse,

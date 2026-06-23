@@ -1,3 +1,4 @@
+/** Substitute `:param` segments in a prevail-contracts route path. */
 function buildPath(template: string, params: Record<string, unknown>): string {
   return Object.entries(params).reduce(
     (path, [key, value]) =>
@@ -18,6 +19,7 @@ function buildQueryString(query: Record<string, unknown>): string {
   return qs.length > 0 ? `?${qs}` : '';
 }
 
+/** Compose the absolute URL callers hand to {@link RouteFetch}. */
 export function buildRequestUrl(
   serverUrl: string,
   routePath: string,
@@ -25,5 +27,5 @@ export function buildRequestUrl(
   query: Record<string, unknown>,
 ): string {
   const path = buildPath(routePath, params);
-  return `${serverUrl.replace(/\/$/u, '')}/api${path}${buildQueryString(query)}`;
+  return `${serverUrl.replace(/\/$/u, '')}${path}${buildQueryString(query)}`;
 }

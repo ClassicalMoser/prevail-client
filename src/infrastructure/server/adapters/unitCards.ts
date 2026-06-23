@@ -3,25 +3,34 @@ import {
   unwrapCreatedRouteResponsePromise,
   unwrapRouteResponsePromise,
 } from '../http';
-import {
-  certifyLatestUnitCardVersions,
-  createEmptyUnitCard,
-  createUnitCardVersion,
-  getCurrentUnitCards,
-  getUnitCardById,
-  getUnitCardsByIds,
-  previewUnitCard,
-} from '../resources';
+import type { UnitCardResources } from '../resources';
 
-export const unitCards: UnitCards = {
-  getCurrent: () => unwrapRouteResponsePromise(getCurrentUnitCards()),
-  getById: (id) => unwrapRouteResponsePromise(getUnitCardById({ id })),
-  getByIds: (ids) =>
-    unwrapRouteResponsePromise(getUnitCardsByIds({ ids: [...ids] })),
-  createDraft: () => unwrapCreatedRouteResponsePromise(createEmptyUnitCard()),
-  publishVersion: (card) =>
-    unwrapCreatedRouteResponsePromise(createUnitCardVersion(card)),
-  certifyLatest: () =>
-    unwrapCreatedRouteResponsePromise(certifyLatestUnitCardVersions()),
-  preview: (card) => unwrapRouteResponsePromise(previewUnitCard(card)),
-};
+/**
+ * Port adapter: strips HTTP envelopes and surfaces plain domain types.
+ * Application code sees `UnitType` or a thrown {@link RouteResponseError}, not
+ * `{ data } | { message }`.
+ */
+export function createUnitCardsAdapter(
+  resources: UnitCardResources,
+): UnitCards {
+  return {
+    getCurrent: () =>
+      unwrapRouteResponsePromise(resources.getCurrentUnitCards()),
+    getById: (id) =>
+      unwrapRouteResponsePromise(resources.getUnitCardById({ id })),
+    getByIds: (ids) =>
+      unwrapRouteResponsePromise(
+        resources.getUnitCardsByIds({ ids: [...ids] }),
+      ),
+    createDraft: () =>
+      unwrapCreatedRouteResponsePromise(resources.createEmptyUnitCard()),
+    publishVersion: (card) =>
+      unwrapCreatedRouteResponsePromise(resources.createUnitCardVersion(card)),
+    certifyLatest: () =>
+      unwrapCreatedRouteResponsePromise(
+        resources.certifyLatestUnitCardVersions(),
+      ),
+    preview: (card) =>
+      unwrapRouteResponsePromise(resources.previewUnitCard(card)),
+  };
+}

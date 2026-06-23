@@ -20,6 +20,7 @@
       "@domain/*": ["./src/domain/*"],
       "@infrastructure": ["./src/infrastructure/index"],
       "@infrastructure/*": ["./src/infrastructure/*"],
+      "@infrastructure/*": ["./src/infrastructure/*"],
       "@interface": ["./src/interface/index"],
       "@interface/*": ["./src/interface/*"]
     },

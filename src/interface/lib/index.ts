@@ -1,3 +1,3 @@
 export { combineStyle } from './combineStyle';
-export { cva } from './cva';
+export { cva, cx } from './cva';
 export { useIsMobile } from './useMobile';

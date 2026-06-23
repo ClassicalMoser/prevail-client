@@ -1,6 +1,12 @@
 import { Outlet } from '@tanstack/solid-router';
+import { AppNav } from '@interface/components/authoring/app-nav';
 import type { JSX } from 'solid-js';
 
 export function RootLayout(): JSX.Element {
-  return <Outlet />;
+  return (
+    <div class="min-h-screen bg-background text-foreground">
+      <AppNav />
+      <Outlet />
+    </div>
+  );
 }

@@ -37,6 +37,10 @@ export default defineConfig({
         import.meta.dirname,
         'src/infrastructure/',
       ),
+      '@infrastructure/*': path.resolve(
+        import.meta.dirname,
+        'src/infrastructure/*',
+      ),
     },
   },
 });

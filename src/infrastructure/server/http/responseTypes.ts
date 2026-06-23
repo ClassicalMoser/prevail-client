@@ -1,3 +1,11 @@
+/**
+ * Typed HTTP outcomes for prevail-contracts routes.
+ *
+ * Success and error share parallel shapes so callers can return a single promise
+ * type without throwing. Adapters unwrap to bare `T` or {@link RouteResponseError}
+ * when crossing into `@ports`.
+ */
+
 /** Client-side error result. `statusCode` comes from the HTTP response. */
 interface ErrorResponse {
   message: string;

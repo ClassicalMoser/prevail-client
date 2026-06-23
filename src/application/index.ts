@@ -1,3 +1,6 @@
+export type { AuthViewModel } from './authContext';
+export { AuthProvider, useAuth, useAuthPort } from './authContext';
+export { useCommandCardEditor, useUnitCardEditor } from './authoring';
 export type { BoardCellDemo } from './boardCellDemo';
 export { boardCellDemo } from './boardCellDemo';
 export type { Core } from './bootstrap';
