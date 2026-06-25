@@ -1,5 +1,5 @@
 import type { Card } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { CommandCardCommandSection } from './command-card-command-section';
 import { CommandCardDiscardModifiersSection } from './command-card-discard-modifiers-section';
 import { CommandCardIdentitySection } from './command-card-identity-section';
@@ -7,7 +7,7 @@ import { CommandCardRoundEffectSection } from './command-card-round-effect-secti
 import { CommandCardUnitSupportSection } from './command-card-unit-support-section';
 
 export const CommandCardForm = (props: {
-  card: Card;
+  card: Accessor<Card>;
   onChange: (card: Card) => void;
 }): JSX.Element => (
   <div class="grid gap-6">
@@ -28,7 +28,7 @@ export const CommandCardForm = (props: {
 
     <div class="text-muted-foreground text-xs">
       <p class="text-sm font-medium">Card ID</p>
-      <p class="font-mono">{props.card.id}</p>
+      <p class="font-mono">{props.card().id}</p>
     </div>
   </div>
 );

@@ -5,7 +5,7 @@ import type {
 
 /** Restrictions used when a card has no round effect yet. */
 export const emptyRoundEffectRestrictions = (): Restrictions => ({
-  inspirationRangeRestriction: undefined,
+  inspirationRangeRestriction: -1,
   traitRestrictions: [],
   unitRestrictions: [],
 });

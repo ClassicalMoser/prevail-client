@@ -1,43 +1,151 @@
+import type { CardListItem } from '@classicalmoser/prevail-contracts';
 import type { Card } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor } from 'solid-js';
-import type { UseMutationResult, UseQueryResult } from '@tanstack/solid-query';
 import { createEffect, createSignal } from 'solid-js';
+import type { UseMutationResult, UseQueryResult } from '@tanstack/solid-query';
 import {
+  useAllCommandCardsQuery,
   useCommandCardByIdQuery,
   useCreateCommandCardVersionMutation,
   usePreviewCommandCardMutation,
 } from '@application/queries';
 import { cloneDraft } from './cloneDraft';
+import { defaultCommandCardDraft } from './cardDraftDefaults';
+import { findCardListItem } from './findCardListItem';
+import { validateCommandCardDraft } from './validateCommandCardDraft';
 
-/**
- * Local draft editor for a command card loaded by id.
- * Keeps mutable form state separate from the TanStack Query cache.
- */
-export function useCommandCardEditor(cardId: Accessor<string | undefined>): {
-  query: UseQueryResult<Card, Error>;
-  draft: () => Card | undefined;
+function useCommandCardEditorState(
+  cardId: Accessor<string | undefined>,
+  catalog: UseQueryResult<CardListItem[], Error>,
+): {
+  isLoading: Accessor<boolean>;
+  loadErrorMessage: Accessor<string | undefined>;
+  draft: Accessor<Card | undefined>;
+  isNewVersion: Accessor<boolean>;
   updateDraft: (updater: (card: Card) => Card) => void;
   save: () => void;
   preview: () => void;
-  previewSvg: () => string | undefined;
-  previewError: () => string | undefined;
-  publishMutation: UseMutationResult<Card, Error, Card>;
+  previewSvg: Accessor<string | undefined>;
+  previewError: Accessor<string | undefined>;
+  validationErrors: Accessor<readonly string[]>;
+  publish: UseMutationResult<Card, Error, Card>;
   previewMutation: UseMutationResult<string, Error, Card>;
 } {
-  const query = useCommandCardByIdQuery(cardId);
-  const publishMutation = useCreateCommandCardVersionMutation();
+  const version = useCommandCardByIdQuery(cardId, {
+    enabled: () => {
+      const resolvedId = cardId();
+      if (resolvedId === undefined) {
+        return false;
+      }
+
+      if (catalog.isLoading) {
+        return false;
+      }
+
+      const item = findCardListItem(catalog.data, resolvedId);
+      return item !== undefined && item.version !== null;
+    },
+  });
+  const publish = useCreateCommandCardVersionMutation();
   const previewMutation = usePreviewCommandCardMutation();
   const [draft, setDraft] = createSignal<Card | undefined>();
+  const [isNewVersion, setIsNewVersion] = createSignal(false);
   const [previewSvg, setPreviewSvg] = createSignal<string | undefined>();
   const [previewError, setPreviewError] = createSignal<string | undefined>();
+  const [validationErrors, setValidationErrors] = createSignal<
+    readonly string[]
+  >([]);
 
-  // Seed local draft whenever server data arrives for the current card.
+  const listItem = () => {
+    const resolvedId = cardId();
+    if (resolvedId === undefined) {
+      return;
+    }
+
+    return findCardListItem(catalog.data, resolvedId);
+  };
+
+  const isLoading = (): boolean => {
+    const resolvedId = cardId();
+    if (resolvedId === undefined) {
+      return false;
+    }
+
+    if (catalog.isLoading) {
+      return true;
+    }
+
+    const item = listItem();
+    if (item === undefined || item.version === null) {
+      return false;
+    }
+
+    return version.isLoading;
+  };
+
+  const loadErrorMessage = (): string | undefined => {
+    if (catalog.isError) {
+      return catalog.error?.message ?? 'Failed to load command cards.';
+    }
+
+    const resolvedId = cardId();
+    if (
+      resolvedId !== undefined &&
+      !catalog.isLoading &&
+      listItem() === undefined
+    ) {
+      return 'Command card not found.';
+    }
+
+    if (version.isError) {
+      return version.error?.message ?? 'Failed to load command card.';
+    }
+
+    return undefined;
+  };
+
   createEffect(() => {
-    const data = query.data;
-    if (data !== undefined) {
-      setDraft(cloneDraft(data));
+    const resolvedId = cardId();
+
+    if (resolvedId === undefined) {
+      setDraft(undefined);
+      setIsNewVersion(false);
+      return;
+    }
+
+    if (catalog.isLoading) {
+      setDraft(undefined);
+      return;
+    }
+
+    const item = listItem();
+    if (item === undefined) {
+      setDraft(undefined);
+      setIsNewVersion(false);
+      return;
+    }
+
+    if (item.version === null) {
+      setIsNewVersion(true);
+      setDraft(cloneDraft(defaultCommandCardDraft(resolvedId)));
       setPreviewSvg(undefined);
       setPreviewError(undefined);
+      setValidationErrors([]);
+      return;
+    }
+
+    if (version.isLoading) {
+      setDraft(undefined);
+      return;
+    }
+
+    const loadedVersion = version.data;
+    if (loadedVersion !== undefined) {
+      setIsNewVersion(false);
+      setDraft(cloneDraft(loadedVersion));
+      setPreviewSvg(undefined);
+      setPreviewError(undefined);
+      setValidationErrors([]);
     }
   });
 
@@ -45,42 +153,75 @@ export function useCommandCardEditor(cardId: Accessor<string | undefined>): {
     const current = draft();
     if (current !== undefined) {
       setDraft(updater(current));
+      setValidationErrors([]);
     }
   };
 
   const save = (): void => {
     const current = draft();
-    if (current !== undefined) {
-      publishMutation.mutate(current);
+    if (current === undefined) {
+      return;
     }
+
+    const validation = validateCommandCardDraft(current);
+    if (!validation.success) {
+      setValidationErrors(validation.messages);
+      return;
+    }
+
+    setValidationErrors([]);
+    publish.mutate(validation.data);
   };
 
   const preview = (): void => {
     const current = draft();
-    if (current !== undefined) {
-      setPreviewError(undefined);
-      // Preview is server-rendered SVG; keep result out of the query cache.
-      previewMutation.mutate(current, {
-        onSuccess: (svg) => {
-          setPreviewSvg(svg);
-        },
-        onError: (error) => {
-          setPreviewSvg(undefined);
-          setPreviewError(error.message);
-        },
-      });
+    if (current === undefined) {
+      return;
     }
+
+    const validation = validateCommandCardDraft(current);
+    if (!validation.success) {
+      setValidationErrors(validation.messages);
+      setPreviewError(undefined);
+      return;
+    }
+
+    setValidationErrors([]);
+    setPreviewError(undefined);
+    previewMutation.mutate(validation.data, {
+      onSuccess: (svg) => {
+        setPreviewSvg(svg);
+      },
+      onError: (error) => {
+        setPreviewSvg(undefined);
+        setPreviewError(error.message);
+      },
+    });
   };
 
   return {
-    query,
+    isLoading,
+    loadErrorMessage,
     draft,
+    isNewVersion,
     updateDraft,
     save,
     preview,
     previewSvg,
     previewError,
-    publishMutation,
+    validationErrors,
+    publish,
     previewMutation,
   };
+}
+
+/**
+ * Local draft editor for a command card loaded by id.
+ * Uses the catalog list to decide whether to fetch a version or seed defaults.
+ */
+export function useCommandCardEditor(
+  cardId: Accessor<string | undefined>,
+): ReturnType<typeof useCommandCardEditorState> {
+  const catalog = useAllCommandCardsQuery();
+  return useCommandCardEditorState(cardId, catalog);
 }

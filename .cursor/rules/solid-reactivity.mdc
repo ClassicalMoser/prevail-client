@@ -1,0 +1,35 @@
+---
+description: Solid reactivity and TanStack Solid Query — hard rules, not React idioms
+alwaysApply: true
+---
+
+# Solid reactivity (hard rules)
+
+This project uses **Solid**, not React. React-style patterns compile but **silently break reactivity**.
+
+## TanStack Solid Query
+
+1. **Query options are always a function** — `useQuery(() => ({ queryKey, queryFn }))`. Never pass a plain options object.
+2. **Never destructure query/mutation results** — no `const { data } = useQuery(...)`. Keep the store: `const query = useQuery(...)`, read `query.data` / `query.isLoading` at consumption in JSX or reactive primitives.
+3. Resolve context ports once when setting up the hook; close over them in `queryFn` / `mutationFn`. Never call `useContext` inside async query work.
+
+## Props and signals
+
+4. **Never destructure props** — no `const UserCard = ({ name }) => ...`. Use `(props)` and read `props.name` in JSX. Use `mergeProps` / `splitProps` for defaults and splitting (see shadcn-style components).
+5. **Never read a signal/store outside a reactive context** — not at component setup into `const x = ...`. Read in JSX, `createEffect`, `createMemo`, or event handlers at use time.
+6. **Dumb interface components receive accessors, not values** — pass `name={() => user.name()}`, not `name={user.name()}`. Leaf reads `props.name()` in JSX.
+7. **Derived values use `createMemo`** — never `const derived = signal()` at setup from other reactive sources.
+
+## Layering
+
+- **Smart** (pages, application hooks): own queries, signals, mutations; pass accessors/callbacks down.
+- **Dumb** (`src/interface` presentational): no `useQuery`, no context hooks; `props.field()` in JSX only.
+- Do not prop-drill TanStack query stores into dumb children — pass accessors built by the smart parent.
+
+## Quick checklist before shipping UI
+
+- [ ] Every `useQuery` / `useMutation` uses a factory: `() => ({ ... })`
+- [ ] No `{ data, isLoading } = query` anywhere
+- [ ] No `({ foo, bar })` component params
+- [ ] No `const x = props.foo` or `const x = signal()` at top of component body (except hook/store refs like `const query = useQuery(...)`)
+- [ ] Dumb components only see `Accessor<T>` props for changing data

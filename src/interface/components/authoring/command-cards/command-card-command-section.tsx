@@ -1,5 +1,5 @@
 import type { Card } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import {
   Card as UiCard,
   CardContent,
@@ -12,11 +12,11 @@ import { RestrictionsEditor } from '../restrictions-editor';
 import { CommandCardCommandFields } from './command-card-command-fields';
 
 export const CommandCardCommandSection = (props: {
-  card: Card;
+  card: Accessor<Card>;
   onChange: (card: Card) => void;
 }): JSX.Element => {
   const updateCommand = (command: Card['command']): void => {
-    props.onChange({ ...props.card, command });
+    props.onChange({ ...props.card(), command });
   };
 
   return (
@@ -27,7 +27,7 @@ export const CommandCardCommandSection = (props: {
       </CardHeader>
       <CardContent class="grid gap-6">
         <CommandCardCommandFields
-          command={props.card.command}
+          command={() => props.card().command}
           onChange={updateCommand}
         />
 
@@ -35,9 +35,9 @@ export const CommandCardCommandSection = (props: {
           <p class="mb-3 text-sm font-medium">Command restrictions</p>
           <RestrictionsEditor
             idPrefix="command"
-            restrictions={props.card.command.restrictions}
+            restrictions={() => props.card().command.restrictions}
             onChange={(restrictions) => {
-              updateCommand({ ...props.card.command, restrictions });
+              updateCommand({ ...props.card().command, restrictions });
             }}
           />
         </div>
@@ -46,9 +46,9 @@ export const CommandCardCommandSection = (props: {
           <p class="mb-3 text-sm font-medium">Command modifiers</p>
           <ModifierListEditor
             idPrefix="command"
-            modifiers={props.card.command.modifiers}
+            modifiers={() => props.card().command.modifiers}
             onChange={(modifiers) => {
-              updateCommand({ ...props.card.command, modifiers });
+              updateCommand({ ...props.card().command, modifiers });
             }}
           />
         </div>

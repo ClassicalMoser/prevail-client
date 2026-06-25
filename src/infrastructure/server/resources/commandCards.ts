@@ -1,13 +1,16 @@
 import {
-  certifyLatestCommandCardVersionsContract,
+  updateCommandCardCertificationsContract,
   createCommandCardVersionContract,
   createEmptyCommandCardContract,
+  deleteEmptyCommandCardsContract,
+  getAllCommandCardsContract,
   getCommandCardByIdContract,
   getCommandCardsByIdsContract,
   getCurrentCommandCardsContract,
   previewCommandCardContract,
 } from '@classicalmoser/prevail-contracts';
 import type {
+  CardListItem,
   CertificationResults,
   GetByIdParams,
   QueryByIdsBody,
@@ -16,6 +19,7 @@ import type { Card } from '@classicalmoser/prevail-rules/domain';
 import type { Callers } from '../callers';
 import type {
   CreatedPostResponse,
+  ErrorResponse,
   GetResponse,
   MediaPostResponse,
   PostResponse,
@@ -26,26 +30,33 @@ import type {
  * Wires contract constants to the matching caller; still returns HTTP envelopes.
  */
 export interface CommandCardResources {
+  getAllCommandCards(): Promise<GetResponse<CardListItem[]>>;
   getCommandCardById(params: GetByIdParams): Promise<GetResponse<Card>>;
   getCommandCardsByIds(body: QueryByIdsBody): Promise<PostResponse<Card[]>>;
   getCurrentCommandCards(): Promise<GetResponse<Card[]>>;
   createEmptyCommandCard(): Promise<CreatedPostResponse<string>>;
   createCommandCardVersion(card: Card): Promise<CreatedPostResponse<Card>>;
-  certifyLatestCommandCardVersions(): Promise<
-    CreatedPostResponse<CertificationResults>
+  updateCommandCardCertifications(): Promise<
+    PostResponse<CertificationResults>
   >;
+  deleteEmptyCommandCards(): Promise<ErrorResponse | undefined>;
   previewCommandCard(card: Card): Promise<MediaPostResponse<string>>;
 }
 
 export function createCommandCardResources({
+  callDelete,
   callGet,
   callMediaPost,
   callPost,
 }: Pick<
   Callers,
-  'callGet' | 'callMediaPost' | 'callPost'
+  'callDelete' | 'callGet' | 'callMediaPost' | 'callPost'
 >): CommandCardResources {
   return {
+    getAllCommandCards() {
+      return callGet(getAllCommandCardsContract, { params: {}, query: {} });
+    },
+
     getCommandCardById(params) {
       return callGet(getCommandCardByIdContract, { params, query: {} });
     },
@@ -78,11 +89,18 @@ export function createCommandCardResources({
       });
     },
 
-    certifyLatestCommandCardVersions() {
-      return callPost(certifyLatestCommandCardVersionsContract, {
+    updateCommandCardCertifications() {
+      return callPost(updateCommandCardCertificationsContract, {
         params: {},
         query: {},
         body: {},
+      });
+    },
+
+    deleteEmptyCommandCards() {
+      return callDelete(deleteEmptyCommandCardsContract, {
+        params: {},
+        query: {},
       });
     },
 

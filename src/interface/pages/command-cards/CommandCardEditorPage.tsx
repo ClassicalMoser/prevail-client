@@ -5,7 +5,7 @@ import { EditorToolbar } from '@interface/components/authoring/editor-toolbar';
 import { Card, CardContent, buttonVariants } from '@interface/components';
 import { Link, useParams } from '@tanstack/solid-router';
 import type { JSX } from 'solid-js';
-import { Show } from 'solid-js';
+import { For, Show } from 'solid-js';
 
 export function CommandCardEditorPage(): JSX.Element {
   const params = useParams({ from: '/command-cards/$cardId' });
@@ -23,58 +23,74 @@ export function CommandCardEditorPage(): JSX.Element {
       </div>
 
       <Show
-        when={!editor.query.isLoading}
+        when={!editor.isLoading()}
         fallback={<p class="text-muted-foreground">Loading command card…</p>}
       >
         <Show
-          when={editor.query.isError}
+          when={editor.draft()}
           fallback={
-            <Show
-              when={editor.draft()}
-              fallback={
-                <Card>
-                  <CardContent class="py-6">
-                    <p class="text-muted-foreground text-sm">
-                      Command card not found.
-                    </p>
-                  </CardContent>
-                </Card>
-              }
-            >
-              {(card) => (
-                <>
-                  <EditorToolbar
-                    title={card().name || 'Untitled Command Card'}
-                    subtitle={`Version ${card().version}`}
-                    isSaving={editor.publishMutation.isPending}
-                    isPreviewing={editor.previewMutation.isPending}
-                    onSave={editor.save}
-                    onPreview={editor.preview}
-                  />
-
-                  <CardPreviewPanel
-                    svg={editor.previewSvg()}
-                    errorMessage={editor.previewError()}
-                  />
-
-                  <CommandCardForm
-                    card={card()}
-                    onChange={(nextCard) => {
-                      editor.updateDraft(() => nextCard);
-                    }}
-                  />
-                </>
-              )}
-            </Show>
+            <Card>
+              <CardContent class="py-6">
+                <p class="text-destructive text-sm">
+                  {editor.loadErrorMessage() ?? 'Command card not found.'}
+                </p>
+              </CardContent>
+            </Card>
           }
         >
-          <Card>
-            <CardContent class="py-6">
-              <p class="text-destructive text-sm">
-                {editor.query.error?.message ?? 'Failed to load command card.'}
-              </p>
-            </CardContent>
-          </Card>
+          {(card) => (
+            <>
+              <EditorToolbar
+                title={() => card().name || 'Untitled Command Card'}
+                subtitle={() =>
+                  editor.isNewVersion()
+                    ? 'New version (unsaved)'
+                    : `Version ${card().version}`
+                }
+                isSaving={() => editor.publish.isPending}
+                isPreviewing={() => editor.previewMutation.isPending}
+                onSave={editor.save}
+                onPreview={editor.preview}
+              />
+
+              <Show when={editor.validationErrors().length > 0}>
+                <Card>
+                  <CardContent class="py-6">
+                    <p class="text-destructive text-sm font-medium">
+                      Fix these issues before publishing or previewing:
+                    </p>
+                    <ul class="text-destructive mt-2 list-disc space-y-1 pl-5 text-sm">
+                      <For each={editor.validationErrors()}>
+                        {(message) => <li>{message}</li>}
+                      </For>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </Show>
+
+              <Show when={editor.publish.error}>
+                {(error) => (
+                  <Card>
+                    <CardContent class="py-6">
+                      <p class="text-destructive text-sm">{error().message}</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </Show>
+
+              <CardPreviewPanel
+                svg={editor.previewSvg}
+                errorMessage={editor.previewError}
+              />
+
+              <CommandCardForm
+                card={card}
+                onChange={(nextCard) => {
+                  editor.updateDraft(() => nextCard);
+                }}
+              />
+            </>
+          )}
         </Show>
       </Show>
     </main>

@@ -1,6 +1,6 @@
 import type { Trait, UnitType } from '@classicalmoser/prevail-rules/domain';
 import { traits } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { For } from 'solid-js';
 import {
   Card,
@@ -12,16 +12,16 @@ import {
 import { Checkbox } from '../../checkbox';
 
 export const UnitCardTraitsSection = (props: {
-  unit: UnitType;
+  unit: Accessor<UnitType>;
   onChange: (unit: UnitType) => void;
 }): JSX.Element => {
   const toggleTrait = (trait: Trait, checked: boolean): void => {
-    const currentTraits = props.unit.traits;
+    const currentTraits = props.unit().traits;
     const nextTraits = checked
       ? [...currentTraits, trait]
       : currentTraits.filter((currentTrait) => currentTrait !== trait);
 
-    props.onChange({ ...props.unit, traits: nextTraits });
+    props.onChange({ ...props.unit(), traits: nextTraits });
   };
 
   return (
@@ -36,7 +36,7 @@ export const UnitCardTraitsSection = (props: {
             {(trait) => (
               <label class="flex items-center gap-2 text-sm">
                 <Checkbox
-                  checked={props.unit.traits.includes(trait)}
+                  checked={props.unit().traits.includes(trait)}
                   onChange={(checked) => {
                     toggleTrait(trait, checked);
                   }}

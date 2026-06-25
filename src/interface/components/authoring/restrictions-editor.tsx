@@ -1,6 +1,6 @@
 import type { Restrictions, Trait } from '@classicalmoser/prevail-rules/domain';
 import { traits } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { For } from 'solid-js';
 import { Checkbox } from '../checkbox';
 import { FormField } from '../form-field';
@@ -8,17 +8,17 @@ import { Input } from '../input';
 
 export const RestrictionsEditor = (props: {
   idPrefix: string;
-  restrictions: Restrictions;
+  restrictions: Accessor<Restrictions>;
   onChange: (restrictions: Restrictions) => void;
 }): JSX.Element => {
   const toggleTrait = (trait: Trait, checked: boolean): void => {
-    const currentTraits = props.restrictions.traitRestrictions;
+    const currentTraits = props.restrictions().traitRestrictions;
     const nextTraits = checked
       ? [...currentTraits, trait]
       : currentTraits.filter((currentTrait) => currentTrait !== trait);
 
     props.onChange({
-      ...props.restrictions,
+      ...props.restrictions(),
       traitRestrictions: nextTraits,
     });
   };
@@ -35,13 +35,17 @@ export const RestrictionsEditor = (props: {
           type="number"
           min={0}
           max={10}
-          value={props.restrictions.inspirationRangeRestriction ?? ''}
+          value={
+            props.restrictions().inspirationRangeRestriction === -1
+              ? ''
+              : props.restrictions().inspirationRangeRestriction
+          }
           onInput={(event) => {
             const rawValue = event.currentTarget.value;
             props.onChange({
-              ...props.restrictions,
+              ...props.restrictions(),
               inspirationRangeRestriction:
-                rawValue === '' ? undefined : Number(rawValue),
+                rawValue === '' ? -1 : Number(rawValue),
             });
           }}
         />
@@ -54,7 +58,9 @@ export const RestrictionsEditor = (props: {
             {(trait) => (
               <label class="flex items-center gap-2 text-sm">
                 <Checkbox
-                  checked={props.restrictions.traitRestrictions.includes(trait)}
+                  checked={props
+                    .restrictions()
+                    .traitRestrictions.includes(trait)}
                   onChange={(checked) => {
                     toggleTrait(trait, checked);
                   }}
@@ -73,11 +79,11 @@ export const RestrictionsEditor = (props: {
       >
         <Input
           id={`${props.idPrefix}-unit-restrictions`}
-          value={props.restrictions.unitRestrictions.join(', ')}
+          value={props.restrictions().unitRestrictions.join(', ')}
           onInput={(event) => {
             const rawValue = event.currentTarget.value.trim();
             props.onChange({
-              ...props.restrictions,
+              ...props.restrictions(),
               unitRestrictions:
                 rawValue === ''
                   ? []

@@ -3,18 +3,18 @@ import {
   commandSizes,
   commandTypes,
 } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { For } from 'solid-js';
 import { FormField } from '../../form-field';
 import { Input } from '../../input';
 import { NativeSelect } from '../../native-select';
 
 export const CommandCardCommandFields = (props: {
-  command: Card['command'];
+  command: Accessor<Card['command']>;
   onChange: (command: Card['command']) => void;
 }): JSX.Element => {
   const update = (patch: Partial<Card['command']>): void => {
-    props.onChange({ ...props.command, ...patch });
+    props.onChange({ ...props.command(), ...patch });
   };
 
   return (
@@ -22,7 +22,7 @@ export const CommandCardCommandFields = (props: {
       <FormField label="Size" for="command-size">
         <NativeSelect
           id="command-size"
-          value={props.command.size}
+          value={props.command().size}
           onChange={(event) => {
             update({
               size: event.currentTarget.value as Card['command']['size'],
@@ -37,7 +37,7 @@ export const CommandCardCommandFields = (props: {
       <FormField label="Type" for="command-type">
         <NativeSelect
           id="command-type"
-          value={props.command.type}
+          value={props.command().type}
           onChange={(event) => {
             update({
               type: event.currentTarget.value as Card['command']['type'],
@@ -55,7 +55,7 @@ export const CommandCardCommandFields = (props: {
           type="number"
           min={1}
           max={10}
-          value={props.command.number}
+          value={props.command().number}
           onInput={(event) => {
             update({ number: Number(event.currentTarget.value) });
           }}

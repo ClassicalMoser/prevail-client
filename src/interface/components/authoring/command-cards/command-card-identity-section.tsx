@@ -1,5 +1,5 @@
 import type { Card } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import {
   Card as UiCard,
   CardContent,
@@ -11,11 +11,11 @@ import { FormField } from '../../form-field';
 import { Input } from '../../input';
 
 export const CommandCardIdentitySection = (props: {
-  card: Card;
+  card: Accessor<Card>;
   onChange: (card: Card) => void;
 }): JSX.Element => {
   const update = (patch: Partial<Card>): void => {
-    props.onChange({ ...props.card, ...patch });
+    props.onChange({ ...props.card(), ...patch });
   };
 
   return (
@@ -28,7 +28,7 @@ export const CommandCardIdentitySection = (props: {
         <FormField label="Name" for="command-card-name">
           <Input
             id="command-card-name"
-            value={props.card.name}
+            value={props.card().name}
             onInput={(event) => {
               update({ name: event.currentTarget.value });
             }}
@@ -37,7 +37,7 @@ export const CommandCardIdentitySection = (props: {
         <FormField label="Version" for="command-card-version">
           <Input
             id="command-card-version"
-            value={props.card.version}
+            value={props.card().version}
             onInput={(event) => {
               update({ version: event.currentTarget.value });
             }}
@@ -49,7 +49,7 @@ export const CommandCardIdentitySection = (props: {
             type="number"
             min={1}
             max={4}
-            value={props.card.initiative}
+            value={props.card().initiative}
             onInput={(event) => {
               update({ initiative: Number(event.currentTarget.value) });
             }}

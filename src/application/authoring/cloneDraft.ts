@@ -1,6 +1,21 @@
-/** Deep-clone query data for local draft state. JSON round-trip strips TanStack Query proxies. */
+function toPlainValue<T>(value: T): T {
+  if (value === null || typeof value !== 'object') {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((entry) => toPlainValue(entry)) as T;
+  }
+
+  const plain: Record<string, unknown> = {};
+  for (const [key, entry] of Object.entries(value)) {
+    plain[key] = toPlainValue(entry);
+  }
+
+  return plain as T;
+}
+
+/** Deep-clone query data for local draft state, stripping TanStack Query proxies. */
 export function cloneDraft<T>(value: T): T {
-  // oxlint-disable-next-line unicorn/prefer-structured-clone -- plain object required before clone
-  const plain = JSON.parse(JSON.stringify(value)) as T;
-  return structuredClone(plain);
+  return structuredClone(toPlainValue(value));
 }

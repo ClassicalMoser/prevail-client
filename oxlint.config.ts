@@ -55,6 +55,7 @@ const config: OxlintConfig = {
     'no-negated-condition': 'off',
     'no-optional-chaining': 'off',
     'no-rest-spread-properties': 'off',
+    'no-map-spread': 'off',
     'require-await': 'off',
     'import/no-unassigned-import': 'off',
     'jsdoc/require-param': 'off',

@@ -1,5 +1,5 @@
 import type { Card } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import {
   Card as UiCard,
   CardContent,
@@ -10,7 +10,7 @@ import {
 import { UnitSupportEditor } from './unit-support-editor';
 
 export const CommandCardUnitSupportSection = (props: {
-  card: Card;
+  card: Accessor<Card>;
   onChange: (card: Card) => void;
 }): JSX.Element => (
   <UiCard>
@@ -20,9 +20,9 @@ export const CommandCardUnitSupportSection = (props: {
     </CardHeader>
     <CardContent>
       <UnitSupportEditor
-        unitSupport={props.card.unitSupport}
+        unitSupport={() => props.card().unitSupport}
         onChange={(unitSupport) => {
-          props.onChange({ ...props.card, unitSupport });
+          props.onChange({ ...props.card(), unitSupport });
         }}
       />
     </CardContent>

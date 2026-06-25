@@ -7,6 +7,8 @@ export type { Core } from './bootstrap';
 export { createCore } from './bootstrap';
 export { CoreProvider, useCore } from './coreContext';
 export {
+  allCommandCardsQueryOptions,
+  allUnitCardsQueryOptions,
   commandCardKeys,
   commandCardByIdQueryOptions,
   commandCardsByIdsQueryOptions,
@@ -15,6 +17,8 @@ export {
   unitCardByIdQueryOptions,
   unitCardKeys,
   unitCardsByIdsQueryOptions,
+  useAllCommandCardsQuery,
+  useAllUnitCardsQuery,
   useCertifyLatestCommandCardVersionsMutation,
   useCertifyLatestUnitCardVersionsMutation,
   useCommandCardByIdQuery,
@@ -25,6 +29,8 @@ export {
   useCreateUnitCardVersionMutation,
   useCurrentCommandCardsQuery,
   useCurrentUnitCardsQuery,
+  useDeleteEmptyCommandCardsMutation,
+  useDeleteEmptyUnitCardsMutation,
   usePreviewCommandCardMutation,
   usePreviewUnitCardMutation,
   useUnitCardByIdQuery,

@@ -17,11 +17,10 @@ export const useEventStreamStorage = (): EventStreamStorage => {
     roundNumber: number,
   ): Promise<PortResponse<readonly Event[] | undefined>> => {
     const key = composeRoundKey(gameId, roundNumber);
-    if (!streams.has(key)) {
+    const events = streams.get(key);
+    if (events === undefined) {
       return { result: true, data: undefined };
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const events = streams.get(key)!;
     return { result: true, data: frozenCopy(events) };
   };
 

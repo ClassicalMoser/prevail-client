@@ -1,19 +1,19 @@
 import type { UnitSupport } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { FormField } from '../../form-field';
 import { Input } from '../../input';
 import { NativeSelect } from '../../native-select';
 import { UnitSupportVariantFields } from './unit-support-variant-fields';
 
 export const UnitSupportEditor = (props: {
-  unitSupport: UnitSupport;
+  unitSupport: Accessor<UnitSupport>;
   onChange: (unitSupport: UnitSupport) => void;
 }): JSX.Element => (
   <div class="grid gap-4">
     <FormField label="Support type" for="unit-support-type">
       <NativeSelect
         id="unit-support-type"
-        value={props.unitSupport.supportType}
+        value={props.unitSupport().supportType}
         onChange={(event) => {
           const nextType = event.currentTarget
             .value as UnitSupport['supportType'];
@@ -52,10 +52,10 @@ export const UnitSupportEditor = (props: {
         type="number"
         min={1}
         max={4}
-        value={props.unitSupport.count}
+        value={props.unitSupport().count}
         onInput={(event) => {
           props.onChange({
-            ...props.unitSupport,
+            ...props.unitSupport(),
             count: Number(event.currentTarget.value),
           } as UnitSupport);
         }}

@@ -17,5 +17,6 @@ export type {
 export type { BodyRouteCallArgs, RouteCallArgs } from './routeCallArgs';
 export {
   unwrapCreatedRouteResponsePromise,
+  unwrapDeleteRouteResponsePromise,
   unwrapRouteResponsePromise,
 } from './unwrapRouteResponse';

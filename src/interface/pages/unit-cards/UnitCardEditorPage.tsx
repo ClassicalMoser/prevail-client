@@ -23,58 +23,49 @@ export function UnitCardEditorPage(): JSX.Element {
       </div>
 
       <Show
-        when={!editor.query.isLoading}
+        when={!editor.isLoading()}
         fallback={<p class="text-muted-foreground">Loading unit card…</p>}
       >
         <Show
-          when={editor.query.isError}
+          when={editor.draft()}
           fallback={
-            <Show
-              when={editor.draft()}
-              fallback={
-                <Card>
-                  <CardContent class="py-6">
-                    <p class="text-muted-foreground text-sm">
-                      Unit card not found.
-                    </p>
-                  </CardContent>
-                </Card>
-              }
-            >
-              {(unit) => (
-                <>
-                  <EditorToolbar
-                    title={unit().name || 'Untitled Unit Card'}
-                    subtitle={`Version ${unit().version}`}
-                    isSaving={editor.publishMutation.isPending}
-                    isPreviewing={editor.previewMutation.isPending}
-                    onSave={editor.save}
-                    onPreview={editor.preview}
-                  />
-
-                  <CardPreviewPanel
-                    svg={editor.previewSvg()}
-                    errorMessage={editor.previewError()}
-                  />
-
-                  <UnitCardForm
-                    unit={unit()}
-                    onChange={(nextUnit) => {
-                      editor.updateDraft(() => nextUnit);
-                    }}
-                  />
-                </>
-              )}
-            </Show>
+            <Card>
+              <CardContent class="py-6">
+                <p class="text-destructive text-sm">
+                  {editor.loadErrorMessage() ?? 'Unit card not found.'}
+                </p>
+              </CardContent>
+            </Card>
           }
         >
-          <Card>
-            <CardContent class="py-6">
-              <p class="text-destructive text-sm">
-                {editor.query.error?.message ?? 'Failed to load unit card.'}
-              </p>
-            </CardContent>
-          </Card>
+          {(unit) => (
+            <>
+              <EditorToolbar
+                title={() => unit().name || 'Untitled Unit Card'}
+                subtitle={() =>
+                  editor.isNewVersion()
+                    ? 'New version (unsaved)'
+                    : `Version ${unit().version}`
+                }
+                isSaving={() => editor.publish.isPending}
+                isPreviewing={() => editor.previewMutation.isPending}
+                onSave={editor.save}
+                onPreview={editor.preview}
+              />
+
+              <CardPreviewPanel
+                svg={editor.previewSvg}
+                errorMessage={editor.previewError}
+              />
+
+              <UnitCardForm
+                unit={unit}
+                onChange={(nextUnit) => {
+                  editor.updateDraft(() => nextUnit);
+                }}
+              />
+            </>
+          )}
         </Show>
       </Show>
     </main>

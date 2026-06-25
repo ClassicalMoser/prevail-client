@@ -1,29 +1,17 @@
 import {
+  useAllUnitCardsQuery,
   useCertifyLatestUnitCardVersionsMutation,
   useCreateEmptyUnitCardMutation,
-  useCurrentUnitCardsQuery,
+  useDeleteEmptyUnitCardsMutation,
 } from '@application';
-import { Badge } from '@interface/components';
 import { CardCatalogPage } from '@interface/components/authoring/card-catalog-page';
-import { useNavigate } from '@tanstack/solid-router';
 import type { JSX } from 'solid-js';
 
 export function UnitCardsPage(): JSX.Element {
-  const cardsQuery = useCurrentUnitCardsQuery();
-  const createDraftMutation = useCreateEmptyUnitCardMutation();
-  const certifyMutation = useCertifyLatestUnitCardVersionsMutation();
-  const navigate = useNavigate();
-
-  const handleCreateDraft = (): void => {
-    createDraftMutation.mutate(undefined, {
-      onSuccess: async (cardId) => {
-        await navigate({
-          to: '/unit-cards/$cardId',
-          params: { cardId },
-        });
-      },
-    });
-  };
+  const catalog = useAllUnitCardsQuery();
+  const createDraft = useCreateEmptyUnitCardMutation();
+  const certify = useCertifyLatestUnitCardVersionsMutation();
+  const cleanup = useDeleteEmptyUnitCardsMutation();
 
   return (
     <CardCatalogPage
@@ -34,16 +22,25 @@ export function UnitCardsPage(): JSX.Element {
       emptyDescription="Create a draft to start authoring your first unit card."
       loadErrorMessage="Failed to load unit cards."
       editRoute="/unit-cards/$cardId"
-      query={cardsQuery}
-      isCertifying={certifyMutation.isPending}
-      onCertify={() => {
-        certifyMutation.mutate();
+      isLoading={() => catalog.isLoading}
+      isError={() => catalog.isError}
+      errorMessage={() => catalog.error?.message}
+      cards={() => catalog.data}
+      hasEmptyCards={() =>
+        (catalog.data ?? []).some((item) => item.version === null)
+      }
+      isCreatingDraft={() => createDraft.isPending}
+      createDraft={() => {
+        createDraft.mutate();
       }}
-      isCreatingDraft={createDraftMutation.isPending}
-      onCreateDraft={handleCreateDraft}
-      renderMetadataBadges={(unit) => (
-        <Badge variant="outline">Cost {unit.cost}</Badge>
-      )}
+      isCertifying={() => certify.isPending}
+      certify={() => {
+        certify.mutate();
+      }}
+      isCleaningUp={() => cleanup.isPending}
+      cleanupEmpty={() => {
+        cleanup.mutate();
+      }}
     />
   );
 }

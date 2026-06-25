@@ -1,5 +1,5 @@
 import type { Card } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import {
   Card as UiCard,
   CardContent,
@@ -15,18 +15,18 @@ import {
 } from './round-effect-defaults';
 
 export const CommandCardRoundEffectSection = (props: {
-  card: Card;
+  card: Accessor<Card>;
   onChange: (card: Card) => void;
 }): JSX.Element => {
   // Cards may omit roundEffect until the author edits this section.
   const withRoundEffect = (): NonNullable<Card['roundEffect']> =>
-    props.card.roundEffect ?? emptyRoundEffect();
+    props.card().roundEffect ?? emptyRoundEffect();
 
   const updateRoundEffect = (
     patch: Partial<NonNullable<Card['roundEffect']>>,
   ): void => {
     props.onChange({
-      ...props.card,
+      ...props.card(),
       roundEffect: { ...withRoundEffect(), ...patch },
     });
   };
@@ -42,8 +42,8 @@ export const CommandCardRoundEffectSection = (props: {
           <p class="mb-3 text-sm font-medium">Round effect restrictions</p>
           <RestrictionsEditor
             idPrefix="round-effect"
-            restrictions={
-              props.card.roundEffect?.restrictions ??
+            restrictions={() =>
+              props.card().roundEffect?.restrictions ??
               emptyRoundEffectRestrictions()
             }
             onChange={(restrictions) => {
@@ -55,7 +55,7 @@ export const CommandCardRoundEffectSection = (props: {
           <p class="mb-3 text-sm font-medium">Round effect modifiers</p>
           <ModifierListEditor
             idPrefix="round-effect"
-            modifiers={props.card.roundEffect?.modifiers ?? []}
+            modifiers={() => props.card().roundEffect?.modifiers ?? []}
             onChange={(modifiers) => {
               updateRoundEffect({ modifiers });
             }}

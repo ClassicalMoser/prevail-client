@@ -1,6 +1,7 @@
 import type { CommandCards } from '@ports';
 import {
   unwrapCreatedRouteResponsePromise,
+  unwrapDeleteRouteResponsePromise,
   unwrapRouteResponsePromise,
 } from '../http';
 import type { CommandCardResources } from '../resources';
@@ -14,6 +15,7 @@ export function createCommandCardsAdapter(
   resources: CommandCardResources,
 ): CommandCards {
   return {
+    getAll: () => unwrapRouteResponsePromise(resources.getAllCommandCards()),
     getCurrent: () =>
       unwrapRouteResponsePromise(resources.getCurrentCommandCards()),
     getById: (id) =>
@@ -29,9 +31,9 @@ export function createCommandCardsAdapter(
         resources.createCommandCardVersion(card),
       ),
     certifyLatest: () =>
-      unwrapCreatedRouteResponsePromise(
-        resources.certifyLatestCommandCardVersions(),
-      ),
+      unwrapRouteResponsePromise(resources.updateCommandCardCertifications()),
+    deleteEmpty: () =>
+      unwrapDeleteRouteResponsePromise(resources.deleteEmptyCommandCards()),
     preview: (card) =>
       unwrapRouteResponsePromise(resources.previewCommandCard(card)),
   };

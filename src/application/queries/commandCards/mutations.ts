@@ -15,10 +15,8 @@ export function useCreateEmptyCommandCardMutation(): UseMutationResult<
 
   return useMutation(() => ({
     mutationFn: () => commandCards.createDraft(),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: commandCardKeys.lists(),
-      });
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: commandCardKeys.all });
     },
   }));
 }
@@ -33,13 +31,11 @@ export function useCreateCommandCardVersionMutation(): UseMutationResult<
 
   return useMutation(() => ({
     mutationFn: (card: Card) => commandCards.publishVersion(card),
-    onSuccess: async (_data, card) => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: commandCardKeys.lists() }),
-        queryClient.invalidateQueries({
-          queryKey: commandCardKeys.detail(card.id),
-        }),
-      ]);
+    onSettled: (_data, _error, card) => {
+      queryClient.invalidateQueries({ queryKey: commandCardKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: commandCardKeys.detail(card.id),
+      });
     },
   }));
 }
@@ -54,10 +50,24 @@ export function useCertifyLatestCommandCardVersionsMutation(): UseMutationResult
 
   return useMutation(() => ({
     mutationFn: () => commandCards.certifyLatest(),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: commandCardKeys.lists(),
-      });
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: commandCardKeys.all });
+    },
+  }));
+}
+
+export function useDeleteEmptyCommandCardsMutation(): UseMutationResult<
+  void,
+  Error,
+  void
+> {
+  const commandCards = useCommandCards();
+  const queryClient = useQueryClient();
+
+  return useMutation(() => ({
+    mutationFn: () => commandCards.deleteEmpty(),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: commandCardKeys.all });
     },
   }));
 }

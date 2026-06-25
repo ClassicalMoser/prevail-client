@@ -2,6 +2,7 @@ import { AuthProvider, CoreProvider, ServerPortsProvider } from '@application';
 import { createAuth0Port, createServerPorts } from '@infrastructure';
 import { router } from '@interface/routes';
 import { QueryClientProvider } from '@tanstack/solid-query';
+import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
 import { RouterProvider } from '@tanstack/solid-router';
 import type { JSX } from 'solid-js';
 import { createMemo, createResource, Show } from 'solid-js';
@@ -40,6 +41,7 @@ export function AppShell(): JSX.Element {
               <CoreProvider>
                 <RouterProvider router={router} />
               </CoreProvider>
+              <SolidQueryDevtools initialIsOpen={false} />
             </ServerPortsProvider>
           </QueryClientProvider>
         </AuthProvider>

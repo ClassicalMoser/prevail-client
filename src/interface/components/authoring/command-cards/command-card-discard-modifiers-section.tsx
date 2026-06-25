@@ -1,5 +1,5 @@
 import type { Card } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import {
   Card as UiCard,
   CardContent,
@@ -10,7 +10,7 @@ import {
 import { ModifierListEditor } from '../modifier-list-editor';
 
 export const CommandCardDiscardModifiersSection = (props: {
-  card: Card;
+  card: Accessor<Card>;
   onChange: (card: Card) => void;
 }): JSX.Element => (
   <UiCard>
@@ -23,9 +23,9 @@ export const CommandCardDiscardModifiersSection = (props: {
     <CardContent>
       <ModifierListEditor
         idPrefix="command-card"
-        modifiers={props.card.modifiers}
+        modifiers={() => props.card().modifiers}
         onChange={(modifiers) => {
-          props.onChange({ ...props.card, modifiers });
+          props.onChange({ ...props.card(), modifiers });
         }}
       />
     </CardContent>

@@ -15,8 +15,8 @@ export function useCreateEmptyUnitCardMutation(): UseMutationResult<
 
   return useMutation(() => ({
     mutationFn: () => unitCards.createDraft(),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: unitCardKeys.lists() });
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: unitCardKeys.all });
     },
   }));
 }
@@ -31,13 +31,11 @@ export function useCreateUnitCardVersionMutation(): UseMutationResult<
 
   return useMutation(() => ({
     mutationFn: (card: UnitType) => unitCards.publishVersion(card),
-    onSuccess: async (_data, card) => {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: unitCardKeys.lists() }),
-        queryClient.invalidateQueries({
-          queryKey: unitCardKeys.detail(card.id),
-        }),
-      ]);
+    onSettled: (_data, _error, card) => {
+      queryClient.invalidateQueries({ queryKey: unitCardKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: unitCardKeys.detail(card.id),
+      });
     },
   }));
 }
@@ -52,8 +50,24 @@ export function useCertifyLatestUnitCardVersionsMutation(): UseMutationResult<
 
   return useMutation(() => ({
     mutationFn: () => unitCards.certifyLatest(),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: unitCardKeys.lists() });
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: unitCardKeys.all });
+    },
+  }));
+}
+
+export function useDeleteEmptyUnitCardsMutation(): UseMutationResult<
+  void,
+  Error,
+  void
+> {
+  const unitCards = useUnitCards();
+  const queryClient = useQueryClient();
+
+  return useMutation(() => ({
+    mutationFn: () => unitCards.deleteEmpty(),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: unitCardKeys.all });
     },
   }));
 }

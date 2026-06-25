@@ -3,7 +3,7 @@ import type {
   StatModifier,
 } from '@classicalmoser/prevail-rules/domain';
 import { statModifiers } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
 import { Button } from '../button';
 import { FormField } from '../form-field';
@@ -12,34 +12,36 @@ import { NativeSelect } from '../native-select';
 
 export const ModifierListEditor = (props: {
   idPrefix: string;
-  modifiers: Modifier[];
+  modifiers: Accessor<Modifier[]>;
   onChange: (modifiers: Modifier[]) => void;
 }): JSX.Element => {
   const updateModifier = (index: number, patch: Partial<Modifier>): void => {
     props.onChange(
-      props.modifiers.map((modifier, modifierIndex) =>
-        modifierIndex === index ? { ...modifier, ...patch } : modifier,
-      ),
+      props
+        .modifiers()
+        .map((modifier, modifierIndex) =>
+          modifierIndex === index ? { ...modifier, ...patch } : modifier,
+        ),
     );
   };
 
   const addModifier = (): void => {
-    props.onChange([...props.modifiers, { type: 'attack', value: 1 }]);
+    props.onChange([...props.modifiers(), { type: 'attack', value: 1 }]);
   };
 
   const removeModifier = (index: number): void => {
     props.onChange(
-      props.modifiers.filter((_, modifierIndex) => modifierIndex !== index),
+      props.modifiers().filter((_, modifierIndex) => modifierIndex !== index),
     );
   };
 
   return (
     <div class="flex flex-col gap-3">
       <Show
-        when={props.modifiers.length > 0}
+        when={props.modifiers().length > 0}
         fallback={<p class="text-muted-foreground text-sm">No modifiers.</p>}
       >
-        <For each={props.modifiers}>
+        <For each={props.modifiers()}>
           {(modifier, index) => (
             <div class="grid gap-3 rounded-lg border p-3 sm:grid-cols-[1fr_1fr_auto]">
               <FormField

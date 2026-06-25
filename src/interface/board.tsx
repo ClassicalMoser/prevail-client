@@ -12,6 +12,18 @@ export interface BoardCellDemoProps {
   randomUnitImageSrc: () => string;
 }
 
+function parseCellCoordinate(cellCoordinate: string): {
+  row: string;
+  column: string;
+} {
+  const [row, column] = cellCoordinate.split('-');
+  if (row === undefined || column === undefined) {
+    throw new Error(`Invalid cell coordinate: ${cellCoordinate}`);
+  }
+
+  return { row, column };
+}
+
 export const BoardComponent = (props: {
   board: Accessor<Board | undefined>;
   cellDemo?: BoardCellDemoProps;
@@ -25,11 +37,9 @@ export const BoardComponent = (props: {
     const cellCoordinates = Object.keys(boardMap);
 
     const getCoordinateRow = (cellCoordinate: string) =>
-      // oxlint-disable-next-line no-non-null-assertion
-      cellCoordinate.split('-')[0]!;
+      parseCellCoordinate(cellCoordinate).row;
     const getCoordinateColumn = (cellCoordinate: string) =>
-      // oxlint-disable-next-line no-non-null-assertion
-      cellCoordinate.split('-')[1]!;
+      parseCellCoordinate(cellCoordinate).column;
 
     const sorted = cellCoordinates.toSorted((a, b) => {
       const rowA = getCoordinateRow(a);
@@ -43,8 +53,12 @@ export const BoardComponent = (props: {
     const rows = sorted.reduce<string[][]>((acc, coord) => {
       const row = getCoordinateRow(coord);
       const last = acc.at(-1);
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      if (!last || getCoordinateRow(last[0]!) !== row) {
+      const firstInLast = last?.[0];
+      if (
+        last === undefined ||
+        firstInLast === undefined ||
+        getCoordinateRow(firstInLast) !== row
+      ) {
         acc.push([coord]);
       } else {
         last.push(coord);
@@ -79,17 +93,15 @@ export const BoardComponent = (props: {
                     {(cell) => (
                       <div class="board-cell">
                         <img src={singleTile} alt={cell} />
-                        <Show
-                          when={
-                            props.cellDemo && props.cellDemo.shouldShowUnit()
-                          }
-                        >
-                          <UnitComponent
-                            // oxlint-disable-next-line no-non-null-assertion
-                            facing={props.cellDemo!.randomFacing()}
-                            // oxlint-disable-next-line no-non-null-assertion
-                            imageSrc={props.cellDemo!.randomUnitImageSrc()}
-                          />
+                        <Show when={props.cellDemo}>
+                          {(cellDemo) => (
+                            <Show when={cellDemo().shouldShowUnit()}>
+                              <UnitComponent
+                                facing={cellDemo().randomFacing()}
+                                imageSrc={cellDemo().randomUnitImageSrc()}
+                              />
+                            </Show>
+                          )}
                         </Show>
                       </div>
                     )}

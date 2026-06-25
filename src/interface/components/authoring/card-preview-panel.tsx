@@ -5,26 +5,28 @@ import {
   CardTitle,
 } from '@interface/components';
 import { svgToDataUrl } from '@interface/lib/svgToDataUrl';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
 
 export const CardPreviewPanel = (props: {
-  svg: string | undefined;
-  errorMessage?: string;
+  svg: Accessor<string | undefined>;
+  errorMessage?: Accessor<string | undefined>;
 }): JSX.Element => (
-  <Show when={props.svg !== undefined || props.errorMessage !== undefined}>
+  <Show
+    when={props.svg() !== undefined || props.errorMessage?.() !== undefined}
+  >
     <Card>
       <CardHeader>
         <CardTitle>Preview</CardTitle>
       </CardHeader>
       <CardContent class="flex flex-col gap-4">
         <Show
-          when={props.errorMessage === undefined}
+          when={props.errorMessage?.() === undefined}
           fallback={
-            <p class="text-destructive text-sm">{props.errorMessage}</p>
+            <p class="text-destructive text-sm">{props.errorMessage?.()}</p>
           }
         >
-          <Show when={props.svg}>
+          <Show when={props.svg()}>
             {(svg) => (
               <img
                 src={svgToDataUrl(svg())}

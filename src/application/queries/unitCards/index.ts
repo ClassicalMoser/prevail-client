@@ -1,4 +1,5 @@
 export {
+  allUnitCardsQueryOptions,
   currentUnitCardsQueryOptions,
   unitCardByIdQueryOptions,
   unitCardsByIdsQueryOptions,
@@ -7,9 +8,11 @@ export {
   useCertifyLatestUnitCardVersionsMutation,
   useCreateEmptyUnitCardMutation,
   useCreateUnitCardVersionMutation,
+  useDeleteEmptyUnitCardsMutation,
   usePreviewUnitCardMutation,
 } from './mutations';
 export {
+  useAllUnitCardsQuery,
   useCurrentUnitCardsQuery,
   useUnitCardByIdQuery,
   useUnitCardsByIdsQuery,

@@ -1,5 +1,5 @@
 import type { UnitType } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import {
   Card,
   CardContent,
@@ -11,11 +11,11 @@ import { FormField } from '../../form-field';
 import { Input } from '../../input';
 
 export const UnitCardIdentitySection = (props: {
-  unit: UnitType;
+  unit: Accessor<UnitType>;
   onChange: (unit: UnitType) => void;
 }): JSX.Element => {
   const update = (patch: Partial<UnitType>): void => {
-    props.onChange({ ...props.unit, ...patch });
+    props.onChange({ ...props.unit(), ...patch });
   };
 
   return (
@@ -28,7 +28,7 @@ export const UnitCardIdentitySection = (props: {
         <FormField label="Name" for="unit-name">
           <Input
             id="unit-name"
-            value={props.unit.name}
+            value={props.unit().name}
             onInput={(event) => {
               update({ name: event.currentTarget.value });
             }}
@@ -37,7 +37,7 @@ export const UnitCardIdentitySection = (props: {
         <FormField label="Version" for="unit-version">
           <Input
             id="unit-version"
-            value={props.unit.version}
+            value={props.unit().version}
             onInput={(event) => {
               update({ version: event.currentTarget.value });
             }}

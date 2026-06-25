@@ -1,6 +1,7 @@
 import type { UnitCards } from '@ports';
 import {
   unwrapCreatedRouteResponsePromise,
+  unwrapDeleteRouteResponsePromise,
   unwrapRouteResponsePromise,
 } from '../http';
 import type { UnitCardResources } from '../resources';
@@ -14,6 +15,7 @@ export function createUnitCardsAdapter(
   resources: UnitCardResources,
 ): UnitCards {
   return {
+    getAll: () => unwrapRouteResponsePromise(resources.getAllUnitCards()),
     getCurrent: () =>
       unwrapRouteResponsePromise(resources.getCurrentUnitCards()),
     getById: (id) =>
@@ -27,9 +29,9 @@ export function createUnitCardsAdapter(
     publishVersion: (card) =>
       unwrapCreatedRouteResponsePromise(resources.createUnitCardVersion(card)),
     certifyLatest: () =>
-      unwrapCreatedRouteResponsePromise(
-        resources.certifyLatestUnitCardVersions(),
-      ),
+      unwrapRouteResponsePromise(resources.updateUnitCardCertifications()),
+    deleteEmpty: () =>
+      unwrapDeleteRouteResponsePromise(resources.deleteEmptyUnitCards()),
     preview: (card) =>
       unwrapRouteResponsePromise(resources.previewUnitCard(card)),
   };

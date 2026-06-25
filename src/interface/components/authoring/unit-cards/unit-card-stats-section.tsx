@@ -1,6 +1,6 @@
 import type { UnitStats, UnitType } from '@classicalmoser/prevail-rules/domain';
 import { unitStatNames } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { For } from 'solid-js';
 import {
   Card,
@@ -13,14 +13,14 @@ import { FormField } from '../../form-field';
 import { Input } from '../../input';
 
 export const UnitCardStatsSection = (props: {
-  unit: UnitType;
+  unit: Accessor<UnitType>;
   onChange: (unit: UnitType) => void;
 }): JSX.Element => {
   const updateStat = (statName: keyof UnitStats, value: number): void => {
     props.onChange({
-      ...props.unit,
+      ...props.unit(),
       stats: {
-        ...props.unit.stats,
+        ...props.unit().stats,
         [statName]: value,
       },
     });
@@ -39,7 +39,7 @@ export const UnitCardStatsSection = (props: {
               <Input
                 id={`unit-stat-${statName}`}
                 type="number"
-                value={props.unit.stats[statName]}
+                value={props.unit().stats[statName]}
                 onInput={(event) => {
                   updateStat(statName, Number(event.currentTarget.value));
                 }}

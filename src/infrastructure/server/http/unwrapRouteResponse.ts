@@ -37,3 +37,14 @@ export async function unwrapCreatedRouteResponsePromise<T>(
 ): Promise<T> {
   return unwrapEnvelope(await responsePromise);
 }
+
+/** Unwrap a DELETE promise (204 success returns undefined). */
+export async function unwrapDeleteRouteResponsePromise(
+  responsePromise: Promise<ErrorResponse | undefined>,
+): Promise<void> {
+  const response = await responsePromise;
+
+  if (response !== undefined) {
+    throw new RouteResponseError(response.message, response.statusCode);
+  }
+}
