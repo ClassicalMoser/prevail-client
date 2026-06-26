@@ -22,7 +22,7 @@ export const UnitCardIdentitySection = (props: {
     <Card>
       <CardHeader>
         <CardTitle>Identity</CardTitle>
-        <CardDescription>Name and version metadata.</CardDescription>
+        <CardDescription>Name, version, and card artwork.</CardDescription>
       </CardHeader>
       <CardContent class="grid gap-4 sm:grid-cols-2">
         <FormField label="Name" for="unit-name">
@@ -43,6 +43,23 @@ export const UnitCardIdentitySection = (props: {
             }}
           />
         </FormField>
+        <div class="sm:col-span-2">
+          <FormField
+            label="Artwork URL"
+            for="unit-artwork-url"
+            description="Optional. URL to the unit card artwork image."
+          >
+            <Input
+              id="unit-artwork-url"
+              type="url"
+              value={props.unit().imageUrl ?? ''}
+              onInput={(event) => {
+                const value = event.currentTarget.value.trim();
+                update({ imageUrl: value === '' ? null : value });
+              }}
+            />
+          </FormField>
+        </div>
       </CardContent>
     </Card>
   );

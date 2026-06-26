@@ -62,15 +62,15 @@ Hard rules (see also `.cursor/rules/solid-reactivity.mdc`):
 
 ## Provider stack
 
-`AppShell` builds dependencies once auth is ready, then nests providers:
+The async auth port is resolved once at startup in `composition/dependencies.ts` (`initializeAppDependencies`), invoked from the entry (`src/index.tsx`) before the app renders. The resulting port singletons are session-stable, so `AppShell` mounts the contexts with **constant** values:
 
-`AuthProvider` → `QueryClientProvider` → `ServerPortsProvider` → `CoreProvider` → router
+`AuthContext.Provider` → `QueryClientProvider` → `ServerPortsContext.Provider` → `CoreProvider` → router
 
-Server and auth ports must be consumed via their context hooks under this tree. Query and mutation hooks resolve ports inside their reactive factory and pass the port instance into `queryFn` / `mutationFn`.
+Contexts are defined (with their consumer hooks) in `src/application`; `AppShell` mounts the providers with the singletons. Because the values are constants (not reactive props), the provider boundary carries no implied reactivity—auth state reactivity lives inside the port via `subscribe()`. Server and auth ports must be consumed via their context hooks under this tree. Query hooks resolve ports inside their reactive factory; mutation hooks resolve ports/client once at hook setup and close over them in `mutationFn` / `onSuccess`.
 
 ## Current status
 
-**Aligned:** The core stack is created once in `CoreProvider`; `useCore()` reads that instance. Board-level state derivation (`subscribedBoard`) lives in `createCore`. Server ports are created in `AppShell` and provided via `ServerPortsProvider`. Authoring query/mutation hooks resolve ports synchronously under that provider.
+**Aligned:** Dependencies are built once at startup (outside the reactive system) and provided as constant singletons—mirroring `queryClient`. The core stack is created once in `CoreProvider`; `useCore()` reads that instance. Board-level state derivation (`subscribedBoard`) lives in `createCore`. Authoring query/mutation hooks resolve ports synchronously under the provider tree.
 
 **Still evolving:** `BoardComponent` still derives grid layout from `board` via local `createMemo` (acceptable as presentation-only, but could move if you want the interface even thinner). Further features should extend the `Core` API or dedicated application modules rather than re-calling engine services from the UI.
 

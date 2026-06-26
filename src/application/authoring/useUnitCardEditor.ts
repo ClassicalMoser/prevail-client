@@ -10,6 +10,11 @@ import {
   useUnitCardByIdQuery,
 } from '@application/queries';
 import { cloneDraft } from './cloneDraft';
+import {
+  clearCardEditorSession,
+  getCardEditorSession,
+  setCardEditorSession,
+} from './cardEditorSession';
 import { defaultUnitCardDraft } from './cardDraftDefaults';
 import { findCardListItem } from './findCardListItem';
 
@@ -66,6 +71,10 @@ function useUnitCardEditorState(
       return false;
     }
 
+    if (getCardEditorSession(resolvedId) !== undefined) {
+      return false;
+    }
+
     if (catalog.isLoading) {
       return true;
     }
@@ -108,6 +117,13 @@ function useUnitCardEditorState(
       return;
     }
 
+    const session = getCardEditorSession<UnitType>(resolvedId);
+    if (session !== undefined) {
+      setIsNewVersion(session.isNewVersion);
+      setDraft(cloneDraft(session.draft));
+      return;
+    }
+
     if (catalog.isLoading) {
       setDraft(undefined);
       return;
@@ -145,14 +161,25 @@ function useUnitCardEditorState(
   const updateDraft = (updater: (unit: UnitType) => UnitType): void => {
     const current = draft();
     if (current !== undefined) {
-      setDraft(updater(current));
+      const next = updater(current);
+      setDraft(next);
+      setCardEditorSession(current.id, {
+        draft: cloneDraft(next),
+        isNewVersion: isNewVersion(),
+      });
     }
   };
 
   const save = (): void => {
     const current = draft();
     if (current !== undefined) {
-      publish.mutate(current);
+      publish.mutate(current, {
+        onSuccess: (saved) => {
+          clearCardEditorSession(saved.id);
+          setDraft(cloneDraft(saved));
+          setIsNewVersion(false);
+        },
+      });
     }
   };
 

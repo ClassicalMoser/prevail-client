@@ -5,9 +5,8 @@ import type {
   UnitStats,
   UnitType,
 } from '@classicalmoser/prevail-rules/domain';
-import { unitStatNames } from '@classicalmoser/prevail-rules/domain';
 
-const INITIAL_VERSION = '1.0.0';
+const INITIAL_VERSION = '0.0.1';
 
 const emptyRestrictions = (): Restrictions => ({
   inspirationRangeRestriction: -1,
@@ -38,18 +37,24 @@ export const defaultCommandCardDraft = (id: string): Card => ({
   unitSupport: { supportType: 'generic', count: 1 },
 });
 
-const defaultUnitStats = (): UnitStats =>
-  Object.fromEntries(
-    unitStatNames.map((statName) => [statName, 1]),
-  ) as UnitStats;
+const defaultUnitStats: UnitStats = {
+  attack: 3,
+  range: 0,
+  speed: 2,
+  flexibility: 2,
+  retreat: 3,
+  reverse: 4,
+  rout: 5,
+};
 
 /** Default unit card body for authoring the first version of an empty card. */
 export const defaultUnitCardDraft = (id: string): UnitType => ({
   id,
   version: INITIAL_VERSION,
   name: '',
+  imageUrl: null,
   traits: [],
-  stats: defaultUnitStats(),
+  stats: defaultUnitStats,
   cost: 10,
   limit: 4,
   routPenalty: 0,

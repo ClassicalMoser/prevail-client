@@ -1,5 +1,4 @@
 import type { AuthPort, AuthState } from '@ports';
-import type { JSX, ParentProps } from 'solid-js';
 import {
   createContext,
   createSignal,
@@ -8,22 +7,17 @@ import {
   useContext,
 } from 'solid-js';
 
-const AuthContext = createContext<AuthPort>();
-
-interface AuthProviderProps extends ParentProps {
-  value: AuthPort;
-}
-
-export const AuthProvider = (props: AuthProviderProps): JSX.Element => (
-  <AuthContext.Provider value={props.value}>
-    {props.children}
-  </AuthContext.Provider>
-);
+/**
+ * The auth port is a session-stable singleton built once at the composition root.
+ * Reactivity lives inside the port (auth state via subscribe), not in the context
+ * value, so the provider is mounted with a constant in composition.
+ */
+export const AuthContext = createContext<AuthPort>();
 
 export const useAuthPort = (): AuthPort => {
   const value = useContext(AuthContext);
   if (value === undefined) {
-    throw new Error('useAuthPort must be used within an AuthProvider');
+    throw new Error('useAuthPort must be used within an AuthContext.Provider');
   }
   return value;
 };

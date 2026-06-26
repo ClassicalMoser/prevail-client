@@ -1,25 +1,18 @@
 import type { CommandCards, ServerPorts, UnitCards } from '@ports';
-import type { JSX, ParentProps } from 'solid-js';
 import { createContext, useContext } from 'solid-js';
 
-const ServerPortsContext = createContext<ServerPorts>();
-
-interface ServerPortsProviderProps extends ParentProps {
-  value: ServerPorts;
-}
-
-export const ServerPortsProvider = (
-  props: ServerPortsProviderProps,
-): JSX.Element => (
-  <ServerPortsContext.Provider value={props.value}>
-    {props.children}
-  </ServerPortsContext.Provider>
-);
+/**
+ * Server ports are a session-stable singleton built once at the composition root,
+ * so the provider is mounted with a constant value in composition (no reactive prop).
+ */
+export const ServerPortsContext = createContext<ServerPorts>();
 
 export const useServerPorts = (): ServerPorts => {
   const value = useContext(ServerPortsContext);
   if (value === undefined) {
-    throw new Error('useServerPorts must be used within a ServerPortsProvider');
+    throw new Error(
+      'useServerPorts must be used within a ServerPortsContext.Provider',
+    );
   }
   return value;
 };

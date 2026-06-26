@@ -10,6 +10,11 @@ import {
   usePreviewCommandCardMutation,
 } from '@application/queries';
 import { cloneDraft } from './cloneDraft';
+import {
+  clearCardEditorSession,
+  getCardEditorSession,
+  setCardEditorSession,
+} from './cardEditorSession';
 import { defaultCommandCardDraft } from './cardDraftDefaults';
 import { findCardListItem } from './findCardListItem';
 import { validateCommandCardDraft } from './validateCommandCardDraft';
@@ -71,6 +76,10 @@ function useCommandCardEditorState(
       return false;
     }
 
+    if (getCardEditorSession(resolvedId) !== undefined) {
+      return false;
+    }
+
     if (catalog.isLoading) {
       return true;
     }
@@ -113,6 +122,13 @@ function useCommandCardEditorState(
       return;
     }
 
+    const session = getCardEditorSession<Card>(resolvedId);
+    if (session !== undefined) {
+      setIsNewVersion(session.isNewVersion);
+      setDraft(cloneDraft(session.draft));
+      return;
+    }
+
     if (catalog.isLoading) {
       setDraft(undefined);
       return;
@@ -152,8 +168,13 @@ function useCommandCardEditorState(
   const updateDraft = (updater: (card: Card) => Card): void => {
     const current = draft();
     if (current !== undefined) {
-      setDraft(updater(current));
+      const next = updater(current);
+      setDraft(next);
       setValidationErrors([]);
+      setCardEditorSession(current.id, {
+        draft: cloneDraft(next),
+        isNewVersion: isNewVersion(),
+      });
     }
   };
 
@@ -170,7 +191,13 @@ function useCommandCardEditorState(
     }
 
     setValidationErrors([]);
-    publish.mutate(validation.data);
+    publish.mutate(validation.data, {
+      onSuccess: (saved) => {
+        clearCardEditorSession(saved.id);
+        setDraft(cloneDraft(saved));
+        setIsNewVersion(false);
+      },
+    });
   };
 
   const preview = (): void => {
