@@ -8,7 +8,7 @@ import type { JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
 
 export function CommandCardEditorPage(): JSX.Element {
-  const params = useParams({ from: '/command-cards/$cardId' });
+  const params = useParams({ from: '/admin/command-cards/$cardId' });
   const editor = useCommandCardEditor(() => params().cardId);
 
   return (

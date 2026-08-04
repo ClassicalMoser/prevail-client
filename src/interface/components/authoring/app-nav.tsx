@@ -20,12 +20,17 @@ export const AppNav = (): JSX.Element => {
           <Link to="/" class={navLinkClass}>
             Play
           </Link>
-          <Link to="/command-cards" class={navLinkClass}>
-            Command Cards
+          <Link to="/cards" class={navLinkClass}>
+            Cards
           </Link>
-          <Link to="/unit-cards" class={navLinkClass}>
-            Unit Cards
-          </Link>
+          <Show when={!auth.isLoading() && auth.isAuthenticated()}>
+            <Link to="/command-cards" class={navLinkClass}>
+              Command Cards
+            </Link>
+            <Link to="/unit-cards" class={navLinkClass}>
+              Unit Cards
+            </Link>
+          </Show>
         </div>
         <Show
           when={!auth.isLoading()}

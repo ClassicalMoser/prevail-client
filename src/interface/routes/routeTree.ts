@@ -6,6 +6,8 @@ import {
   UnitCardEditorPage,
   UnitCardsPage,
 } from '@interface/pages';
+import { CardBrowserRoute, CardBrowserRoutePending } from '@interface/pages/cards';
+import { AdminLayout } from './AdminLayout';
 import { RootLayout } from './RootLayout';
 
 const rootRoute = createRootRoute({
@@ -18,34 +20,50 @@ const indexRoute = createRoute({
   component: HomePage,
 });
 
-const commandCardsRoute = createRoute({
+const cardsRoute = createRoute({
   getParentRoute: () => rootRoute,
+  path: 'cards',
+  component: CardBrowserRoute,
+  pendingComponent: CardBrowserRoutePending,
+});
+
+const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: 'admin',
+  component: AdminLayout,
+});
+
+const commandCardsRoute = createRoute({
+  getParentRoute: () => adminRoute,
   path: 'command-cards',
   component: CommandCardsPage,
 });
 
 const commandCardEditorRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => adminRoute,
   path: 'command-cards/$cardId',
   component: CommandCardEditorPage,
 });
 
 const unitCardsRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => adminRoute,
   path: 'unit-cards',
   component: UnitCardsPage,
 });
 
 const unitCardEditorRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => adminRoute,
   path: 'unit-cards/$cardId',
   component: UnitCardEditorPage,
 });
 
 export const routeTree = rootRoute.addChildren([
   indexRoute,
-  commandCardsRoute,
-  commandCardEditorRoute,
-  unitCardsRoute,
-  unitCardEditorRoute,
+  cardsRoute,
+  adminRoute.addChildren([
+    commandCardsRoute,
+    commandCardEditorRoute,
+    unitCardsRoute,
+    unitCardEditorRoute,
+  ]),
 ]);

@@ -23,6 +23,7 @@ import type {
   SuccessResponse201,
 } from './responseTypes';
 import type { RouteFetch } from './routeFetch';
+import { logSchemaParseFailure } from './logSchemaParseFailure';
 
 export type { RouteFetch } from './routeFetch';
 
@@ -90,9 +91,13 @@ export function createRouteFetch(
   ): Promise<SuccessResponse200<TData> | ErrorResponse> {
     if (response.ok) {
       const json: unknown = await response.json();
-      // Validate success payloads against the route's zod schema.
-      const data = route.validators.data.parse(json);
-      return { data, statusCode: 200 };
+      const parseResult = route.validators.data.safeParse(json);
+      if (!parseResult.success) {
+        logSchemaParseFailure(route.path, route.validators.data, json);
+        throw parseResult.error;
+      }
+
+      return { data: parseResult.data, statusCode: 200 };
     }
 
     // Non-2xx responses share a message envelope across route types.
@@ -110,8 +115,13 @@ export function createRouteFetch(
   ): Promise<SuccessResponse201<TData> | ErrorResponse> {
     if (response.ok) {
       const json: unknown = await response.json();
-      const data = route.validators.data.parse(json);
-      return { data, statusCode: 201 };
+      const parseResult = route.validators.data.safeParse(json);
+      if (!parseResult.success) {
+        logSchemaParseFailure(route.path, route.validators.data, json);
+        throw parseResult.error;
+      }
+
+      return { data: parseResult.data, statusCode: 201 };
     }
 
     const json: unknown = await response.json();
