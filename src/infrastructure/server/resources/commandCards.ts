@@ -15,7 +15,7 @@ import type {
   GetByIdParams,
   QueryByIdsBody,
 } from '@classicalmoser/prevail-contracts';
-import type { Card } from '@classicalmoser/prevail-rules/domain';
+import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
 import type { Callers } from '../callers';
 import type {
   CreatedPostResponse,
@@ -31,16 +31,20 @@ import type {
  */
 export interface CommandCardResources {
   getAllCommandCards(): Promise<GetResponse<CardListItem[]>>;
-  getCommandCardById(params: GetByIdParams): Promise<GetResponse<Card>>;
-  getCommandCardsByIds(body: QueryByIdsBody): Promise<PostResponse<Card[]>>;
-  getCurrentCommandCards(): Promise<GetResponse<Card[]>>;
+  getCommandCardById(params: GetByIdParams): Promise<GetResponse<CommandCard>>;
+  getCommandCardsByIds(
+    body: QueryByIdsBody,
+  ): Promise<PostResponse<CommandCard[]>>;
+  getCurrentCommandCards(): Promise<GetResponse<CommandCard[]>>;
   createEmptyCommandCard(): Promise<CreatedPostResponse<string>>;
-  createCommandCardVersion(card: Card): Promise<CreatedPostResponse<Card>>;
+  createCommandCardVersion(
+    card: CommandCard,
+  ): Promise<CreatedPostResponse<CommandCard>>;
   updateCommandCardCertifications(): Promise<
     PostResponse<CertificationResults>
   >;
   deleteEmptyCommandCards(): Promise<ErrorResponse | undefined>;
-  previewCommandCard(card: Card): Promise<MediaPostResponse<string>>;
+  previewCommandCard(card: CommandCard): Promise<MediaPostResponse<string>>;
 }
 
 export function createCommandCardResources({

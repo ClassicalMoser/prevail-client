@@ -1,8 +1,8 @@
-import type { Card } from '@classicalmoser/prevail-rules/domain';
-import { cardSchema } from '@classicalmoser/prevail-rules/domain';
+import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
+import { commandCardSchema } from '@classicalmoser/prevail-rules/domain';
 
 export type CommandCardDraftValidationResult =
-  | { success: true; data: Card }
+  | { success: true; data: CommandCard }
   | { success: false; messages: string[] };
 
 const formatIssuePath = (path: PropertyKey[]): string =>
@@ -10,9 +10,9 @@ const formatIssuePath = (path: PropertyKey[]): string =>
 
 /** Validates a command card draft against the domain schema before publish/preview. */
 export function validateCommandCardDraft(
-  card: Card,
+  card: CommandCard,
 ): CommandCardDraftValidationResult {
-  const result = cardSchema.safeParse(card);
+  const result = commandCardSchema.safeParse(card);
 
   if (result.success) {
     return { success: true, data: result.data };
@@ -26,8 +26,9 @@ export function validateCommandCardDraft(
     modifiersType: typeof card.modifiers,
     modifiersIsArray: Array.isArray(card.modifiers),
     modifiers0: Array.isArray(card.modifiers) ? card.modifiers[0] : undefined,
-    modifiers0Type:
-      Array.isArray(card.modifiers) ? typeof card.modifiers[0] : undefined,
+    modifiers0Type: Array.isArray(card.modifiers)
+      ? typeof card.modifiers[0]
+      : undefined,
     issues: result.error.issues,
   });
 

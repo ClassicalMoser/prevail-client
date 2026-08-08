@@ -1,4 +1,4 @@
-import type { Card } from '@classicalmoser/prevail-rules/domain';
+import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor, JSX } from 'solid-js';
 import {
   Card as UiCard,
@@ -15,15 +15,15 @@ import {
 } from './round-effect-defaults';
 
 export const CommandCardRoundEffectSection = (props: {
-  card: Accessor<Card>;
-  onChange: (card: Card) => void;
+  card: Accessor<CommandCard>;
+  onChange: (card: CommandCard) => void;
 }): JSX.Element => {
   // Cards may omit roundEffect until the author edits this section.
-  const withRoundEffect = (): NonNullable<Card['roundEffect']> =>
+  const withRoundEffect = (): NonNullable<CommandCard['roundEffect']> =>
     props.card().roundEffect ?? emptyRoundEffect();
 
   const updateRoundEffect = (
-    patch: Partial<NonNullable<Card['roundEffect']>>,
+    patch: Partial<NonNullable<CommandCard['roundEffect']>>,
   ): void => {
     props.onChange({
       ...props.card(),

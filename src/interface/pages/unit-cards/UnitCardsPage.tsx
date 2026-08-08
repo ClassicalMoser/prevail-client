@@ -21,6 +21,7 @@ export function UnitCardsPage(): JSX.Element {
       emptyTitle="No unit cards yet"
       emptyDescription="Create a draft to start authoring your first unit card."
       loadErrorMessage="Failed to load unit cards."
+      kind="unit"
       editRoute="/unit-cards/$cardId"
       isLoading={() => catalog.isLoading}
       isError={() => catalog.isError}

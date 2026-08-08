@@ -1,4 +1,4 @@
-import type { Card } from '@classicalmoser/prevail-rules/domain';
+import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor, JSX } from 'solid-js';
 import {
   Card as UiCard,
@@ -11,10 +11,10 @@ import { FormField } from '../../form-field';
 import { Input } from '../../input';
 
 export const CommandCardIdentitySection = (props: {
-  card: Accessor<Card>;
-  onChange: (card: Card) => void;
+  card: Accessor<CommandCard>;
+  onChange: (card: CommandCard) => void;
 }): JSX.Element => {
-  const update = (patch: Partial<Card>): void => {
+  const update = (patch: Partial<CommandCard>): void => {
     props.onChange({ ...props.card(), ...patch });
   };
 

@@ -1,4 +1,7 @@
-import type { UnitSupport } from '@classicalmoser/prevail-rules/domain';
+import type {
+  UnitSupport,
+  UnitType,
+} from '@classicalmoser/prevail-rules/domain';
 import type { Accessor, JSX } from 'solid-js';
 import { FormField } from '../../form-field';
 import { Input } from '../../input';
@@ -8,6 +11,8 @@ import { UnitSupportVariantFields } from './unit-support-variant-fields';
 export const UnitSupportEditor = (props: {
   unitSupport: Accessor<UnitSupport>;
   onChange: (unitSupport: UnitSupport) => void;
+  unitCatalog: Accessor<UnitType[] | undefined>;
+  isUnitCatalogLoading: Accessor<boolean>;
 }): JSX.Element => (
   <div class="grid gap-4">
     <FormField label="Support type" for="unit-support-type">
@@ -65,6 +70,8 @@ export const UnitSupportEditor = (props: {
     <UnitSupportVariantFields
       unitSupport={props.unitSupport}
       onChange={props.onChange}
+      unitCatalog={props.unitCatalog}
+      isUnitCatalogLoading={props.isUnitCatalogLoading}
     />
   </div>
 );

@@ -1,4 +1,4 @@
-import type { Card } from '@classicalmoser/prevail-rules/domain';
+import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
 import {
   commandSizes,
   commandTypes,
@@ -10,10 +10,10 @@ import { Input } from '../../input';
 import { NativeSelect } from '../../native-select';
 
 export const CommandCardCommandFields = (props: {
-  command: Accessor<Card['command']>;
-  onChange: (command: Card['command']) => void;
+  command: Accessor<CommandCard['command']>;
+  onChange: (command: CommandCard['command']) => void;
 }): JSX.Element => {
-  const update = (patch: Partial<Card['command']>): void => {
+  const update = (patch: Partial<CommandCard['command']>): void => {
     props.onChange({ ...props.command(), ...patch });
   };
 
@@ -25,7 +25,7 @@ export const CommandCardCommandFields = (props: {
           value={props.command().size}
           onChange={(event) => {
             update({
-              size: event.currentTarget.value as Card['command']['size'],
+              size: event.currentTarget.value as CommandCard['command']['size'],
             });
           }}
         >
@@ -40,7 +40,7 @@ export const CommandCardCommandFields = (props: {
           value={props.command().type}
           onChange={(event) => {
             update({
-              type: event.currentTarget.value as Card['command']['type'],
+              type: event.currentTarget.value as CommandCard['command']['type'],
             });
           }}
         >

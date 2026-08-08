@@ -98,12 +98,9 @@ export async function createAuth0Port(): Promise<AuthPort> {
     },
 
     async getAccessToken(
-      permissions: readonly Permission[],
+      _permissions: readonly Permission[],
     ): Promise<string | undefined> {
-      if (permissions.length === 0) {
-        return undefined;
-      }
-
+      // Empty permissionsRequired still means an authenticated user; always fetch a token.
       try {
         return await client.getTokenSilently();
       } catch (error) {

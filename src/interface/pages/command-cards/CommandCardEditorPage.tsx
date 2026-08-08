@@ -1,4 +1,4 @@
-import { useCommandCardEditor } from '@application';
+import { useCommandCardEditor, useCurrentUnitCardsQuery } from '@application';
 import { CardPreviewPanel } from '@interface/components/authoring/card-preview-panel';
 import { CommandCardForm } from '@interface/components/authoring/command-cards/command-card-form';
 import { EditorToolbar } from '@interface/components/authoring/editor-toolbar';
@@ -10,6 +10,7 @@ import { For, Show } from 'solid-js';
 export function CommandCardEditorPage(): JSX.Element {
   const params = useParams({ from: '/admin/command-cards/$cardId' });
   const editor = useCommandCardEditor(() => params().cardId);
+  const unitCatalog = useCurrentUnitCardsQuery();
 
   return (
     <main class="container mx-auto flex flex-col gap-6 p-4 py-8">
@@ -41,7 +42,7 @@ export function CommandCardEditorPage(): JSX.Element {
           {(card) => (
             <>
               <EditorToolbar
-                title={() => card().name || 'Untitled Command Card'}
+                title={() => card().name || 'Untitled Command CommandCard'}
                 subtitle={() =>
                   editor.isNewVersion()
                     ? 'New version (unsaved)'
@@ -88,6 +89,8 @@ export function CommandCardEditorPage(): JSX.Element {
                 onChange={(nextCard) => {
                   editor.updateDraft(() => nextCard);
                 }}
+                unitCatalog={() => unitCatalog.data}
+                isUnitCatalogLoading={() => unitCatalog.isLoading}
               />
             </>
           )}

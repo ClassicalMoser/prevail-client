@@ -1,5 +1,5 @@
 import type { CardListItem } from '@classicalmoser/prevail-contracts';
-import type { Card } from '@classicalmoser/prevail-rules/domain';
+import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor } from 'solid-js';
 import { createEffect, createSignal } from 'solid-js';
 import type { UseMutationResult, UseQueryResult } from '@tanstack/solid-query';
@@ -25,16 +25,16 @@ function useCommandCardEditorState(
 ): {
   isLoading: Accessor<boolean>;
   loadErrorMessage: Accessor<string | undefined>;
-  draft: Accessor<Card | undefined>;
+  draft: Accessor<CommandCard | undefined>;
   isNewVersion: Accessor<boolean>;
-  updateDraft: (updater: (card: Card) => Card) => void;
+  updateDraft: (updater: (card: CommandCard) => CommandCard) => void;
   save: () => void;
   preview: () => void;
   previewSvg: Accessor<string | undefined>;
   previewError: Accessor<string | undefined>;
   validationErrors: Accessor<readonly string[]>;
-  publish: UseMutationResult<Card, Error, Card>;
-  previewMutation: UseMutationResult<string, Error, Card>;
+  publish: UseMutationResult<CommandCard, Error, CommandCard>;
+  previewMutation: UseMutationResult<string, Error, CommandCard>;
 } {
   const version = useCommandCardByIdQuery(cardId, {
     enabled: () => {
@@ -53,7 +53,7 @@ function useCommandCardEditorState(
   });
   const publish = useCreateCommandCardVersionMutation();
   const previewMutation = usePreviewCommandCardMutation();
-  const [draft, setDraft] = createSignal<Card | undefined>();
+  const [draft, setDraft] = createSignal<CommandCard | undefined>();
   const [isNewVersion, setIsNewVersion] = createSignal(false);
   const [previewSvg, setPreviewSvg] = createSignal<string | undefined>();
   const [previewError, setPreviewError] = createSignal<string | undefined>();
@@ -122,7 +122,7 @@ function useCommandCardEditorState(
       return;
     }
 
-    const session = getCardEditorSession<Card>(resolvedId);
+    const session = getCardEditorSession<CommandCard>(resolvedId);
     if (session !== undefined) {
       setIsNewVersion(session.isNewVersion);
       setDraft(cloneDraft(session.draft));
@@ -165,7 +165,7 @@ function useCommandCardEditorState(
     }
   });
 
-  const updateDraft = (updater: (card: Card) => Card): void => {
+  const updateDraft = (updater: (card: CommandCard) => CommandCard): void => {
     const current = draft();
     if (current !== undefined) {
       const next = updater(current);

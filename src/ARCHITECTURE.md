@@ -70,7 +70,7 @@ Contexts are defined (with their consumer hooks) in `src/application`; `AppShell
 
 ## Current status
 
-**Aligned:** Dependencies are built once at startup (outside the reactive system) and provided as constant singletons—mirroring `queryClient`. The core stack is created once in `CoreProvider`; `useCore()` reads that instance. Board-level state derivation (`subscribedBoard`) lives in `createCore`. Authoring query/mutation hooks resolve ports synchronously under the provider tree.
+**Aligned:** Dependencies are built once at startup (outside the reactive system) and provided as constant singletons—mirroring `queryClient`. The core stack is created once in `CoreProvider`; `useCore()` reads that instance. Authoritative game snapshots live in `GameStateStore` (ingest seam for the local engine today and a future transport); `core.game.*` exposes projection accessors. Authoring query/mutation hooks resolve ports synchronously under the provider tree.
 
 **Still evolving:** `BoardComponent` still derives grid layout from `board` via local `createMemo` (acceptable as presentation-only, but could move if you want the interface even thinner). Further features should extend the `Core` API or dedicated application modules rather than re-calling engine services from the UI.
 

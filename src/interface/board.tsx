@@ -1,15 +1,25 @@
-import type { Board, UnitFacing } from '@classicalmoser/prevail-rules/domain';
+import type {
+  Board,
+  PlayerSide,
+  UnitFacing,
+} from '@classicalmoser/prevail-rules/domain';
 import type { Accessor, JSX } from 'solid-js';
 import { createMemo, For, Show } from 'solid-js';
 import singleTile from '../assets/singleTile.png';
 import { UnitComponent } from './unit';
 import './board.css';
 
-/** Optional demo hooks supplied by the application layer (not imported from `@application` here). */
-export interface BoardCellDemoProps {
-  shouldShowUnit: () => boolean;
-  randomFacing: () => UnitFacing;
-  randomUnitImageSrc: () => string;
+/** Presentational unit chip projected from authoritative board state. */
+export interface BoardUnitViewProps {
+  label: string;
+  facing: UnitFacing;
+  imageSrc: string | undefined;
+}
+
+/** Presentational cell content projected from authoritative board state. */
+export interface BoardCellViewProps {
+  commanders: PlayerSide[];
+  units: BoardUnitViewProps[];
 }
 
 function parseCellCoordinate(cellCoordinate: string): {
@@ -26,7 +36,7 @@ function parseCellCoordinate(cellCoordinate: string): {
 
 export const BoardComponent = (props: {
   board: Accessor<Board | undefined>;
-  cellDemo?: BoardCellDemoProps;
+  cells: Accessor<Readonly<Partial<Record<string, BoardCellViewProps>>>>;
 }): JSX.Element => {
   const layout = createMemo(() => {
     const b = props.board();
@@ -84,27 +94,43 @@ export const BoardComponent = (props: {
             '--board-rows': layout().rowCount,
           }}
         >
-          <h2 class="board-title">Board</h2>
-          <div class="board-grid">
+          <h2 class="board-title" id="board-heading">
+            Board
+          </h2>
+          <div class="board-grid" aria-labelledby="board-heading">
             <For each={rows()}>
               {(row) => (
                 <div class="board-row">
                   <For each={row}>
-                    {(cell) => (
-                      <div class="board-cell">
-                        <img src={singleTile} alt={cell} />
-                        <Show when={props.cellDemo}>
-                          {(cellDemo) => (
-                            <Show when={cellDemo().shouldShowUnit()}>
-                              <UnitComponent
-                                facing={cellDemo().randomFacing()}
-                                imageSrc={cellDemo().randomUnitImageSrc()}
-                              />
-                            </Show>
-                          )}
-                        </Show>
-                      </div>
-                    )}
+                    {(cell) => {
+                      const cellView = () => props.cells()[cell];
+                      return (
+                        <div class="board-cell" aria-label={cell}>
+                          <img src={singleTile} alt="" />
+                          <Show when={cellView()}>
+                            {(view) => (
+                              <>
+                                <Show when={view().commanders.length > 0}>
+                                  <span class="board-cell-commanders bg-background/75 text-foreground absolute top-0.5 right-0.5 left-0.5 z-[110] text-center text-[0.55rem] leading-tight">
+                                    {view().commanders.join(', ')} commander
+                                    {view().commanders.length > 1 ? 's' : ''}
+                                  </span>
+                                </Show>
+                                <For each={view().units}>
+                                  {(unit) => (
+                                    <UnitComponent
+                                      facing={unit.facing}
+                                      imageSrc={unit.imageSrc}
+                                      label={unit.label}
+                                    />
+                                  )}
+                                </For>
+                              </>
+                            )}
+                          </Show>
+                        </div>
+                      );
+                    }}
                   </For>
                 </div>
               )}

@@ -1,5 +1,5 @@
 import type { CertificationResults } from '@classicalmoser/prevail-contracts';
-import type { Card } from '@classicalmoser/prevail-rules/domain';
+import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
 import type { UseMutationResult } from '@tanstack/solid-query';
 import { useMutation, useQueryClient } from '@tanstack/solid-query';
 import { useCommandCards } from '@application/serverPortsContext';
@@ -22,15 +22,15 @@ export function useCreateEmptyCommandCardMutation(): UseMutationResult<
 }
 
 export function useCreateCommandCardVersionMutation(): UseMutationResult<
-  Card,
+  CommandCard,
   Error,
-  Card
+  CommandCard
 > {
   const commandCards = useCommandCards();
   const queryClient = useQueryClient();
 
   return useMutation(() => ({
-    mutationFn: (card: Card) => commandCards.publishVersion(card),
+    mutationFn: (card: CommandCard) => commandCards.publishVersion(card),
     onSettled: (_data, _error, card) => {
       queryClient.invalidateQueries({ queryKey: commandCardKeys.all });
       queryClient.invalidateQueries({
@@ -75,11 +75,11 @@ export function useDeleteEmptyCommandCardsMutation(): UseMutationResult<
 export function usePreviewCommandCardMutation(): UseMutationResult<
   string,
   Error,
-  Card
+  CommandCard
 > {
   const commandCards = useCommandCards();
 
   return useMutation(() => ({
-    mutationFn: (card: Card) => commandCards.preview(card),
+    mutationFn: (card: CommandCard) => commandCards.preview(card),
   }));
 }

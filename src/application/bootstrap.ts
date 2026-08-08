@@ -1,13 +1,11 @@
 import type {
-  Board,
-  GameState,
-  PlayerChoiceEvent,
   GameModeName,
+  PlayerChoiceEvent,
 } from '@classicalmoser/prevail-rules/domain';
-import type { PortResponse } from '@domain';
-import type { Accessor } from 'solid-js';
+import type { GameStateChange, PortResponse } from '@domain';
 import { useEngine } from '@domain';
-import { createMemo } from 'solid-js';
+import type { GameStateProjections } from './gameState';
+import { createGameStateProjections } from './gameState';
 import { useEngineServices } from './repositories';
 
 /**
@@ -25,28 +23,27 @@ export interface Core {
     playerChoice: PlayerChoiceEvent,
   ) => Promise<PortResponse<void>>;
   setSubscribedGame: (gameId: string, gameMode: GameModeName) => void;
-  subscribedGameState: Accessor<GameState | undefined>;
-  subscribedBoard: Accessor<Board | undefined>;
+  /** Sole client write path for authoritative snapshots (engine today; future WS later). */
+  ingestGameState: (change: GameStateChange) => void;
+  /** Reactive projections of the subscribed game. */
+  game: GameStateProjections;
 }
 
 export const createCore = (): Core => {
-  const { ports, subscriberUi } = useEngineServices();
+  const { ports, gameStateStore } = useEngineServices();
   const engine = useEngine(ports);
+  const game = createGameStateProjections(gameStateStore);
 
   const startNewGame = async (gameMode: GameModeName) => {
-    subscriberUi.setSubscribedGame(TEMP_STUB_GAME_ID, gameMode);
+    gameStateStore.setSubscribedGame(TEMP_STUB_GAME_ID, gameMode);
     await engine.startNewGame(gameMode);
   };
-
-  const subscribedBoard: Accessor<Board | undefined> = createMemo(
-    () => subscriberUi.subscribedGameState()?.boardState,
-  );
 
   return {
     startNewGame,
     handlePlayerChoiceSubmission: engine.handlePlayerChoiceSubmission,
-    setSubscribedGame: subscriberUi.setSubscribedGame,
-    subscribedGameState: subscriberUi.subscribedGameState,
-    subscribedBoard,
+    setSubscribedGame: gameStateStore.setSubscribedGame,
+    ingestGameState: gameStateStore.ingest,
+    game,
   };
 };

@@ -1,8 +1,13 @@
 import type { AccessTokenGetter, ServerPorts } from '@ports';
-import { createCommandCardsAdapter, createUnitCardsAdapter } from './adapters';
+import {
+  createArmiesAdapter,
+  createCommandCardsAdapter,
+  createUnitCardsAdapter,
+} from './adapters';
 import { createCallers } from './callers';
 import { createRouteFetch } from './http';
 import {
+  createArmyResources,
   createCommandCardResources,
   createUnitCardResources,
 } from './resources';
@@ -24,10 +29,12 @@ export function createServerPorts(
 ): ServerPorts {
   const routeFetch = createRouteFetch(getAccessToken);
   const callers = createCallers(SERVER_URL, routeFetch);
+  const armyResources = createArmyResources(callers);
   const commandCardResources = createCommandCardResources(callers);
   const unitCardResources = createUnitCardResources(callers);
 
   return {
+    armies: createArmiesAdapter(armyResources),
     commandCards: createCommandCardsAdapter(commandCardResources),
     unitCards: createUnitCardsAdapter(unitCardResources),
   };

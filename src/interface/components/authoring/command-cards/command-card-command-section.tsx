@@ -1,4 +1,4 @@
-import type { Card } from '@classicalmoser/prevail-rules/domain';
+import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor, JSX } from 'solid-js';
 import {
   Card as UiCard,
@@ -12,10 +12,10 @@ import { RestrictionsEditor } from '../restrictions-editor';
 import { CommandCardCommandFields } from './command-card-command-fields';
 
 export const CommandCardCommandSection = (props: {
-  card: Accessor<Card>;
-  onChange: (card: Card) => void;
+  card: Accessor<CommandCard>;
+  onChange: (card: CommandCard) => void;
 }): JSX.Element => {
-  const updateCommand = (command: Card['command']): void => {
+  const updateCommand = (command: CommandCard['command']): void => {
     props.onChange({ ...props.card(), command });
   };
 

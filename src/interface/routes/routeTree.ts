@@ -1,12 +1,16 @@
 import { createRootRoute, createRoute } from '@tanstack/solid-router';
 import {
+  ArmiesPage,
+  ArmyEditorPage,
+  CardBrowserRoute,
+  CardBrowserRoutePending,
   CommandCardEditorPage,
   CommandCardsPage,
   HomePage,
+  NewArmyPage,
   UnitCardEditorPage,
   UnitCardsPage,
 } from '@interface/pages';
-import { CardBrowserRoute, CardBrowserRoutePending } from '@interface/pages/cards';
 import { AdminLayout } from './AdminLayout';
 import { RootLayout } from './RootLayout';
 
@@ -57,6 +61,24 @@ const unitCardEditorRoute = createRoute({
   component: UnitCardEditorPage,
 });
 
+const armiesRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: 'armies',
+  component: ArmiesPage,
+});
+
+const armyNewRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: 'armies/$gameMode/new',
+  component: NewArmyPage,
+});
+
+const armyEditorRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: 'armies/$gameMode/$armyId',
+  component: ArmyEditorPage,
+});
+
 export const routeTree = rootRoute.addChildren([
   indexRoute,
   cardsRoute,
@@ -65,5 +87,8 @@ export const routeTree = rootRoute.addChildren([
     commandCardEditorRoute,
     unitCardsRoute,
     unitCardEditorRoute,
+    armiesRoute,
+    armyNewRoute,
+    armyEditorRoute,
   ]),
 ]);

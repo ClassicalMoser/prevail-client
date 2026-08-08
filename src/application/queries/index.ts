@@ -1,4 +1,13 @@
-export { commandCardKeys, unitCardKeys } from './keys';
+export { armyKeys, commandCardKeys, unitCardKeys } from './keys';
+export {
+  ownedArmiesQueryOptions,
+  ownedArmyByIdQueryOptions,
+  useArchiveOwnedArmyMutation,
+  useCreateOwnedArmyMutation,
+  useOwnedArmiesQuery,
+  useOwnedArmyByIdQuery,
+  useUpdateOwnedArmyMutation,
+} from './armies';
 export {
   allCommandCardsQueryOptions,
   commandCardByIdQueryOptions,

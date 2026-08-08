@@ -21,6 +21,7 @@ export function CommandCardsPage(): JSX.Element {
       emptyTitle="No command cards yet"
       emptyDescription="Create a draft to start authoring your first command card."
       loadErrorMessage="Failed to load command cards."
+      kind="command"
       editRoute="/command-cards/$cardId"
       isLoading={() => catalog.isLoading}
       isError={() => catalog.isError}

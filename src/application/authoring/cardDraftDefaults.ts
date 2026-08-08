@@ -1,5 +1,5 @@
 import type {
-  Card,
+  CommandCard,
   Restrictions,
   RoundEffect,
   UnitStats,
@@ -20,7 +20,7 @@ const emptyRoundEffect = (): RoundEffect => ({
 });
 
 /** Default command card body for authoring the first version of an empty card. */
-export const defaultCommandCardDraft = (id: string): Card => ({
+export const defaultCommandCardDraft = (id: string): CommandCard => ({
   id,
   version: INITIAL_VERSION,
   name: '',
@@ -57,5 +57,5 @@ export const defaultUnitCardDraft = (id: string): UnitType => ({
   stats: defaultUnitStats,
   cost: 10,
   limit: 4,
-  routPenalty: 0,
+  morale: 0,
 });

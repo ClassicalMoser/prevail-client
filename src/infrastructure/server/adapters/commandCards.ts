@@ -8,7 +8,7 @@ import type { CommandCardResources } from '../resources';
 
 /**
  * Port adapter: strips HTTP envelopes and surfaces plain domain types.
- * Application code sees `Card` or a thrown {@link RouteResponseError}, not
+ * Application code sees `CommandCard` or a thrown {@link RouteResponseError}, not
  * `{ data } | { message }`.
  */
 export function createCommandCardsAdapter(

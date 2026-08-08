@@ -49,15 +49,15 @@ export const UnitCardArmySection = (props: {
             }}
           />
         </FormField>
-        <FormField label="Rout penalty" for="unit-rout-penalty">
+        <FormField label="Morale" for="unit-morale">
           <Input
-            id="unit-rout-penalty"
+            id="unit-morale"
             type="number"
             min={0}
             max={5}
-            value={props.unit().routPenalty}
+            value={props.unit().morale}
             onInput={(event) => {
-              update({ routPenalty: Number(event.currentTarget.value) });
+              update({ morale: Number(event.currentTarget.value) });
             }}
           />
         </FormField>

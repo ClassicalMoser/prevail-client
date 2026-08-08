@@ -1,5 +1,5 @@
 import type { CardListItem } from '@classicalmoser/prevail-contracts';
-import type { Card } from '@classicalmoser/prevail-rules/domain';
+import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor } from 'solid-js';
 import type { UseQueryResult } from '@tanstack/solid-query';
 import { useQuery } from '@tanstack/solid-query';
@@ -18,7 +18,10 @@ export function useAllCommandCardsQuery(): UseQueryResult<
   }));
 }
 
-export function useCurrentCommandCardsQuery(): UseQueryResult<Card[], Error> {
+export function useCurrentCommandCardsQuery(): UseQueryResult<
+  CommandCard[],
+  Error
+> {
   const commandCards = useCommandCards();
 
   return useQuery(() => ({
@@ -30,7 +33,7 @@ export function useCurrentCommandCardsQuery(): UseQueryResult<Card[], Error> {
 export function useCommandCardByIdQuery(
   id: Accessor<string | undefined>,
   options?: { enabled?: Accessor<boolean> },
-): UseQueryResult<Card, Error> {
+): UseQueryResult<CommandCard, Error> {
   const commandCards = useCommandCards();
 
   return useQuery(() => {
@@ -51,7 +54,7 @@ export function useCommandCardByIdQuery(
 
 export function useCommandCardsByIdsQuery(
   ids: Accessor<readonly string[]>,
-): UseQueryResult<Card[], Error> {
+): UseQueryResult<CommandCard[], Error> {
   const commandCards = useCommandCards();
 
   return useQuery(() => ({

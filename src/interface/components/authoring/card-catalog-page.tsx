@@ -1,3 +1,4 @@
+import type { PublishedCardKind } from '@interface/lib';
 import {
   Button,
   Card,
@@ -13,6 +14,9 @@ import type { CardCatalogItem } from './card-catalog-types';
 
 export type { CardCatalogItem } from './card-catalog-types';
 
+const catalogGrid =
+  'grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12';
+
 export interface CardCatalogPageProps<TItem extends CardCatalogItem> {
   title: string;
   description: string;
@@ -20,6 +24,7 @@ export interface CardCatalogPageProps<TItem extends CardCatalogItem> {
   emptyTitle: string;
   emptyDescription: string;
   loadErrorMessage: string;
+  kind: PublishedCardKind;
   editRoute: '/command-cards/$cardId' | '/unit-cards/$cardId';
   isLoading: Accessor<boolean>;
   isError: Accessor<boolean>;
@@ -35,7 +40,7 @@ export interface CardCatalogPageProps<TItem extends CardCatalogItem> {
   renderMetadataBadges?: (item: TItem) => JSX.Element;
 }
 
-/** List page shell shared by command and unit card authoring catalogs. */
+/** Visual catalog shell shared by command and unit card authoring. */
 export const CardCatalogPage = <TItem extends CardCatalogItem>(
   props: CardCatalogPageProps<TItem>,
 ): JSX.Element => (
@@ -90,21 +95,24 @@ export const CardCatalogPage = <TItem extends CardCatalogItem>(
               </Card>
             }
           >
-            <div class="grid gap-4">
-              <For each={props.cards()}>
-                {(item) => (
-                  <Card>
-                    <CardContent>
-                      <CardCatalogListItem
-                        item={item}
-                        editRoute={props.editRoute}
-                        renderMetadataBadges={props.renderMetadataBadges}
-                      />
-                    </CardContent>
-                  </Card>
-                )}
-              </For>
-            </div>
+            <Card class="!overflow-visible">
+              <CardContent class="!overflow-visible pt-6">
+                <ul class={catalogGrid}>
+                  <For each={props.cards()}>
+                    {(item) => (
+                      <li>
+                        <CardCatalogListItem
+                          item={item}
+                          kind={props.kind}
+                          editRoute={props.editRoute}
+                          renderMetadataBadges={props.renderMetadataBadges}
+                        />
+                      </li>
+                    )}
+                  </For>
+                </ul>
+              </CardContent>
+            </Card>
           </Show>
         }
       >

@@ -1,3 +1,4 @@
+export { createArmyResources, type ArmyResources } from './armies';
 export {
   createCommandCardResources,
   type CommandCardResources,

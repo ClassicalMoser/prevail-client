@@ -30,6 +30,9 @@ export const AppNav = (): JSX.Element => {
             <Link to="/unit-cards" class={navLinkClass}>
               Unit Cards
             </Link>
+            <Link to="/armies" class={navLinkClass}>
+              Armies
+            </Link>
           </Show>
         </div>
         <Show

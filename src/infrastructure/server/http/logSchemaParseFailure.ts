@@ -15,7 +15,11 @@ const valueAtPath = (value: unknown, path: PropertyKey[]): unknown => {
   let current: unknown = value;
 
   for (const segment of path) {
-    if (current === null || current === undefined || typeof current !== 'object') {
+    if (
+      current === null ||
+      current === undefined ||
+      typeof current !== 'object'
+    ) {
       return undefined;
     }
 
@@ -62,9 +66,8 @@ export function logSchemaParseFailure(
     };
   });
 
-  const payloadSummary =
-    Array.isArray(input) ?
-      input.map((entry, index) => {
+  const payloadSummary = Array.isArray(input)
+    ? input.map((entry, index) => {
         if (typeof entry !== 'object' || entry === null) {
           return { index, entryType: typeof entry, entry };
         }
@@ -82,12 +85,14 @@ export function logSchemaParseFailure(
           modifiers: card.modifiers,
           modifiersType: typeof card.modifiers,
           modifiersIsArray: Array.isArray(card.modifiers),
-          modifiers0: Array.isArray(card.modifiers) ? card.modifiers[0] : undefined,
-          modifiers0Type:
-            Array.isArray(card.modifiers) ? typeof card.modifiers[0] : undefined,
-          modifiers0Json:
-            Array.isArray(card.modifiers) ?
-              JSON.stringify(card.modifiers[0])
+          modifiers0: Array.isArray(card.modifiers)
+            ? card.modifiers[0]
+            : undefined,
+          modifiers0Type: Array.isArray(card.modifiers)
+            ? typeof card.modifiers[0]
+            : undefined,
+          modifiers0Json: Array.isArray(card.modifiers)
+            ? JSON.stringify(card.modifiers[0])
             : undefined,
         };
       })
@@ -95,9 +100,9 @@ export function logSchemaParseFailure(
         inputType: typeof input,
         inputIsArray: Array.isArray(input),
         inputJson:
-          typeof input === 'string' ?
-            input
-          : JSON.stringify(input)?.slice(0, 2000),
+          typeof input === 'string'
+            ? input
+            : JSON.stringify(input)?.slice(0, 2000),
       };
 
   console.error(`[schema-parse] ${label} failed`, {

@@ -30,7 +30,7 @@ export const CardPreviewPanel = (props: {
             {(svg) => (
               <img
                 src={svgToDataUrl(svg())}
-                alt="Card preview"
+                alt="CommandCard preview"
                 class="mx-auto max-h-[480px] w-full max-w-md object-contain"
               />
             )}

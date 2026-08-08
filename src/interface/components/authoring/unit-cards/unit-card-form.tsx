@@ -16,7 +16,7 @@ export const UnitCardForm = (props: {
     <UnitCardArmySection unit={props.unit} onChange={props.onChange} />
 
     <div class="text-muted-foreground text-xs">
-      <p class="text-sm font-medium">Card ID</p>
+      <p class="text-sm font-medium">CommandCard ID</p>
       <p class="font-mono">{props.unit().id}</p>
     </div>
   </div>

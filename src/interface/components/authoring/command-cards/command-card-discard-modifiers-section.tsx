@@ -1,4 +1,7 @@
-import type { Card, StatModifier } from '@classicalmoser/prevail-rules/domain';
+import type {
+  CommandCard,
+  StatModifier,
+} from '@classicalmoser/prevail-rules/domain';
 import { statModifiers } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor, JSX } from 'solid-js';
 import { For } from 'solid-js';
@@ -12,8 +15,8 @@ import {
 import { Checkbox } from '../../checkbox';
 
 export const CommandCardDiscardModifiersSection = (props: {
-  card: Accessor<Card>;
-  onChange: (card: Card) => void;
+  card: Accessor<CommandCard>;
+  onChange: (card: CommandCard) => void;
 }): JSX.Element => {
   const toggleModifier = (stat: StatModifier, checked: boolean): void => {
     const current = props.card().modifiers;
