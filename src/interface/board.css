@@ -35,7 +35,8 @@
   /* Same tile under the cells so subpixel track seams never show page bg. */
   background-color: #5c6b3f;
   background-image: url('../assets/singleTile.png');
-  background-size: calc(100% / var(--board-cols, 1)) calc(100% / var(--board-rows, 1));
+  background-size: calc(100% / var(--board-cols, 1))
+    calc(100% / var(--board-rows, 1));
   background-repeat: repeat;
 }
 

@@ -21,6 +21,91 @@ const seatPath = (side: PlayerSide, gameId: string): string => {
   return contract.path.replace(':gameId', encodeURIComponent(gameId));
 };
 
+const waitForWebSocketOpen = (
+  socket: WebSocket,
+  setStatus: (next: GameSeatConnectionStatus) => void,
+): Promise<void> => {
+  if (socket.readyState === WebSocket.OPEN) {
+    setStatus('open');
+    return Promise.resolve();
+  }
+  if (
+    socket.readyState === WebSocket.CLOSING ||
+    socket.readyState === WebSocket.CLOSED
+  ) {
+    setStatus('closed');
+    return Promise.reject(new Error('Seat WebSocket closed before open.'));
+  }
+
+  // WebSocket open is event-driven; a one-shot Promise is the standard bridge.
+  // eslint-disable-next-line promise/avoid-new -- no async WebSocket open API
+  return new Promise<void>((resolve, reject) => {
+    let settled = false;
+    const handlers = {
+      onOpen(): void {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        socket.removeEventListener('open', handlers.onOpen);
+        socket.removeEventListener('error', handlers.onError);
+        socket.removeEventListener('close', handlers.onClose);
+        setStatus('open');
+        resolve();
+      },
+      onError(): void {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        socket.removeEventListener('open', handlers.onOpen);
+        socket.removeEventListener('error', handlers.onError);
+        socket.removeEventListener('close', handlers.onClose);
+        setStatus('error');
+        reject(new Error('Seat WebSocket failed to open.'));
+      },
+      onClose(): void {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        socket.removeEventListener('open', handlers.onOpen);
+        socket.removeEventListener('error', handlers.onError);
+        socket.removeEventListener('close', handlers.onClose);
+        setStatus('closed');
+        reject(new Error('Seat WebSocket closed before open.'));
+      },
+    };
+    socket.addEventListener('open', handlers.onOpen);
+    socket.addEventListener('error', handlers.onError);
+    socket.addEventListener('close', handlers.onClose);
+  });
+};
+
+type GameSnapshotPayload = Extract<
+  GameSeatOutbound,
+  { type: 'gameSnapshot' }
+>['payload'];
+
+/** Minimal shape required to paint the board when full zod validation fails. */
+const asStructuralGameSnapshot = (
+  payload: unknown,
+): GameSnapshotPayload | undefined => {
+  if (payload === null || typeof payload !== 'object') {
+    return undefined;
+  }
+  const record = payload as Record<string, unknown>;
+  if (
+    typeof record.id !== 'string' ||
+    typeof record.gameMode !== 'string' ||
+    record.gameState === null ||
+    typeof record.gameState !== 'object'
+  ) {
+    return undefined;
+  }
+  return payload as GameSnapshotPayload;
+};
+
 const parseOutbound = (
   side: PlayerSide,
   raw: string,
@@ -66,11 +151,24 @@ const parseOutbound = (
     }
     case 'gameSnapshot': {
       const parsed = outbound.gameSnapshot.safeParse(payload);
-      if (!parsed.success) {
-        console.error('Seat WS: invalid gameSnapshot', parsed.error);
-        return undefined;
+      if (parsed.success) {
+        return { type, payload: parsed.data } as GameSeatOutbound;
       }
-      return { type, payload: parsed.data } as GameSeatOutbound;
+      // Server is source of truth — still deliver if the envelope is structural.
+      const structural = asStructuralGameSnapshot(payload);
+      if (structural !== undefined) {
+        console.error(
+          'Seat WS: gameSnapshot failed schema; ingesting structural payload',
+          parsed.error,
+        );
+        return { type, payload: structural } as GameSeatOutbound;
+      }
+      console.error(
+        'Seat WS: invalid gameSnapshot — state will stay empty',
+        parsed.error,
+        payload,
+      );
+      return undefined;
     }
     case 'choiceRejected': {
       const parsed = outbound.choiceRejected.safeParse(payload);
@@ -115,12 +213,24 @@ export function createGameSeatAdapter(wsBaseUrl: string): GameSeat {
       const statusListeners = new Set<
         (status: GameSeatConnectionStatus) => void
       >();
+      /** Server may push a snapshot on open before the app has subscribed. */
+      const pendingMessages: GameSeatOutbound[] = [];
       let status: GameSeatConnectionStatus = 'connecting';
 
       const setStatus = (next: GameSeatConnectionStatus) => {
         status = next;
         for (const listener of statusListeners) {
           listener(next);
+        }
+      };
+
+      const dispatch = (message: GameSeatOutbound): void => {
+        if (listeners.size === 0) {
+          pendingMessages.push(message);
+          return;
+        }
+        for (const listener of listeners) {
+          listener(message);
         }
       };
 
@@ -139,7 +249,10 @@ export function createGameSeatAdapter(wsBaseUrl: string): GameSeat {
         },
         requestGameSnapshot: () => {
           if (socket.readyState !== WebSocket.OPEN) {
-            console.error('Seat WS: requestGameSnapshot while not open', status);
+            console.error(
+              'Seat WS: requestGameSnapshot while not open',
+              status,
+            );
             return false;
           }
           socket.send(
@@ -152,6 +265,12 @@ export function createGameSeatAdapter(wsBaseUrl: string): GameSeat {
         },
         subscribe: (listener) => {
           listeners.add(listener);
+          if (pendingMessages.length > 0) {
+            const queued = pendingMessages.splice(0);
+            for (const message of queued) {
+              listener(message);
+            }
+          }
           return () => {
             listeners.delete(listener);
           };
@@ -165,15 +284,6 @@ export function createGameSeatAdapter(wsBaseUrl: string): GameSeat {
         },
       };
 
-      socket.addEventListener('open', () => {
-        setStatus('open');
-      });
-      socket.addEventListener('close', () => {
-        setStatus('closed');
-      });
-      socket.addEventListener('error', () => {
-        setStatus('error');
-      });
       socket.addEventListener('message', (event) => {
         const raw =
           typeof event.data === 'string' ? event.data : String(event.data);
@@ -181,8 +291,17 @@ export function createGameSeatAdapter(wsBaseUrl: string): GameSeat {
         if (message === undefined) {
           return;
         }
-        for (const listener of listeners) {
-          listener(message);
+        dispatch(message);
+      });
+
+      await waitForWebSocketOpen(socket, setStatus);
+
+      socket.addEventListener('close', () => {
+        setStatus('closed');
+      });
+      socket.addEventListener('error', () => {
+        if (status === 'open') {
+          setStatus('error');
         }
       });
 

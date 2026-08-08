@@ -6,6 +6,7 @@ export {
   ArmyEditorForm,
   ArmyUnitsSection,
 } from './armies';
+export { AnchoredPublishedCardPreview } from './anchored-published-card-preview';
 export { CardCatalogPage } from './card-catalog-page';
 export type { CardCatalogItem } from './card-catalog-types';
 export { CardPreviewPanel } from './card-preview-panel';

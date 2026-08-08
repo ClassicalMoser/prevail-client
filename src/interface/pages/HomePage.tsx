@@ -1,34 +1,43 @@
 import { useCore } from '@application';
-import { BoardComponent } from '@interface/board';
-import { Button } from '@interface/components';
-import { GameStatus } from '@interface/gameStatus';
 import type { JSX } from 'solid-js';
+import { createSignal } from 'solid-js';
+import { HomeHero } from './home/HomeHero';
+import { HomeTutorial } from './home/HomeTutorial';
+import './home/home.css';
 
 export function HomePage(): JSX.Element {
   const core = useCore();
+  const [starting, setStarting] = createSignal(false);
 
-  const handleButtonClick = async () => {
-    await core.startNewGame('tutorial');
+  const onStartTutorial = (): void => {
+    if (starting()) {
+      return;
+    }
+    const run = async (): Promise<void> => {
+      setStarting(true);
+      try {
+        await core.startNewGame('tutorial');
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setStarting(false);
+      }
+    };
+    // Fire-and-forget from a sync click handler.
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises -- click handler
+    run();
   };
 
   return (
-    <main class="container flex flex-col items-center justify-center mx-auto p-4 gap-4">
-      <h1 class="text-4xl font-display text-center">Prevail</h1>
-
-      <Button type="button" onClick={handleButtonClick}>
-        Create New Game
-      </Button>
-
-      <GameStatus
+    <main class="home-page">
+      <HomeHero />
+      <HomeTutorial
         hasGameState={core.game.hasGameState}
-        roundNumber={core.game.roundNumber}
-        initiative={core.game.initiative}
-        phaseSummary={core.game.phaseSummary}
+        board={core.game.board}
+        cells={core.game.boardCells}
+        onStartTutorial={onStartTutorial}
+        starting={starting}
       />
-
-      <div class="board-host flex h-[min(70vh,36rem)] w-full max-w-3xl flex-col justify-center">
-        <BoardComponent board={core.game.board} cells={core.game.boardCells} />
-      </div>
     </main>
   );
 }

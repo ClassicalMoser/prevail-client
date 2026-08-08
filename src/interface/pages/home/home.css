@@ -1,0 +1,260 @@
+/* Prevail home — light field, quiet board texture, logo bronze accent. */
+.home-page {
+  --home-ink: oklch(0.2 0.01 85);
+  --home-muted: oklch(0.42 0.015 85);
+  --home-paper: oklch(0.985 0.004 95);
+  --home-paper-deep: oklch(0.94 0.01 95);
+  --home-bronze: #a89060;
+  --home-bronze-ink: #2a2418;
+  --home-line: oklch(0.2 0.01 85 / 0.12);
+}
+
+.home-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: calc(100dvh - 3.5rem);
+  align-items: end;
+  overflow: hidden;
+  color: var(--home-ink);
+  background-color: var(--home-paper);
+}
+
+.home-hero__field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('../../assets/singleTile.png');
+  background-size: 5.5rem 5.5rem;
+  background-repeat: repeat;
+  opacity: 0.22;
+  animation: home-field-drift 36s ease-in-out infinite alternate;
+}
+
+.home-hero__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--home-paper) 88%, transparent) 0%,
+      color-mix(in oklab, var(--home-paper) 55%, transparent) 45%,
+      color-mix(in oklab, var(--home-paper) 92%, transparent) 100%
+    ),
+    radial-gradient(
+      90% 70% at 12% 100%,
+      color-mix(in oklab, var(--home-bronze) 14%, transparent) 0%,
+      transparent 60%
+    );
+  animation: home-veil-breathe 14s ease-in-out infinite alternate;
+}
+
+.home-hero__copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  max-width: 40rem;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(2rem, 6vw, 4.5rem);
+  padding-bottom: clamp(2.5rem, 8vh, 5rem);
+}
+
+.home-hero__brand {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 12vw, 7.5rem);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  animation: home-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.home-hero__headline {
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 3vw, 1.85rem);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 0.03em;
+  color: var(--home-muted);
+  animation: home-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
+}
+
+.home-hero__lede {
+  margin: 0;
+  max-width: 38ch;
+  font-family: var(--font-body);
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  line-height: 1.45;
+  color: var(--home-muted);
+  animation: home-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) 220ms both;
+}
+
+.home-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+  animation: home-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) 320ms both;
+}
+
+.home-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.65rem 1.35rem;
+  border-radius: 0.25rem;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+.home-hero__cta:hover {
+  transform: translateY(-1px);
+}
+
+.home-hero__cta--primary {
+  border: 1px solid color-mix(in oklab, var(--home-bronze) 70%, var(--home-ink));
+  background: var(--home-bronze);
+  color: var(--home-bronze-ink);
+}
+
+.home-hero__cta--primary:hover {
+  background: color-mix(in oklab, var(--home-bronze) 82%, white);
+}
+
+.home-hero__cta--ghost {
+  border: 1px solid var(--home-line);
+  background: color-mix(in oklab, var(--home-paper) 70%, transparent);
+  color: var(--home-ink);
+}
+
+.home-hero__cta--ghost:hover {
+  border-color: color-mix(in oklab, var(--home-ink) 28%, transparent);
+  background: var(--home-paper);
+}
+
+.home-tutorial {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: clamp(2rem, 5vw, 4rem);
+  border-top: 1px solid var(--home-line);
+  background: var(--home-paper-deep);
+  color: var(--home-ink);
+}
+
+.home-tutorial__copy {
+  display: flex;
+  max-width: 40rem;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.home-tutorial__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.8vw, 1.85rem);
+  letter-spacing: 0.04em;
+}
+
+.home-tutorial__body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--home-muted);
+}
+
+.home-tutorial__start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--home-line);
+  border-radius: 0.25rem;
+  background: var(--home-paper);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--home-ink);
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease;
+}
+
+.home-tutorial__start:hover:not(:disabled) {
+  border-color: color-mix(in oklab, var(--home-ink) 28%, transparent);
+}
+
+.home-tutorial__start:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.home-tutorial__board {
+  display: flex;
+  min-height: min(70vh, 36rem);
+  width: 100%;
+  max-width: 48rem;
+  flex-direction: column;
+  justify-content: center;
+  margin-inline: auto;
+  animation: home-rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes home-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes home-field-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-1.25%, 0.75%, 0);
+  }
+}
+
+@keyframes home-veil-breathe {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.92;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__field,
+  .home-hero__veil,
+  .home-hero__brand,
+  .home-hero__headline,
+  .home-hero__lede,
+  .home-hero__actions,
+  .home-tutorial__board {
+    animation: none;
+  }
+}

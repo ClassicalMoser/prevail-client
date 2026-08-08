@@ -17,6 +17,10 @@ export interface BoardUnitView {
   facing: UnitFacing;
   imageSrc: string | undefined;
   playerSide: PlayerSide;
+  /** Published unit card identity for hover stat preview. */
+  unitTypeId: string;
+  unitTypeVersion: string;
+  unitTypeName: string;
 }
 
 export interface BoardCellView {
@@ -33,6 +37,9 @@ const toUnitView = (unit: UnitInstance, facing: UnitFacing): BoardUnitView => ({
   facing,
   imageSrc: resolveUnitArtSrc(unit.unitType.name),
   playerSide: unit.playerSide,
+  unitTypeId: unit.unitType.id,
+  unitTypeVersion: unit.unitType.version,
+  unitTypeName: unit.unitType.name,
 });
 
 export const boardSpaceToCellView = (

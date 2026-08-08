@@ -31,6 +31,7 @@ export { Separator } from './separator';
 export type { SeparatorProps } from './separator';
 
 export {
+  AnchoredPublishedCardPreview,
   AppNav,
   ArmyCardThumb,
   ArmyCommandCardsSection,

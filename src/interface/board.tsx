@@ -4,8 +4,9 @@ import type {
   UnitFacing,
 } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor, JSX } from 'solid-js';
-import { createMemo, For, Show } from 'solid-js';
+import { createMemo, createSignal, For, onCleanup, Show } from 'solid-js';
 import singleTile from '../assets/singleTile.png';
+import { AnchoredPublishedCardPreview } from './components';
 import { FacingArrowPad } from './facing-arrow-pad';
 import { UnitComponent } from './unit';
 import './board.css';
@@ -17,6 +18,9 @@ export interface BoardUnitViewProps {
   imageSrc: string | undefined;
   /** Local pending placement (not yet committed on the server). */
   pending?: boolean;
+  unitTypeId?: string;
+  unitTypeVersion?: string;
+  unitTypeName?: string;
 }
 
 /** Presentational cell content projected from authoritative board state. */
@@ -28,6 +32,13 @@ export interface BoardCellViewProps {
   facingPicker?: boolean;
   /** Facings enabled on the picker; omit for all eight. */
   enabledFacings?: readonly UnitFacing[];
+}
+
+interface UnitHoverPreview {
+  id: string;
+  version: string;
+  name: string;
+  rect: DOMRect;
 }
 
 function parseCellCoordinate(cellCoordinate: string): {
@@ -58,6 +69,8 @@ const BoardCellBody = (props: {
   cell: string;
   view: Accessor<BoardCellViewProps | undefined>;
   onFacingClick?: (coordinate: string, facing: UnitFacing) => void;
+  onUnitHoverStart?: (unit: BoardUnitViewProps, el: HTMLElement) => void;
+  onUnitHoverEnd?: () => void;
 }): JSX.Element => (
   <>
     <img src={singleTile} alt="" />
@@ -77,6 +90,12 @@ const BoardCellBody = (props: {
                 imageSrc={unit.imageSrc}
                 label={unit.label}
                 pending={unit.pending}
+                onHoverStart={(el) => {
+                  props.onUnitHoverStart?.(unit, el);
+                }}
+                onHoverEnd={() => {
+                  props.onUnitHoverEnd?.();
+                }}
               />
             )}
           </For>
@@ -101,6 +120,46 @@ export const BoardComponent = (props: {
   onCellClick?: (coordinate: string) => void;
   onFacingClick?: (coordinate: string, facing: UnitFacing) => void;
 }): JSX.Element => {
+  const [unitHover, setUnitHover] = createSignal<
+    UnitHoverPreview | undefined
+  >();
+  let dismissHoverListeners: (() => void) | undefined;
+
+  const clearUnitHover = (): void => {
+    setUnitHover(undefined);
+    dismissHoverListeners?.();
+    dismissHoverListeners = undefined;
+  };
+
+  const showUnitHover = (unit: BoardUnitViewProps, el: HTMLElement): void => {
+    if (
+      unit.unitTypeId === undefined ||
+      unit.unitTypeVersion === undefined ||
+      unit.unitTypeName === undefined
+    ) {
+      clearUnitHover();
+      return;
+    }
+    clearUnitHover();
+    setUnitHover({
+      id: unit.unitTypeId,
+      version: unit.unitTypeVersion,
+      name: unit.unitTypeName,
+      rect: el.getBoundingClientRect(),
+    });
+    const dismiss = (): void => {
+      clearUnitHover();
+    };
+    window.addEventListener('scroll', dismiss, true);
+    window.addEventListener('resize', dismiss);
+    dismissHoverListeners = () => {
+      window.removeEventListener('scroll', dismiss, true);
+      window.removeEventListener('resize', dismiss);
+    };
+  };
+
+  onCleanup(clearUnitHover);
+
   const layout = createMemo(() => {
     const b = props.board();
     const boardMap = b?.board;
@@ -146,64 +205,83 @@ export const BoardComponent = (props: {
   });
 
   const rows = createMemo(() => layout().rows);
+  const hoverAnchor = (): DOMRect | undefined => unitHover()?.rect;
+  const hoverCard = (): UnitHoverPreview | undefined => unitHover();
 
   return (
     <Show when={props.board()}>
       {(_board) => (
-        <div
-          class="board-shell"
-          style={{
-            '--board-cols': layout().colCount,
-            '--board-rows': layout().rowCount,
-          }}
-        >
-          <h2 class="board-title" id="board-heading">
-            Board
-          </h2>
-          <div class="board-grid" aria-labelledby="board-heading">
-            <For each={rows()}>
-              {(row) => (
-                <div class="board-row">
-                  <For each={row}>
-                    {(cell) => {
-                      const cellView = () => props.cells()[cell];
-                      const cellClass = () =>
-                        `board-cell ${cellHighlightClass(cellView()?.highlight)} ${cellView()?.facingPicker === true ? 'board-cell--facing' : ''}`;
-                      return (
-                        <Show
-                          when={cellView()?.facingPicker === true}
-                          fallback={
-                            <button
-                              type="button"
-                              class={cellClass()}
-                              aria-label={cell}
-                              onClick={() => props.onCellClick?.(cell)}
-                            >
+        <>
+          <div
+            class="board-shell"
+            style={{
+              '--board-cols': layout().colCount,
+              '--board-rows': layout().rowCount,
+            }}
+          >
+            <h2 class="board-title" id="board-heading">
+              Board
+            </h2>
+            <div class="board-grid" aria-labelledby="board-heading">
+              <For each={rows()}>
+                {(row) => (
+                  <div class="board-row">
+                    <For each={row}>
+                      {(cell) => {
+                        const cellView = () => props.cells()[cell];
+                        const cellClass = () =>
+                          `board-cell ${cellHighlightClass(cellView()?.highlight)} ${cellView()?.facingPicker === true ? 'board-cell--facing' : ''}`;
+                        return (
+                          <Show
+                            when={cellView()?.facingPicker === true}
+                            fallback={
+                              <button
+                                type="button"
+                                class={cellClass()}
+                                aria-label={cell}
+                                onClick={() => props.onCellClick?.(cell)}
+                              >
+                                <BoardCellBody
+                                  cell={cell}
+                                  view={cellView}
+                                  onFacingClick={props.onFacingClick}
+                                  onUnitHoverStart={showUnitHover}
+                                  onUnitHoverEnd={clearUnitHover}
+                                />
+                              </button>
+                            }
+                          >
+                            {/* Nested facing buttons cannot live inside a <button>. */}
+                            <div class={cellClass()} aria-label={cell}>
                               <BoardCellBody
                                 cell={cell}
                                 view={cellView}
                                 onFacingClick={props.onFacingClick}
+                                onUnitHoverStart={showUnitHover}
+                                onUnitHoverEnd={clearUnitHover}
                               />
-                            </button>
-                          }
-                        >
-                          {/* Nested facing buttons cannot live inside a <button>. */}
-                          <div class={cellClass()} aria-label={cell}>
-                            <BoardCellBody
-                              cell={cell}
-                              view={cellView}
-                              onFacingClick={props.onFacingClick}
-                            />
-                          </div>
-                        </Show>
-                      );
-                    }}
-                  </For>
-                </div>
-              )}
-            </For>
+                            </div>
+                          </Show>
+                        );
+                      }}
+                    </For>
+                  </div>
+                )}
+              </For>
+            </div>
           </div>
-        </div>
+          <Show when={hoverCard()}>
+            {(card) => (
+              <AnchoredPublishedCardPreview
+                kind="unit"
+                id={card().id}
+                version={card().version}
+                name={card().name}
+                anchor={hoverAnchor}
+              />
+            )}
+          </Show>
+        </>
       )}
     </Show>
   );

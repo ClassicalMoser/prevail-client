@@ -83,10 +83,13 @@ export {
 export {
   computeHighlights,
   formatCommandLabel,
+  isCommitChoiceType,
   legalOptionsForSeat,
+  unitKey,
   useSeatPlaySession,
 } from './play';
 export type {
+  CellHighlight,
   ChoiceListItem,
   IssuedCommandView,
   PlayBoardCellView,

@@ -98,9 +98,7 @@ export function PlayTableStrip(props: {
               <p class="text-muted-foreground">Your remaining</p>
               <Show
                 when={yourRemaining().length > 0}
-                fallback={
-                  <p class="text-muted-foreground">—</p>
-                }
+                fallback={<p class="text-muted-foreground">—</p>}
               >
                 <div class="flex flex-wrap gap-1.5">
                   <For each={yourRemaining()}>

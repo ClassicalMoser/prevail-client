@@ -8,9 +8,17 @@ export const UnitComponent = (props: {
   imageSrc: string | undefined;
   label: string;
   pending?: boolean;
+  onHoverStart?: (el: HTMLElement) => void;
+  onHoverEnd?: () => void;
 }): JSX.Element => (
   <div
     class={`unit-component facing-${props.facing}${props.pending === true ? ' unit-component--pending' : ''}`}
+    onMouseEnter={(event) => {
+      props.onHoverStart?.(event.currentTarget);
+    }}
+    onMouseLeave={() => {
+      props.onHoverEnd?.();
+    }}
   >
     <Show
       when={props.imageSrc}

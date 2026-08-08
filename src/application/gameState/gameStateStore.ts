@@ -47,26 +47,37 @@ export const createGameStateStore = (): GameStateStore => {
     gameState: undefined,
   });
 
-  const ingest = (change: GameStateIngest) => {
-    if (change.gameId !== store.gameId || change.gameMode !== store.gameMode) {
-      return;
-    }
-    setStore('gameState', reconcile(change.gameState));
-  };
-
-  const clear = () => {
-    setStore('gameState', undefined);
-  };
-
   const engineSubscriber: GameStateSubscriber = {
     gameId: '',
     gameMode: 'mini',
-    onGameStateChange: (change: GameStateChange) => {
-      ingest(change);
+    onGameStateChange: (_change: GameStateChange) => {
+      /* Assigned below after ingest is defined. */
     },
     onError: (error: Error) => {
       console.error(error);
     },
+  };
+
+  const ingest = (change: GameStateIngest): void => {
+    // Adopt subscription identity from seat snapshots (do not silently drop).
+    if (change.gameId !== store.gameId || change.gameMode !== store.gameMode) {
+      console.error('[gameState] ingest adopting subscription', {
+        from: { gameId: store.gameId, gameMode: store.gameMode },
+        to: { gameId: change.gameId, gameMode: change.gameMode },
+      });
+      setStore({ gameId: change.gameId, gameMode: change.gameMode });
+      engineSubscriber.gameId = change.gameId;
+      engineSubscriber.gameMode = change.gameMode;
+    }
+    setStore('gameState', reconcile(change.gameState));
+  };
+
+  engineSubscriber.onGameStateChange = (change: GameStateChange) => {
+    ingest(change);
+  };
+
+  const clear = () => {
+    setStore('gameState', undefined);
   };
 
   const setSubscribedGame = (gameId: string, gameMode: GameModeName) => {
