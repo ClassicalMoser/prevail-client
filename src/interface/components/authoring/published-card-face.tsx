@@ -1,12 +1,11 @@
-import { cardSvgUrl } from '@interface/lib/cardSvgUrl';
-import type { PublishedCardKind } from '@interface/lib/cardSvgUrl';
-import { cx } from '@interface/lib';
+import { cardSvgUrl, cx } from '@interface/lib';
+import type { PublishedCardKind } from '@interface/lib';
 import type { JSX } from 'solid-js';
 import { mergeProps } from 'solid-js';
 
 const sizeClass = {
   /** Dense roster / catalog scan */
-  xs: 'w-16 sm:w-[4.5rem]',
+  xs: 'w-16 sm:w-18',
   /** Slightly larger catalog tiles */
   sm: 'w-20 sm:w-24',
   /** Hover / focus enlarge */

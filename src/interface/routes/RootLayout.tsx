@@ -1,5 +1,5 @@
 import { Outlet } from '@tanstack/solid-router';
-import { AppNav } from '@interface/components/authoring/app-nav';
+import { AppNav } from '@interface/components';
 import type { JSX } from 'solid-js';
 
 export function RootLayout(): JSX.Element {

@@ -1,14 +1,14 @@
 import type { PublishedCardKind } from '@interface/lib';
+import type { Accessor, JSX } from 'solid-js';
+import { For, Show } from 'solid-js';
+import { Button } from '../button';
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@interface/components';
-import type { Accessor, JSX } from 'solid-js';
-import { For, Show } from 'solid-js';
+} from '../card';
 import { CardCatalogListItem } from './card-catalog-list-item';
 import type { CardCatalogItem } from './card-catalog-types';
 
@@ -95,8 +95,8 @@ export const CardCatalogPage = <TItem extends CardCatalogItem>(
               </Card>
             }
           >
-            <Card class="!overflow-visible">
-              <CardContent class="!overflow-visible pt-6">
+            <Card class="overflow-visible!">
+              <CardContent class="overflow-visible! pt-6">
                 <ul class={catalogGrid}>
                   <For each={props.cards()}>
                     {(item) => (

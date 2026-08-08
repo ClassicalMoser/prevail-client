@@ -5,9 +5,9 @@ import {
 } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor, JSX } from 'solid-js';
 import { For } from 'solid-js';
-import { FormField } from '../../form-field';
-import { Input } from '../../input';
-import { NativeSelect } from '../../native-select';
+import { FormField } from '@interface/form-field';
+import { Input } from '@interface/input';
+import { NativeSelect } from '@interface/native-select';
 
 export const CommandCardCommandFields = (props: {
   command: Accessor<CommandCard['command']>;

@@ -3,9 +3,9 @@ import type {
   UnitType,
 } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor, JSX } from 'solid-js';
-import { FormField } from '../../form-field';
-import { Input } from '../../input';
-import { NativeSelect } from '../../native-select';
+import { FormField } from '@interface/form-field';
+import { Input } from '@interface/input';
+import { NativeSelect } from '@interface/native-select';
 import { UnitSupportVariantFields } from './unit-support-variant-fields';
 
 export const UnitSupportEditor = (props: {

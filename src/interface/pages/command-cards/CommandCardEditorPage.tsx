@@ -1,8 +1,12 @@
 import { useCommandCardEditor, useCurrentUnitCardsQuery } from '@application';
-import { CardPreviewPanel } from '@interface/components/authoring/card-preview-panel';
-import { CommandCardForm } from '@interface/components/authoring/command-cards/command-card-form';
-import { EditorToolbar } from '@interface/components/authoring/editor-toolbar';
-import { Card, CardContent, buttonVariants } from '@interface/components';
+import {
+  Card,
+  CardContent,
+  CardPreviewPanel,
+  CommandCardForm,
+  EditorToolbar,
+  buttonVariants,
+} from '@interface/components';
 import { Link, useParams } from '@tanstack/solid-router';
 import type { JSX } from 'solid-js';
 import { For, Show } from 'solid-js';

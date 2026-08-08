@@ -6,7 +6,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../card';
+} from '@interface/card';
 import { ModifierListEditor } from '../modifier-list-editor';
 import { RestrictionsEditor } from '../restrictions-editor';
 import {

@@ -1,14 +1,14 @@
 import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
+import type { Accessor, JSX } from 'solid-js';
+import { For, Show } from 'solid-js';
+import { Button } from '@interface/button';
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@interface/components';
-import type { Accessor, JSX } from 'solid-js';
-import { For, Show } from 'solid-js';
+} from '@interface/card';
 import { PublishedCardThumb } from '../published-card-thumb';
 
 const rosterGrid =
@@ -22,7 +22,7 @@ export const ArmyCommandCardsSection = (props: {
   onAdd: (card: CommandCard) => void;
   onRemove: (listIndex: number) => void;
 }): JSX.Element => (
-  <Card class="!overflow-visible">
+  <Card class="overflow-visible!">
     <CardHeader>
       <CardTitle>Command cards</CardTitle>
       <CardDescription>
@@ -30,7 +30,7 @@ export const ArmyCommandCardsSection = (props: {
         exceed that count per initiative (or the army total).
       </CardDescription>
     </CardHeader>
-    <CardContent class="flex flex-col gap-6 !overflow-visible">
+    <CardContent class="flex flex-col gap-6 overflow-visible!">
       <section aria-labelledby="army-commands-roster-heading">
         <h3 id="army-commands-roster-heading" class="font-heading mb-2 text-sm">
           In this army

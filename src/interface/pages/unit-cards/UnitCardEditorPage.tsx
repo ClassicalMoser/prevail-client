@@ -1,8 +1,13 @@
 import { useUnitCardEditor } from '@application';
-import { CardPreviewPanel } from '@interface/components/authoring/card-preview-panel';
-import { UnitCardForm } from '@interface/components/authoring/unit-cards/unit-card-form';
-import { EditorToolbar } from '@interface/components/authoring/editor-toolbar';
-import { Card, CardContent, buttonVariants } from '@interface/components';
+import {
+  Card,
+  CardContent,
+  CardPreviewPanel,
+  EditorToolbar,
+  UnitCardForm,
+  buttonVariants,
+} from '@interface/components';
+import type { UnitType } from '@classicalmoser/prevail-rules/domain';
 import { Link, useParams } from '@tanstack/solid-router';
 import type { JSX } from 'solid-js';
 import { Show } from 'solid-js';
@@ -60,8 +65,8 @@ export function UnitCardEditorPage(): JSX.Element {
 
               <UnitCardForm
                 unit={unit}
-                onChange={(nextUnit) => {
-                  editor.updateDraft(() => nextUnit);
+                onChange={(nextUnit: UnitType) => {
+                  editor.updateDraft(() => nextUnit as UnitType);
                 }}
               />
             </>

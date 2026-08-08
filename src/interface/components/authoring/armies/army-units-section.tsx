@@ -1,16 +1,16 @@
 import type { UnitCount, UnitType } from '@classicalmoser/prevail-rules/domain';
+import type { Accessor, JSX } from 'solid-js';
+import { For, Show } from 'solid-js';
+import { Button } from '@interface/button';
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-  FormField,
-  Input,
-} from '@interface/components';
-import type { Accessor, JSX } from 'solid-js';
-import { For, Show } from 'solid-js';
+} from '@interface/card';
+import { FormField } from '@interface/form-field';
+import { Input } from '@interface/input';
 import { PublishedCardThumb } from '../published-card-thumb';
 
 const rosterGrid =
@@ -32,7 +32,7 @@ export const ArmyUnitsSection = (props: {
   };
 
   return (
-    <Card class="!overflow-visible">
+    <Card class="overflow-visible!">
       <CardHeader>
         <CardTitle>Units</CardTitle>
         <CardDescription>
@@ -40,7 +40,7 @@ export const ArmyUnitsSection = (props: {
           the unit’s limit. Hover a thumb to enlarge.
         </CardDescription>
       </CardHeader>
-      <CardContent class="flex flex-col gap-6 !overflow-visible">
+      <CardContent class="flex flex-col gap-6 overflow-visible!">
         <section aria-labelledby="army-units-roster-heading">
           <h3 id="army-units-roster-heading" class="font-heading mb-2 text-sm">
             In this army

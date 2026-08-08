@@ -9,7 +9,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../card';
+} from '@interface/card';
 import { UnitSupportEditor } from './unit-support-editor';
 
 export const CommandCardUnitSupportSection = (props: {
@@ -18,12 +18,12 @@ export const CommandCardUnitSupportSection = (props: {
   unitCatalog: Accessor<UnitType[] | undefined>;
   isUnitCatalogLoading: Accessor<boolean>;
 }): JSX.Element => (
-  <UiCard class="!overflow-visible">
+  <UiCard class="overflow-visible!">
     <CardHeader>
       <CardTitle>Unit support</CardTitle>
       <CardDescription>Units this card can support.</CardDescription>
     </CardHeader>
-    <CardContent class="!overflow-visible">
+    <CardContent class="overflow-visible!">
       <UnitSupportEditor
         unitSupport={() => props.card().unitSupport}
         onChange={(unitSupport) => {

@@ -1,5 +1,5 @@
 import { AuthContext, CoreProvider, ServerPortsContext } from '@application';
-import { router } from '@interface/routes';
+import { router } from '@interface';
 import { QueryClientProvider } from '@tanstack/solid-query';
 import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
 import { RouterProvider } from '@tanstack/solid-router';

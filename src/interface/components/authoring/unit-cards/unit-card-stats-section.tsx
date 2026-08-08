@@ -8,9 +8,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../card';
-import { FormField } from '../../form-field';
-import { Input } from '../../input';
+} from '@interface/card';
+import { FormField } from '@interface/form-field';
+import { Input } from '@interface/input';
 
 export const UnitCardStatsSection = (props: {
   unit: Accessor<UnitType>;

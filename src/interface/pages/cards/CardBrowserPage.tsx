@@ -2,9 +2,8 @@ import {
   useCurrentCommandCardsQuery,
   useCurrentUnitCardsQuery,
 } from '@application';
-import { CardGallery } from '@interface/components/card-browser/card-gallery';
-import { Button, Card, CardContent } from '@interface/components';
-import type { PublishedCardKind } from '@interface/lib/cardSvgUrl';
+import { Button, Card, CardContent, CardGallery } from '@interface/components';
+import type { PublishedCardKind } from '@interface/lib';
 import type { JSX } from 'solid-js';
 import { createMemo, createSignal, Show } from 'solid-js';
 

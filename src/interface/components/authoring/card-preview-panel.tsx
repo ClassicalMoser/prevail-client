@@ -1,10 +1,5 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@interface/components';
-import { svgToDataUrl } from '@interface/lib/svgToDataUrl';
+import { svgToDataUrl } from '@interface/lib';
+import { Card, CardContent, CardHeader, CardTitle } from '../card';
 import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
 

@@ -11,8 +11,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../card';
-import { Checkbox } from '../../checkbox';
+} from '@interface/card';
+import { Checkbox } from '@interface/checkbox';
 
 export const CommandCardDiscardModifiersSection = (props: {
   card: Accessor<CommandCard>;

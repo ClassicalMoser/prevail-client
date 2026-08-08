@@ -4,7 +4,7 @@ import {
   useCreateEmptyUnitCardMutation,
   useDeleteEmptyUnitCardsMutation,
 } from '@application';
-import { CardCatalogPage } from '@interface/components/authoring/card-catalog-page';
+import { CardCatalogPage } from '@interface/components';
 import type { JSX } from 'solid-js';
 
 export function UnitCardsPage(): JSX.Element {

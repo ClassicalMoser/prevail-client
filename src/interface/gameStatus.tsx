@@ -1,11 +1,11 @@
-import type { PhaseSummary } from '@application/gameState';
+import type { PhaseSummary } from '@application';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@interface/components';
+} from './components';
 import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
 

@@ -1,14 +1,14 @@
 import type { ArmyBudgetProjection } from '@application';
+import type { Accessor, JSX } from 'solid-js';
+import { For, Show } from 'solid-js';
+import { Badge } from '@interface/badge';
 import {
-  Badge,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@interface/components';
-import type { Accessor, JSX } from 'solid-js';
-import { For, Show } from 'solid-js';
+} from '@interface/card';
 
 const reqVariant = (ok: boolean): 'outline' | 'secondary' | 'destructive' =>
   ok ? 'outline' : 'destructive';

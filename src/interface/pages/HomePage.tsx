@@ -1,5 +1,7 @@
 import { useCore } from '@application';
-import { BoardComponent, Button, GameStatus } from '@interface';
+import { BoardComponent } from '@interface/board';
+import { Button } from '@interface/components';
+import { GameStatus } from '@interface/gameStatus';
 import type { JSX } from 'solid-js';
 
 export function HomePage(): JSX.Element {

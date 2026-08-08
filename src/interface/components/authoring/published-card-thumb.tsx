@@ -1,4 +1,4 @@
-import type { PublishedCardKind } from '@interface/lib/cardSvgUrl';
+import type { PublishedCardKind } from '@interface/lib';
 import { cx } from '@interface/lib';
 import type { JSX } from 'solid-js';
 import { Show } from 'solid-js';
@@ -47,7 +47,7 @@ export const PublishedCardThumb = (props: {
         />
       </div>
       <p
-        class="max-w-16 truncate text-[0.65rem] font-medium leading-tight sm:max-w-[4.5rem]"
+        class="max-w-16 truncate text-[0.65rem] font-medium leading-tight sm:max-w-18"
         title={props.name}
       >
         {props.name}
@@ -55,7 +55,7 @@ export const PublishedCardThumb = (props: {
       <Show when={props.meta}>
         {(meta) => (
           <p
-            class="text-muted-foreground max-w-16 truncate text-[0.6rem] leading-tight sm:max-w-[4.5rem]"
+            class="text-muted-foreground max-w-16 truncate text-[0.6rem] leading-tight sm:max-w-18"
             title={meta()}
           >
             {meta()}

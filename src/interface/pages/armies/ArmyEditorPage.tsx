@@ -4,9 +4,13 @@ import {
   useCurrentCommandCardsQuery,
   useCurrentUnitCardsQuery,
 } from '@application';
-import { ArmyEditorForm } from '@interface/components/authoring/armies';
-import { EditorToolbar } from '@interface/components/authoring/editor-toolbar';
-import { Card, CardContent, buttonVariants } from '@interface/components';
+import {
+  ArmyEditorForm,
+  Card,
+  CardContent,
+  EditorToolbar,
+  buttonVariants,
+} from '@interface/components';
 import { Link, useParams } from '@tanstack/solid-router';
 import type { JSX } from 'solid-js';
 import { For, Show } from 'solid-js';

@@ -6,8 +6,8 @@ import type {
 import { traits } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor, JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
-import { FormField } from '../../form-field';
-import { NativeSelect, NativeSelectOption } from '../../native-select';
+import { FormField } from '@interface/form-field';
+import { NativeSelect, NativeSelectOption } from '@interface/native-select';
 import { PublishedCardThumb } from '../published-card-thumb';
 
 const catalogGrid =

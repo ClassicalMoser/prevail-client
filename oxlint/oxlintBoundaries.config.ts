@@ -4,7 +4,7 @@ import { boundaries } from '../boundaries.ts';
 const config: OxlintConfig = {
   overrides: [
     {
-      files: ['src/**/*.ts', 'src/**/*.js'],
+      files: ['src/**/*.ts', 'src/**/*.js', 'src/**/*.tsx'],
       jsPlugins: ['eslint-plugin-import-boundaries'],
       rules: {
         'import-boundaries/enforce': [

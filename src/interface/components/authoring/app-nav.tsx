@@ -1,5 +1,5 @@
 import { useAuth } from '@application';
-import { Button } from '@interface/components/button';
+import { Button } from '../button';
 import { Link } from '@tanstack/solid-router';
 import type { JSX } from 'solid-js';
 import { Show } from 'solid-js';

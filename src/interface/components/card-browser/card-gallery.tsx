@@ -1,5 +1,5 @@
-import { cardSvgUrl } from '@interface/lib/cardSvgUrl';
-import type { PublishedCardKind } from '@interface/lib/cardSvgUrl';
+import { cardSvgUrl } from '@interface/lib';
+import type { PublishedCardKind } from '@interface/lib';
 import type { Accessor, JSX } from 'solid-js';
 import { For } from 'solid-js';
 
