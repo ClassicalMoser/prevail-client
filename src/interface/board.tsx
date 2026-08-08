@@ -20,6 +20,7 @@ export interface BoardUnitViewProps {
 export interface BoardCellViewProps {
   commanders: PlayerSide[];
   units: BoardUnitViewProps[];
+  highlight?: 'legal' | 'selected';
 }
 
 function parseCellCoordinate(cellCoordinate: string): {
@@ -34,9 +35,22 @@ function parseCellCoordinate(cellCoordinate: string): {
   return { row, column };
 }
 
+function cellHighlightClass(
+  highlight: 'legal' | 'selected' | undefined,
+): string {
+  if (highlight === 'legal') {
+    return 'board-cell--legal';
+  }
+  if (highlight === 'selected') {
+    return 'board-cell--selected';
+  }
+  return '';
+}
+
 export const BoardComponent = (props: {
   board: Accessor<Board | undefined>;
   cells: Accessor<Readonly<Partial<Record<string, BoardCellViewProps>>>>;
+  onCellClick?: (coordinate: string) => void;
 }): JSX.Element => {
   const layout = createMemo(() => {
     const b = props.board();
@@ -105,7 +119,12 @@ export const BoardComponent = (props: {
                     {(cell) => {
                       const cellView = () => props.cells()[cell];
                       return (
-                        <div class="board-cell" aria-label={cell}>
+                        <button
+                          type="button"
+                          class={`board-cell ${cellHighlightClass(cellView()?.highlight)}`}
+                          aria-label={cell}
+                          onClick={() => props.onCellClick?.(cell)}
+                        >
                           <img src={singleTile} alt="" />
                           <Show when={cellView()}>
                             {(view) => (
@@ -128,7 +147,7 @@ export const BoardComponent = (props: {
                               </>
                             )}
                           </Show>
-                        </div>
+                        </button>
                       );
                     }}
                   </For>

@@ -1,4 +1,11 @@
-import type { Armies, CommandCards, ServerPorts, UnitCards } from '@ports';
+import type {
+  Armies,
+  CommandCards,
+  GameSeat,
+  Games,
+  ServerPorts,
+  UnitCards,
+} from '@ports';
 import { createContext, useContext } from 'solid-js';
 
 /**
@@ -18,6 +25,10 @@ export const useServerPorts = (): ServerPorts => {
 };
 
 export const useArmies = (): Armies => useServerPorts().armies;
+
+export const useGames = (): Games => useServerPorts().games;
+
+export const useGameSeat = (): GameSeat => useServerPorts().gameSeat;
 
 export const useCommandCards = (): CommandCards =>
   useServerPorts().commandCards;

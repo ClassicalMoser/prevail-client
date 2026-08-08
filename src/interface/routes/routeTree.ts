@@ -8,6 +8,8 @@ import {
   CommandCardsPage,
   HomePage,
   NewArmyPage,
+  PlayLobbyPage,
+  PlayPage,
   UnitCardEditorPage,
   UnitCardsPage,
 } from '@interface/pages';
@@ -79,6 +81,18 @@ const armyEditorRoute = createRoute({
   component: ArmyEditorPage,
 });
 
+const playLobbyRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: 'play',
+  component: PlayLobbyPage,
+});
+
+const playSeatRoute = createRoute({
+  getParentRoute: () => adminRoute,
+  path: 'play/$gameId/$side',
+  component: PlayPage,
+});
+
 export const routeTree = rootRoute.addChildren([
   indexRoute,
   cardsRoute,
@@ -90,5 +104,7 @@ export const routeTree = rootRoute.addChildren([
     armiesRoute,
     armyNewRoute,
     armyEditorRoute,
+    playLobbyRoute,
+    playSeatRoute,
   ]),
 ]);

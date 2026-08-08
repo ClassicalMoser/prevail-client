@@ -17,13 +17,13 @@ export const AppNav = (): JSX.Element => {
           Prevail
         </Link>
         <div class="flex flex-1 items-center gap-4">
-          <Link to="/" class={navLinkClass}>
-            Play
-          </Link>
           <Link to="/cards" class={navLinkClass}>
             Cards
           </Link>
           <Show when={!auth.isLoading() && auth.isAuthenticated()}>
+            <Link to="/play" class={navLinkClass}>
+              Play
+            </Link>
             <Link to="/command-cards" class={navLinkClass}>
               Command Cards
             </Link>

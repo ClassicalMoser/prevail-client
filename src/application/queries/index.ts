@@ -8,6 +8,7 @@ export {
   useOwnedArmyByIdQuery,
   useUpdateOwnedArmyMutation,
 } from './armies';
+export { useCreateVsBotGameMutation } from './games';
 export {
   allCommandCardsQueryOptions,
   commandCardByIdQueryOptions,

@@ -57,6 +57,7 @@ export {
   useCreateEmptyCommandCardMutation,
   useCreateEmptyUnitCardMutation,
   useCreateOwnedArmyMutation,
+  useCreateVsBotGameMutation,
   useCreateUnitCardVersionMutation,
   useCurrentCommandCardsQuery,
   useCurrentUnitCardsQuery,
@@ -74,9 +75,23 @@ export {
   ServerPortsContext,
   useArmies,
   useCommandCards,
+  useGameSeat,
+  useGames,
   useServerPorts,
   useUnitCards,
 } from './serverPortsContext';
+export {
+  computeHighlights,
+  legalOptionsForSeat,
+  useSeatPlaySession,
+} from './play';
+export type {
+  ChoiceListItem,
+  PlayBoardCellView,
+  PlayHighlights,
+  SeatSelection,
+  UseSeatPlaySessionResult,
+} from './play';
 export { RouteResponseError } from '@ports';
 export { useGameStorage } from './repositories';
 export { useGreetMsg, useName } from './signals';
