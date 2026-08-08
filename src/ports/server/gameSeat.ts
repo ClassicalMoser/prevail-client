@@ -17,7 +17,8 @@ export type GameSeatOutbound = InGameSeatOutboundMessage<
 >;
 
 export interface GameSeatConnection {
-  sendChoice: (choice: PlayerChoiceEvent) => void;
+  /** Returns false when the socket cannot send (caller should unlock pending). */
+  sendChoice: (choice: PlayerChoiceEvent) => boolean;
   close: () => void;
   /** Subscribe to parsed outbound envelopes; returns unsubscribe. */
   subscribe: (listener: (message: GameSeatOutbound) => void) => () => void;

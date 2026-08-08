@@ -7,6 +7,11 @@
   left: 0;
 }
 
+.unit-component--pending {
+  opacity: 0.72;
+  filter: drop-shadow(0 0 0.2rem rgb(250 204 21 / 0.85));
+}
+
 .unit-component img {
   object-fit: contain;
 }

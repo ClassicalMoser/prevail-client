@@ -7,12 +7,15 @@ export const UnitComponent = (props: {
   facing: UnitFacing;
   imageSrc: string | undefined;
   label: string;
+  pending?: boolean;
 }): JSX.Element => (
-  <div class={`unit-component facing-${props.facing}`}>
+  <div
+    class={`unit-component facing-${props.facing}${props.pending === true ? ' unit-component--pending' : ''}`}
+  >
     <Show
       when={props.imageSrc}
       fallback={
-        <span class="unit-placeholder bg-background/80 text-foreground block px-1 py-0.5 text-center text-[0.65rem] leading-tight">
+        <span class="unit-placeholder bg-background/80 text-foreground block px-1 py-0.5 text-center text-xs leading-tight">
           {props.label}
         </span>
       }

@@ -6,6 +6,7 @@ import type {
 import type { Accessor, JSX } from 'solid-js';
 import { createMemo, For, Show } from 'solid-js';
 import singleTile from '../assets/singleTile.png';
+import { FacingArrowPad } from './facing-arrow-pad';
 import { UnitComponent } from './unit';
 import './board.css';
 
@@ -14,6 +15,8 @@ export interface BoardUnitViewProps {
   label: string;
   facing: UnitFacing;
   imageSrc: string | undefined;
+  /** Local pending placement (not yet committed on the server). */
+  pending?: boolean;
 }
 
 /** Presentational cell content projected from authoritative board state. */
@@ -21,6 +24,8 @@ export interface BoardCellViewProps {
   commanders: PlayerSide[];
   units: BoardUnitViewProps[];
   highlight?: 'legal' | 'selected';
+  /** Show reusable eight-direction facing arrows for this cell. */
+  facingPicker?: boolean;
 }
 
 function parseCellCoordinate(cellCoordinate: string): {
@@ -47,10 +52,50 @@ function cellHighlightClass(
   return '';
 }
 
+const BoardCellBody = (props: {
+  cell: string;
+  view: BoardCellViewProps | undefined;
+  onFacingClick?: (coordinate: string, facing: UnitFacing) => void;
+}): JSX.Element => (
+  <>
+    <img src={singleTile} alt="" />
+    <Show when={props.view}>
+      {(view) => (
+        <>
+          <Show when={view().commanders.length > 0}>
+            <span class="board-cell-commanders bg-background/75 text-foreground absolute top-0.5 right-0.5 left-0.5 z-110 text-center text-xs leading-tight">
+              {view().commanders.join(', ')} commander
+              {view().commanders.length > 1 ? 's' : ''}
+            </span>
+          </Show>
+          <For each={view().units}>
+            {(unit) => (
+              <UnitComponent
+                facing={unit.facing}
+                imageSrc={unit.imageSrc}
+                label={unit.label}
+                pending={unit.pending}
+              />
+            )}
+          </For>
+          <Show when={view().facingPicker === true}>
+            <FacingArrowPad
+              onSelectFacing={(facing) => {
+                props.onFacingClick?.(props.cell, facing);
+              }}
+            />
+          </Show>
+        </>
+      )}
+    </Show>
+  </>
+);
+
 export const BoardComponent = (props: {
   board: Accessor<Board | undefined>;
   cells: Accessor<Readonly<Partial<Record<string, BoardCellViewProps>>>>;
   onCellClick?: (coordinate: string) => void;
+  onFacingClick?: (coordinate: string, facing: UnitFacing) => void;
 }): JSX.Element => {
   const layout = createMemo(() => {
     const b = props.board();
@@ -118,36 +163,35 @@ export const BoardComponent = (props: {
                   <For each={row}>
                     {(cell) => {
                       const cellView = () => props.cells()[cell];
+                      const cellClass = () =>
+                        `board-cell ${cellHighlightClass(cellView()?.highlight)} ${cellView()?.facingPicker === true ? 'board-cell--facing' : ''}`;
                       return (
-                        <button
-                          type="button"
-                          class={`board-cell ${cellHighlightClass(cellView()?.highlight)}`}
-                          aria-label={cell}
-                          onClick={() => props.onCellClick?.(cell)}
+                        <Show
+                          when={cellView()?.facingPicker === true}
+                          fallback={
+                            <button
+                              type="button"
+                              class={cellClass()}
+                              aria-label={cell}
+                              onClick={() => props.onCellClick?.(cell)}
+                            >
+                              <BoardCellBody
+                                cell={cell}
+                                view={cellView()}
+                                onFacingClick={props.onFacingClick}
+                              />
+                            </button>
+                          }
                         >
-                          <img src={singleTile} alt="" />
-                          <Show when={cellView()}>
-                            {(view) => (
-                              <>
-                                <Show when={view().commanders.length > 0}>
-                                  <span class="board-cell-commanders bg-background/75 text-foreground absolute top-0.5 right-0.5 left-0.5 z-[110] text-center text-[0.55rem] leading-tight">
-                                    {view().commanders.join(', ')} commander
-                                    {view().commanders.length > 1 ? 's' : ''}
-                                  </span>
-                                </Show>
-                                <For each={view().units}>
-                                  {(unit) => (
-                                    <UnitComponent
-                                      facing={unit.facing}
-                                      imageSrc={unit.imageSrc}
-                                      label={unit.label}
-                                    />
-                                  )}
-                                </For>
-                              </>
-                            )}
-                          </Show>
-                        </button>
+                          {/* Nested facing buttons cannot live inside a <button>. */}
+                          <div class={cellClass()} aria-label={cell}>
+                            <BoardCellBody
+                              cell={cell}
+                              view={cellView()}
+                              onFacingClick={props.onFacingClick}
+                            />
+                          </div>
+                        </Show>
                       );
                     }}
                   </For>

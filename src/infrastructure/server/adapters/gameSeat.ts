@@ -76,7 +76,15 @@ const parseOutbound = (
       const parsed = outbound.choiceRejected.safeParse(payload);
       if (!parsed.success) {
         console.error('Seat WS: invalid choiceRejected', parsed.error);
-        return undefined;
+        // Still surface a rejection so the UI can unlock and retry.
+        return {
+          type: 'choiceRejected',
+          payload: {
+            result: false,
+            errorReason:
+              'Choice rejected (unreadable server payload). You can retry.',
+          },
+        } as GameSeatOutbound;
       }
       return { type, payload: parsed.data } as GameSeatOutbound;
     }
@@ -122,9 +130,10 @@ export function createGameSeatAdapter(wsBaseUrl: string): GameSeat {
         sendChoice: (choice: PlayerChoiceEvent) => {
           if (socket.readyState !== WebSocket.OPEN) {
             console.error('Seat WS: send while not open', status);
-            return;
+            return false;
           }
           socket.send(JSON.stringify(choice));
+          return true;
         },
         close: () => {
           socket.close();

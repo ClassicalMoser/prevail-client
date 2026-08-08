@@ -31,24 +31,34 @@
   cursor: pointer;
 }
 
+.board-cell--facing {
+  overflow: visible;
+  z-index: 2;
+}
+
 .board-cell--legal::after,
 .board-cell--selected::after {
   content: '';
   pointer-events: none;
   position: absolute;
-  inset: 8%;
-  border-radius: 999px;
+  inset: 4%;
+  border-radius: 0.2rem;
   z-index: 120;
 }
 
 .board-cell--legal::after {
-  box-shadow: inset 0 0 0 3px rgb(34 197 94 / 0.85);
-  background: rgb(34 197 94 / 0.18);
+  box-shadow: inset 0 0 0 2px rgb(34 197 94 / 0.75);
+  background: rgb(34 197 94 / 0.12);
 }
 
 .board-cell--selected::after {
-  box-shadow: inset 0 0 0 3px rgb(234 179 8 / 0.95);
-  background: rgb(234 179 8 / 0.22);
+  box-shadow: inset 0 0 0 2px rgb(234 179 8 / 0.95);
+  background: rgb(234 179 8 / 0.18);
+}
+
+.board-cell--facing.board-cell--legal::after {
+  /* Facing arrows carry the affordance; keep only a light wash. */
+  box-shadow: none;
 }
 
 .board-cell img {

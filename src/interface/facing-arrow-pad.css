@@ -1,0 +1,55 @@
+.facing-arrow-pad {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 130;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  min-inline-size: 0;
+}
+
+.facing-arrow-pad__btn {
+  pointer-events: auto;
+  display: grid;
+  place-items: center;
+  width: 72%;
+  height: 72%;
+  max-width: 1.35rem;
+  max-height: 1.35rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgb(34 197 94 / 0.55);
+  border-radius: 0.2rem;
+  background: rgb(15 23 42 / 0.72);
+  color: rgb(187 247 208);
+  font-size: 0.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.facing-arrow-pad__btn:hover:not(:disabled) {
+  border-color: rgb(74 222 128);
+  background: rgb(22 101 52 / 0.85);
+  color: white;
+}
+
+.facing-arrow-pad__btn:focus-visible {
+  outline: 2px solid rgb(250 204 21);
+  outline-offset: 1px;
+}
+
+.facing-arrow-pad__btn--selected {
+  border-color: rgb(250 204 21);
+  background: rgb(161 98 7 / 0.9);
+  color: white;
+}
+
+.facing-arrow-pad__btn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}

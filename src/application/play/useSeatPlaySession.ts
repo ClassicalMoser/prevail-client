@@ -5,53 +5,96 @@ import type {
   LegalPlayerChoiceOptions,
   PlayerChoiceEvent,
   PlayerSide,
+  UnitFacing,
   UnitInstance,
 } from '@classicalmoser/prevail-rules/domain';
 import { applyEvent } from '@classicalmoser/prevail-rules/domain';
 import { useAuth } from '@application/authContext';
 import { useCore } from '@application/coreContext';
 import type { BoardCellView } from '@application/gameState';
+import { resolveUnitArtSrc } from '@application/gameState';
 import { useGameSeat } from '@application/serverPortsContext';
 import type { GameSeatConnectionStatus } from '@ports';
 import type { Accessor } from 'solid-js';
-import { createEffect, createMemo, createSignal, onCleanup } from 'solid-js';
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  untrack,
+} from 'solid-js';
+import {
+  issuedCommandsFromState,
+  playCardSlotsFromState,
+  remainingCommandsBySide,
+} from './playVisibility';
+import type { IssuedCommandView, PlayCardSlotView } from './playVisibility';
 import {
   buildIssueCommandSubmit,
+  canConfirmIssueCommand,
   choiceListItems,
   computeHighlights,
-  emptySelection,
   handleCellClick,
+  handleFacingClick,
   handCardsFromState,
+  hasStagedUndo,
   issueCommandLabels,
   legalOptionsForSeat,
   patchEventNumber,
+  preflightPlayerChoice,
+  resetStagedSelection,
   selectIssueCommand,
   selectSetupUnit,
-  selectionForOptions,
   toggleRoutDiscardCard,
+  undoStagedSelection,
 } from './selectionFsm';
-import type { ChoiceListItem, SeatSelection } from './selectionFsm';
+import type {
+  ChoiceListItem,
+  CellHighlight,
+  SeatSelection,
+} from './selectionFsm';
 
-export type PlayBoardCellView = BoardCellView & {
+export type PlayBoardUnitView = BoardCellView['units'][number] & {
+  pending?: boolean;
+};
+
+export type PlayBoardCellView = Omit<BoardCellView, 'units'> & {
+  units: PlayBoardUnitView[];
   highlight?: 'legal' | 'selected';
+  facingPicker?: boolean;
 };
 
 export interface UseSeatPlaySessionResult {
   connectionStatus: Accessor<GameSeatConnectionStatus>;
   choiceRejected: Accessor<FailValidationResult | undefined>;
+  choicePending: Accessor<boolean>;
+  canRetry: Accessor<boolean>;
   legalOptions: Accessor<LegalPlayerChoiceOptions | null>;
   selection: Accessor<SeatSelection>;
+  canUndo: Accessor<boolean>;
   choiceItems: Accessor<ChoiceListItem[]>;
   issueCommands: Accessor<ReturnType<typeof issueCommandLabels>>;
+  canConfirmIssue: Accessor<boolean>;
   handCards: Accessor<ReturnType<typeof handCardsFromState>>;
+  cardHighlights: Accessor<Readonly<Partial<Record<string, CellHighlight>>>>;
+  playCardSlots: Accessor<{
+    you: PlayCardSlotView;
+    opponent: PlayCardSlotView;
+  }>;
+  issuedCommands: Accessor<IssuedCommandView[]>;
+  remainingCommands: Accessor<ReturnType<typeof remainingCommandsBySide>>;
   boardCells: Accessor<Readonly<Partial<Record<string, PlayBoardCellView>>>>;
   onCellClick: (coordinate: string) => void;
+  onFacingClick: (coordinate: string, facing: UnitFacing) => void;
   onChoiceItem: (item: ChoiceListItem) => void;
   onSelectSetupUnit: (unit: UnitInstance) => void;
   onSelectIssueCommand: (index: number) => void;
   onConfirmIssueCommand: () => void;
   onToggleRoutCard: (cardId: string) => void;
   onChooseCardId: (cardId: string) => void;
+  onUndo: () => void;
+  onResetSelection: () => void;
+  onRetryLastChoice: () => void;
   clearRejection: () => void;
 }
 
@@ -72,10 +115,15 @@ export function useSeatPlaySession(
   const [choiceRejected, setChoiceRejected] = createSignal<
     FailValidationResult | undefined
   >();
-  const [selection, setSelection] =
-    createSignal<SeatSelection>(emptySelection());
+  const [choicePending, setChoicePending] = createSignal(false);
+  const [lastAttempt, setLastAttempt] = createSignal<
+    PlayerChoiceEvent | undefined
+  >();
+  const [selection, setSelection] = createSignal<SeatSelection>(
+    resetStagedSelection(null),
+  );
   const [sendChoice, setSendChoice] = createSignal<
-    ((choice: PlayerChoiceEvent) => void) | undefined
+    ((choice: PlayerChoiceEvent) => boolean) | undefined
   >();
   const [gameMode, setGameMode] = createSignal<GameModeName>('mini');
 
@@ -91,9 +139,20 @@ export function useSeatPlaySession(
     return `${options.choiceType}:${options.expectedEventNumber}`;
   });
 
-  createEffect(() => {
-    optionsIdentity();
-    setSelection(selectionForOptions(legalOptions()));
+  // Only reset the draft when the expected choice identity changes.
+  // Untrack state reads so folds do not wipe setup placements mid-draft.
+  createEffect((prevIdentity?: string) => {
+    const identity = optionsIdentity();
+    if (prevIdentity === identity) {
+      return identity;
+    }
+    untrack(() => {
+      setChoicePending(false);
+      setChoiceRejected(undefined);
+      setLastAttempt(undefined);
+      setSelection(resetStagedSelection(legalOptions(), core.game.state()));
+    });
+    return identity;
   });
 
   createEffect(() => {
@@ -110,8 +169,16 @@ export function useSeatPlaySession(
     };
 
     setConnectionStatus('connecting');
-    setChoiceRejected();
-    setSendChoice();
+    setChoiceRejected(undefined);
+    setChoicePending(false);
+    setLastAttempt(undefined);
+    setSendChoice(undefined);
+
+    // Non-reactive mirrors for the WS message callback (not a tracked scope).
+    let activeGameMode: GameModeName = gameMode();
+    const readGameState = core.game.state;
+    const ingestGameState = core.ingestGameState;
+    const setSubscribedGame = core.setSubscribedGame;
 
     const connectSeat = async (): Promise<void> => {
       try {
@@ -133,9 +200,10 @@ export function useSeatPlaySession(
           switch (message.type) {
             case 'roundSnapshot': {
               const game = message.payload;
+              activeGameMode = game.gameMode;
               setGameMode(game.gameMode);
-              core.setSubscribedGame(game.id, game.gameMode);
-              core.ingestGameState({
+              setSubscribedGame(game.id, game.gameMode);
+              ingestGameState({
                 gameId: game.id,
                 gameMode: game.gameMode,
                 gameState: game.gameState,
@@ -144,24 +212,31 @@ export function useSeatPlaySession(
             }
             case 'playerChoice':
             case 'gameEffect': {
-              const current = core.game.state();
+              const current = readGameState();
               if (current === undefined) {
                 console.error('Seat WS fold: no local state yet');
                 return;
               }
               try {
                 const next = applyEvent(message.payload, current);
-                core.ingestGameState({
+                ingestGameState({
                   gameId: id,
-                  gameMode: gameMode(),
+                  gameMode: activeGameMode,
                   gameState: next,
                 });
               } catch (error) {
                 console.error('Seat WS fold failed', error);
+                setChoicePending(false);
+                setChoiceRejected({
+                  errorReason:
+                    'Failed to apply server event locally. Your draft was kept — undo or retry, or refresh if the board looks wrong.',
+                  result: false,
+                });
               }
               break;
             }
             case 'choiceRejected': {
+              setChoicePending(false);
               setChoiceRejected(message.payload);
               break;
             }
@@ -186,23 +261,52 @@ export function useSeatPlaySession(
       unsubStatus();
       unsubMessages();
       connection?.close();
-      setSendChoice();
+      setSendChoice(undefined);
+      setChoicePending(false);
     });
   });
 
   const submit = (choice: PlayerChoiceEvent) => {
+    if (choicePending()) {
+      return;
+    }
     const state = core.game.state();
     const eventNumber =
       state?.currentRoundState.events.length ?? choice.eventNumber;
     const payload = patchEventNumber(choice, eventNumber);
-    const send = sendChoice();
-    if (send === undefined) {
-      console.error('Seat WS: cannot submit, not connected');
+    const preflight = preflightPlayerChoice(payload);
+    if (!preflight.ok) {
+      console.error('Seat WS: local playerChoice schema failed', preflight);
+      setChoicePending(false);
+      setLastAttempt(payload);
+      setChoiceRejected({
+        errorReason: preflight.errorReason,
+        result: false,
+      });
       return;
     }
-    setChoiceRejected();
-    send(payload);
-    setSelection(emptySelection());
+    const send = sendChoice();
+    if (send === undefined) {
+      console.error('Seat WS: send while not connected');
+      setLastAttempt(preflight.choice);
+      setChoiceRejected({
+        errorReason: 'Not connected — choice was not sent. Draft kept.',
+        result: false,
+      });
+      return;
+    }
+    // Keep staged selection until accept (options advance) or reject.
+    setLastAttempt(preflight.choice);
+    setChoiceRejected(undefined);
+    setChoicePending(true);
+    const sent = send(preflight.choice);
+    if (!sent) {
+      setChoicePending(false);
+      setChoiceRejected({
+        errorReason: 'Socket not open — choice was not sent. Draft kept.',
+        result: false,
+      });
+    }
   };
 
   const highlights = createMemo(() =>
@@ -211,43 +315,125 @@ export function useSeatPlaySession(
 
   const boardCells = createMemo(() => {
     const base = core.game.boardCells();
-    const hl = highlights().cells;
+    const hl = highlights();
+    const sel = selection();
     const merged: Partial<Record<string, PlayBoardCellView>> = {};
     for (const [coord, view] of Object.entries(base)) {
       if (view === undefined) {
         continue;
       }
-      merged[coord] = { ...view, highlight: hl[coord] };
+      merged[coord] = {
+        ...view,
+        highlight: hl.cells[coord],
+        facingPicker: hl.facingPickerCells.has(coord),
+      };
     }
-    for (const [coord, highlight] of Object.entries(hl)) {
+    for (const [coord, highlight] of Object.entries(hl.cells)) {
       if (merged[coord] === undefined) {
         merged[coord] = {
           coordinate: coord,
           commanders: [],
           units: [],
           highlight,
+          facingPicker: hl.facingPickerCells.has(coord),
         };
+      }
+    }
+    if (sel.kind === 'setup') {
+      for (const placement of sel.placements) {
+        const coord = placement.placement.coordinate;
+        const existing = merged[coord];
+        const pendingUnit = {
+          label: `${placement.unit.unitType.name} (${placement.unit.playerSide} #${placement.unit.instanceNumber})`,
+          facing: placement.placement.facing,
+          imageSrc: resolveUnitArtSrc(placement.unit.unitType.name),
+          playerSide: placement.unit.playerSide,
+          pending: true as const,
+        };
+        if (existing === undefined) {
+          merged[coord] = {
+            coordinate: coord,
+            commanders: [],
+            units: [pendingUnit],
+            highlight: hl.cells[coord] ?? 'selected',
+            facingPicker: false,
+          };
+        } else {
+          merged[coord] = {
+            ...existing,
+            highlight: hl.cells[coord] ?? 'selected',
+            facingPicker: false,
+            units: [
+              ...existing.units.filter((unit) => unit.pending !== true),
+              pendingUnit,
+            ],
+          };
+        }
       }
     }
     return merged;
   });
 
-  const choiceItems = createMemo(() => choiceListItems(legalOptions()));
+  const choiceItems = createMemo(() => {
+    const options = legalOptions();
+    // Hand strip is the primary chooseCard / routDiscard UI.
+    if (
+      options !== null &&
+      (options.choiceType === 'chooseCard' ||
+        options.choiceType === 'chooseRoutDiscard')
+    ) {
+      return [];
+    }
+    return choiceListItems(options);
+  });
   const issueCommands = createMemo(() => issueCommandLabels(legalOptions()));
+  const canConfirmIssue = createMemo(
+    () => canConfirmIssueCommand(selection()) && !choicePending(),
+  );
+  const canUndo = createMemo(
+    () => hasStagedUndo(selection()) && !choicePending(),
+  );
+  const canRetry = createMemo(
+    () =>
+      lastAttempt() !== undefined &&
+      !choicePending() &&
+      (choiceRejected() !== undefined || legalOptions() !== null),
+  );
   const handCards = createMemo(() =>
     handCardsFromState(core.game.state(), side()),
+  );
+  const cardHighlights = createMemo(() => highlights().cardIds);
+  const playCardSlots = createMemo(() =>
+    playCardSlotsFromState(core.game.state(), side()),
+  );
+  const issuedCommands = createMemo(() =>
+    issuedCommandsFromState(core.game.state()),
+  );
+  const remainingCommands = createMemo(() =>
+    remainingCommandsBySide(core.game.state()),
   );
 
   return {
     connectionStatus,
     choiceRejected,
+    choicePending,
+    canRetry,
     legalOptions,
     selection,
+    canUndo,
     choiceItems,
     issueCommands,
+    canConfirmIssue,
     handCards,
+    cardHighlights,
+    playCardSlots,
+    issuedCommands,
+    remainingCommands,
     boardCells,
     onCellClick: (coordinate) => {
+      if (choicePending()) {
+        return;
+      }
       const state = core.game.state();
       if (state === undefined) {
         return;
@@ -263,13 +449,34 @@ export function useSeatPlaySession(
         submit(result.submit);
       }
     },
+    onFacingClick: (coordinate, facing) => {
+      if (choicePending()) {
+        return;
+      }
+      const result = handleFacingClick({
+        coordinate: coordinate as Coordinate,
+        facing,
+        options: legalOptions(),
+        selection: selection(),
+      });
+      setSelection(result.selection);
+      if (result.submit !== undefined) {
+        submit(result.submit);
+      }
+    },
     onChoiceItem: (item) => {
       submit(item.event);
     },
     onSelectSetupUnit: (unit) => {
+      if (choicePending()) {
+        return;
+      }
       setSelection(selectSetupUnit(selection(), unit));
     },
     onSelectIssueCommand: (index) => {
+      if (choicePending()) {
+        return;
+      }
       const options = legalOptions();
       const state = core.game.state();
       if (options === null || state === undefined) {
@@ -292,6 +499,9 @@ export function useSeatPlaySession(
       }
     },
     onToggleRoutCard: (cardId) => {
+      if (choicePending()) {
+        return;
+      }
       const options = legalOptions();
       if (options === null) {
         return;
@@ -308,8 +518,33 @@ export function useSeatPlaySession(
         submit(item.event);
       }
     },
+    onUndo: () => {
+      // Unlock even if a failed submit left pending stuck.
+      setChoicePending(false);
+      setSelection(
+        undoStagedSelection(selection(), legalOptions(), core.game.state()),
+      );
+    },
+    onResetSelection: () => {
+      // Unlock even if a failed submit left pending stuck.
+      setChoicePending(false);
+      setChoiceRejected(undefined);
+      // Keep lastAttempt so Retry remains available after clearing the draft.
+      setSelection(resetStagedSelection(legalOptions(), core.game.state()));
+    },
+    onRetryLastChoice: () => {
+      const attempt = lastAttempt();
+      // Force-unlock so a stuck pending cannot block reattempt.
+      setChoicePending(false);
+      setChoiceRejected(undefined);
+      if (attempt === undefined) {
+        return;
+      }
+      submit(attempt);
+    },
     clearRejection: () => {
-      setChoiceRejected();
+      setChoicePending(false);
+      setChoiceRejected(undefined);
     },
   };
 }

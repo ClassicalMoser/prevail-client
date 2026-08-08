@@ -82,12 +82,15 @@ export {
 } from './serverPortsContext';
 export {
   computeHighlights,
+  formatCommandLabel,
   legalOptionsForSeat,
   useSeatPlaySession,
 } from './play';
 export type {
   ChoiceListItem,
+  IssuedCommandView,
   PlayBoardCellView,
+  PlayCardSlotView,
   PlayHighlights,
   SeatSelection,
   UseSeatPlaySessionResult,
