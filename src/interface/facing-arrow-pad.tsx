@@ -2,7 +2,7 @@ import type { UnitFacing } from '@classicalmoser/prevail-rules/domain';
 import { unitFacings } from '@classicalmoser/prevail-rules/domain';
 import { cx } from './lib';
 import type { JSX } from 'solid-js';
-import { For, mergeProps } from 'solid-js';
+import { createMemo, For, mergeProps } from 'solid-js';
 import './facing-arrow-pad.css';
 
 const FACING_GLYPH: Record<UnitFacing, string> = {
@@ -29,7 +29,11 @@ const FACING_GRID_AREA: Record<UnitFacing, string> = {
 };
 
 export interface FacingArrowPadProps {
-  /** Facings that can be chosen; defaults to all eight. */
+  /**
+   * Facings that can be chosen. Only these arrows are rendered.
+   * Omit or pass all eight when every facing is legal (e.g. setup).
+   * Pass `[]` to render nothing.
+   */
   enabledFacings?: readonly UnitFacing[];
   /** Optional highlight for the currently chosen facing. */
   selectedFacing?: UnitFacing;
@@ -39,25 +43,24 @@ export interface FacingArrowPadProps {
 }
 
 /**
- * Reusable eight-direction facing control laid out as a 3×3 pad (center empty).
- * Intended as a board-cell overlay or standalone picker.
+ * Facing control laid out as a 3×3 pad (center empty).
+ * Renders only the enabled facing arrows — illegal directions are omitted.
  */
 export const FacingArrowPad = (rawProps: FacingArrowPadProps): JSX.Element => {
   const props = mergeProps(
-    { enabledFacings: unitFacings, disabled: false },
+    { disabled: false, enabledFacings: unitFacings },
     rawProps,
   );
 
-  const enabled = (): ReadonlySet<UnitFacing> => new Set(props.enabledFacings);
+  const facings = createMemo((): UnitFacing[] => [...props.enabledFacings]);
 
   return (
     <fieldset
       class={cx('facing-arrow-pad', props.class)}
       aria-label="Choose facing"
     >
-      <For each={[...unitFacings]}>
+      <For each={facings()}>
         {(facing) => {
-          const isEnabled = () => enabled().has(facing);
           const isSelected = () => props.selectedFacing === facing;
           return (
             <button
@@ -67,12 +70,12 @@ export const FacingArrowPad = (rawProps: FacingArrowPadProps): JSX.Element => {
                 isSelected() && 'facing-arrow-pad__btn--selected',
               )}
               style={{ 'grid-area': FACING_GRID_AREA[facing] }}
-              disabled={props.disabled || !isEnabled()}
+              disabled={props.disabled}
               aria-label={`Face ${facing}`}
               aria-pressed={isSelected()}
               onClick={(event) => {
                 event.stopPropagation();
-                if (props.disabled || !isEnabled()) {
+                if (props.disabled) {
                   return;
                 }
                 props.onSelectFacing(facing);

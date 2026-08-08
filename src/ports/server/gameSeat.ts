@@ -19,6 +19,8 @@ export type GameSeatOutbound = InGameSeatOutboundMessage<
 export interface GameSeatConnection {
   /** Returns false when the socket cannot send (caller should unlock pending). */
   sendChoice: (choice: PlayerChoiceEvent) => boolean;
+  /** Ask the server for a fresh seat-visible gameSnapshot (reconcile). */
+  requestGameSnapshot: () => boolean;
   close: () => void;
   /** Subscribe to parsed outbound envelopes; returns unsubscribe. */
   subscribe: (listener: (message: GameSeatOutbound) => void) => () => void;

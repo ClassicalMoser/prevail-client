@@ -30,8 +30,12 @@ import {
 } from './playVisibility';
 import type { IssuedCommandView, PlayCardSlotView } from './playVisibility';
 import {
+  buildAssignUnitSupportSubmit,
   buildIssueCommandSubmit,
+  buildPerformRangedAttackSubmit,
+  canConfirmAssignUnitSupport,
   canConfirmIssueCommand,
+  canConfirmPerformRangedAttack,
   choiceListItems,
   computeHighlights,
   handleCellClick,
@@ -43,6 +47,7 @@ import {
   patchEventNumber,
   preflightPlayerChoice,
   resetStagedSelection,
+  selectAssignUnitSupportCard,
   selectIssueCommand,
   selectSetupUnit,
   toggleRoutDiscardCard,
@@ -62,6 +67,7 @@ export type PlayBoardCellView = Omit<BoardCellView, 'units'> & {
   units: PlayBoardUnitView[];
   highlight?: 'legal' | 'selected';
   facingPicker?: boolean;
+  enabledFacings?: readonly UnitFacing[];
 };
 
 export interface UseSeatPlaySessionResult {
@@ -75,6 +81,8 @@ export interface UseSeatPlaySessionResult {
   choiceItems: Accessor<ChoiceListItem[]>;
   issueCommands: Accessor<ReturnType<typeof issueCommandLabels>>;
   canConfirmIssue: Accessor<boolean>;
+  canConfirmPerformRanged: Accessor<boolean>;
+  canConfirmAssignUnitSupport: Accessor<boolean>;
   handCards: Accessor<ReturnType<typeof handCardsFromState>>;
   cardHighlights: Accessor<Readonly<Partial<Record<string, CellHighlight>>>>;
   playCardSlots: Accessor<{
@@ -90,6 +98,9 @@ export interface UseSeatPlaySessionResult {
   onSelectSetupUnit: (unit: UnitInstance) => void;
   onSelectIssueCommand: (index: number) => void;
   onConfirmIssueCommand: () => void;
+  onConfirmPerformRangedAttack: () => void;
+  onConfirmAssignUnitSupport: () => void;
+  onSelectAssignUnitSupportCard: (cardId: string) => void;
   onToggleRoutCard: (cardId: string) => void;
   onChooseCardId: (cardId: string) => void;
   onUndo: () => void;
@@ -155,6 +166,37 @@ export function useSeatPlaySession(
     return identity;
   });
 
+  // Realign a drifted draft when options say move/ranged/issue/setup but the
+  // Selection kind no longer matches (clicks would otherwise no-op while
+  // Highlights still render from options).
+  createEffect(() => {
+    const options = legalOptions();
+    const sel = selection();
+    if (options === null) {
+      return;
+    }
+    const aligned =
+      (options.choiceType === 'moveUnit' && sel.kind === 'moveUnit') ||
+      (options.choiceType === 'performRangedAttack' &&
+        sel.kind === 'performRangedAttack') ||
+      (options.choiceType === 'issueCommand' && sel.kind === 'issueCommand') ||
+      (options.choiceType === 'setupUnits' && sel.kind === 'setup') ||
+      (options.choiceType === 'chooseRoutDiscard' &&
+        sel.kind === 'routDiscard') ||
+      (options.choiceType === 'assignUnitSupport' &&
+        sel.kind === 'assignUnitSupport');
+    const needsDraft =
+      options.choiceType === 'moveUnit' ||
+      options.choiceType === 'performRangedAttack' ||
+      options.choiceType === 'issueCommand' ||
+      options.choiceType === 'setupUnits' ||
+      options.choiceType === 'chooseRoutDiscard' ||
+      options.choiceType === 'assignUnitSupport';
+    if (needsDraft && !aligned) {
+      setSelection(resetStagedSelection(options, core.game.state()));
+    }
+  });
+
   createEffect(() => {
     const id = gameId();
     const humanSide = side();
@@ -198,7 +240,7 @@ export function useSeatPlaySession(
         });
         unsubMessages = connected.subscribe((message) => {
           switch (message.type) {
-            case 'roundSnapshot': {
+            case 'gameSnapshot': {
               const game = message.payload;
               activeGameMode = game.gameMode;
               setGameMode(game.gameMode);
@@ -208,6 +250,9 @@ export function useSeatPlaySession(
                 gameMode: game.gameMode,
                 gameState: game.gameState,
               });
+              // Snapshot is authoritative reconcile — clear stale fold errors.
+              setChoicePending(false);
+              setChoiceRejected(undefined);
               break;
             }
             case 'playerChoice':
@@ -215,6 +260,7 @@ export function useSeatPlaySession(
               const current = readGameState();
               if (current === undefined) {
                 console.error('Seat WS fold: no local state yet');
+                connection?.requestGameSnapshot();
                 return;
               }
               try {
@@ -225,13 +271,18 @@ export function useSeatPlaySession(
                   gameState: next,
                 });
               } catch (error) {
-                console.error('Seat WS fold failed', error);
+                console.error('Seat WS fold failed', error, message.payload);
                 setChoicePending(false);
-                setChoiceRejected({
-                  errorReason:
-                    'Failed to apply server event locally. Your draft was kept — undo or retry, or refresh if the board looks wrong.',
-                  result: false,
-                });
+                // Visibility-limited applies (e.g. opponent resolveRally) cannot
+                // fold onto seat state — resync instead of cascading rejects.
+                const requested = connection?.requestGameSnapshot() ?? false;
+                if (!requested) {
+                  setChoiceRejected({
+                    errorReason:
+                      'Failed to apply server event locally. Your draft was kept — undo or retry, or refresh if the board looks wrong.',
+                    result: false,
+                  });
+                }
               }
               break;
             }
@@ -310,7 +361,7 @@ export function useSeatPlaySession(
   };
 
   const highlights = createMemo(() =>
-    computeHighlights(legalOptions(), selection()),
+    computeHighlights(legalOptions(), selection(), core.game.state()),
   );
 
   const boardCells = createMemo(() => {
@@ -326,6 +377,7 @@ export function useSeatPlaySession(
         ...view,
         highlight: hl.cells[coord],
         facingPicker: hl.facingPickerCells.has(coord),
+        enabledFacings: hl.facingPickerFacings[coord],
       };
     }
     for (const [coord, highlight] of Object.entries(hl.cells)) {
@@ -336,6 +388,7 @@ export function useSeatPlaySession(
           units: [],
           highlight,
           facingPicker: hl.facingPickerCells.has(coord),
+          enabledFacings: hl.facingPickerFacings[coord],
         };
       }
     }
@@ -390,6 +443,12 @@ export function useSeatPlaySession(
   const canConfirmIssue = createMemo(
     () => canConfirmIssueCommand(selection()) && !choicePending(),
   );
+  const canConfirmPerformRanged = createMemo(
+    () => canConfirmPerformRangedAttack(selection()) && !choicePending(),
+  );
+  const canConfirmAssignSupport = createMemo(
+    () => canConfirmAssignUnitSupport(selection()) && !choicePending(),
+  );
   const canUndo = createMemo(
     () => hasStagedUndo(selection()) && !choicePending(),
   );
@@ -424,6 +483,8 @@ export function useSeatPlaySession(
     choiceItems,
     issueCommands,
     canConfirmIssue,
+    canConfirmPerformRanged,
+    canConfirmAssignUnitSupport: canConfirmAssignSupport,
     handCards,
     cardHighlights,
     playCardSlots,
@@ -431,8 +492,10 @@ export function useSeatPlaySession(
     remainingCommands,
     boardCells,
     onCellClick: (coordinate) => {
+      // Drafting stays interactive even if a prior submit left pending stuck;
+      // Submit itself still no-ops while pending.
       if (choicePending()) {
-        return;
+        setChoicePending(false);
       }
       const state = core.game.state();
       if (state === undefined) {
@@ -451,7 +514,7 @@ export function useSeatPlaySession(
     },
     onFacingClick: (coordinate, facing) => {
       if (choicePending()) {
-        return;
+        setChoicePending(false);
       }
       const result = handleFacingClick({
         coordinate: coordinate as Coordinate,
@@ -469,13 +532,13 @@ export function useSeatPlaySession(
     },
     onSelectSetupUnit: (unit) => {
       if (choicePending()) {
-        return;
+        setChoicePending(false);
       }
       setSelection(selectSetupUnit(selection(), unit));
     },
     onSelectIssueCommand: (index) => {
       if (choicePending()) {
-        return;
+        setChoicePending(false);
       }
       const options = legalOptions();
       const state = core.game.state();
@@ -498,9 +561,39 @@ export function useSeatPlaySession(
         submit(event);
       }
     },
+    onConfirmPerformRangedAttack: () => {
+      const options = legalOptions();
+      if (options === null) {
+        return;
+      }
+      const event = buildPerformRangedAttackSubmit(options, selection());
+      if (event !== undefined) {
+        submit(event);
+      }
+    },
+    onConfirmAssignUnitSupport: () => {
+      const options = legalOptions();
+      if (options === null) {
+        return;
+      }
+      const event = buildAssignUnitSupportSubmit(options, selection());
+      if (event !== undefined) {
+        submit(event);
+      }
+    },
+    onSelectAssignUnitSupportCard: (cardId) => {
+      if (choicePending()) {
+        setChoicePending(false);
+      }
+      const options = legalOptions();
+      if (options === null) {
+        return;
+      }
+      setSelection(selectAssignUnitSupportCard(options, selection(), cardId));
+    },
     onToggleRoutCard: (cardId) => {
       if (choicePending()) {
-        return;
+        setChoicePending(false);
       }
       const options = legalOptions();
       if (options === null) {

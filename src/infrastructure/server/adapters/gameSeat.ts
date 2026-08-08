@@ -64,10 +64,10 @@ const parseOutbound = (
       }
       return { type, payload: parsed.data } as GameSeatOutbound;
     }
-    case 'roundSnapshot': {
-      const parsed = outbound.roundSnapshot.safeParse(payload);
+    case 'gameSnapshot': {
+      const parsed = outbound.gameSnapshot.safeParse(payload);
       if (!parsed.success) {
-        console.error('Seat WS: invalid roundSnapshot', parsed.error);
+        console.error('Seat WS: invalid gameSnapshot', parsed.error);
         return undefined;
       }
       return { type, payload: parsed.data } as GameSeatOutbound;
@@ -132,7 +132,19 @@ export function createGameSeatAdapter(wsBaseUrl: string): GameSeat {
             console.error('Seat WS: send while not open', status);
             return false;
           }
-          socket.send(JSON.stringify(choice));
+          socket.send(
+            JSON.stringify({ type: 'playerChoice', payload: choice }),
+          );
+          return true;
+        },
+        requestGameSnapshot: () => {
+          if (socket.readyState !== WebSocket.OPEN) {
+            console.error('Seat WS: requestGameSnapshot while not open', status);
+            return false;
+          }
+          socket.send(
+            JSON.stringify({ type: 'requestGameSnapshot', payload: {} }),
+          );
           return true;
         },
         close: () => {

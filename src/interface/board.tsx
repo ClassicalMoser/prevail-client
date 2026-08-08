@@ -26,6 +26,8 @@ export interface BoardCellViewProps {
   highlight?: 'legal' | 'selected';
   /** Show reusable eight-direction facing arrows for this cell. */
   facingPicker?: boolean;
+  /** Facings enabled on the picker; omit for all eight. */
+  enabledFacings?: readonly UnitFacing[];
 }
 
 function parseCellCoordinate(cellCoordinate: string): {
@@ -54,12 +56,12 @@ function cellHighlightClass(
 
 const BoardCellBody = (props: {
   cell: string;
-  view: BoardCellViewProps | undefined;
+  view: Accessor<BoardCellViewProps | undefined>;
   onFacingClick?: (coordinate: string, facing: UnitFacing) => void;
 }): JSX.Element => (
   <>
     <img src={singleTile} alt="" />
-    <Show when={props.view}>
+    <Show when={props.view()}>
       {(view) => (
         <>
           <Show when={view().commanders.length > 0}>
@@ -80,6 +82,8 @@ const BoardCellBody = (props: {
           </For>
           <Show when={view().facingPicker === true}>
             <FacingArrowPad
+              // Fail closed: missing list → no arrows (never invent all eight).
+              enabledFacings={view().enabledFacings ?? []}
               onSelectFacing={(facing) => {
                 props.onFacingClick?.(props.cell, facing);
               }}
@@ -177,7 +181,7 @@ export const BoardComponent = (props: {
                             >
                               <BoardCellBody
                                 cell={cell}
-                                view={cellView()}
+                                view={cellView}
                                 onFacingClick={props.onFacingClick}
                               />
                             </button>
@@ -187,7 +191,7 @@ export const BoardComponent = (props: {
                           <div class={cellClass()} aria-label={cell}>
                             <BoardCellBody
                               cell={cell}
-                              view={cellView()}
+                              view={cellView}
                               onFacingClick={props.onFacingClick}
                             />
                           </div>

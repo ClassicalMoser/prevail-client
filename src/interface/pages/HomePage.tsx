@@ -26,7 +26,7 @@ export function HomePage(): JSX.Element {
         phaseSummary={core.game.phaseSummary}
       />
 
-      <div class="board-host flex flex-col gap-2 justify-center">
+      <div class="board-host flex h-[min(70vh,36rem)] w-full max-w-3xl flex-col justify-center">
         <BoardComponent board={core.game.board} cells={core.game.boardCells} />
       </div>
     </main>

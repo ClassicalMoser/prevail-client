@@ -50,6 +50,6 @@
 }
 
 .facing-arrow-pad__btn:disabled {
-  opacity: 0.25;
   cursor: default;
+  opacity: 0.45;
 }
