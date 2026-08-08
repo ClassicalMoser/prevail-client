@@ -1,4 +1,4 @@
-import type { PhaseSummary, PlayCardSlotView } from '@application';
+import type { GameOutcome, PhaseSummary, PlayCardSlotView } from '@application';
 import type {
   Command,
   LegalPlayerChoiceOptions,
@@ -11,8 +11,13 @@ export function waitHint(args: {
   phaseSummary: PhaseSummary | undefined;
   remaining: Partial<Record<PlayerSide, Command[]>> | null;
   playCardSlots: { you: PlayCardSlotView; opponent: PlayCardSlotView };
+  outcome?: GameOutcome;
 }): string | undefined {
-  const { options, side, phaseSummary, remaining, playCardSlots } = args;
+  const { options, side, phaseSummary, remaining, playCardSlots, outcome } =
+    args;
+  if (outcome !== undefined && outcome.status !== 'ongoing') {
+    return undefined;
+  }
   if (options !== null) {
     return undefined;
   }

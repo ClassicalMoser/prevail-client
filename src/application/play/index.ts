@@ -45,6 +45,25 @@ export {
 } from './playVisibility';
 export type { IssuedCommandView, PlayCardSlotView } from './playVisibility';
 export {
+  cardEconomyFromState,
+  formatCardEconomyMeter,
+} from './cardEconomyFromState';
+export type { CardEconomyView, SideCardEconomy } from './cardEconomyFromState';
+export {
+  combatContextFromState,
+  engagementLabelAtCoordinate,
+  formatCombatEngagementLine,
+  formatCommitmentStatus,
+  unitLabelsAtCoordinate,
+} from './combatContextFromState';
+export type {
+  CombatContextView,
+  CombatUnitLabel,
+  CommitmentStatusView,
+} from './combatContextFromState';
+export { setupUnitsByType } from './setupUnitsByType';
+export type { SetupUnitTypeGroup } from './setupUnitsByType';
+export {
   ingestFoldedGameState,
   ingestSeatSnapshot,
   subscribeRouteGame,

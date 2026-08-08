@@ -15,6 +15,7 @@
     "format": "oxfmt .",
     "format:fix": "oxfmt . --check",
     "typecheck": "tsc --noEmit",
+    "test": "vp test run",
     "validate": "pnpm run lint && pnpm run format && pnpm run typecheck",
     "validate:fix": "pnpm run lint:fix && pnpm run format:fix && pnpm run typecheck"
   },

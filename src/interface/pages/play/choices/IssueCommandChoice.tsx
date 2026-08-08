@@ -22,8 +22,8 @@ export function IssueCommandChoice(props: {
   return (
     <>
       <p class="text-muted-foreground text-xs">
-        Pick a command, then units on the board. Lines: start, then end (same
-        unit = single).
+        Pick a command, then units on the board (up to the offer). Lines: start,
+        then end (same unit = single).
       </p>
       <div class="flex flex-wrap gap-2">
         <For each={props.issueCommands()}>

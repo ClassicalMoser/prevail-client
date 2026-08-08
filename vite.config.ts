@@ -19,6 +19,10 @@ export default defineConfig({
       allow: [path.resolve(import.meta.dirname), linkedPrevailRules],
     },
   },
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.ts'],
+  },
   fmt: {
     extends: [oxfmt],
   },

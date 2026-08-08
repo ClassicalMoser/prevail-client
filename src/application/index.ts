@@ -20,6 +20,7 @@ export { CoreProvider, useCore } from './coreContext';
 export type {
   BoardCellView,
   BoardUnitView,
+  GameOutcome,
   GameStateIngest,
   GameStateProjections,
   GameStateStore,
@@ -29,6 +30,9 @@ export {
   boardSpaceToCellView,
   createGameStateProjections,
   createGameStateStore,
+  gameOutcomeDetail,
+  gameOutcomeFromState,
+  gameOutcomeHeadline,
   projectBoardCells,
   resolveUnitArtSrc,
 } from './gameState';
@@ -82,20 +86,28 @@ export {
 } from './serverPortsContext';
 export {
   computeHighlights,
+  formatCardEconomyMeter,
+  formatCombatEngagementLine,
+  formatCommitmentStatus,
   formatCommandLabel,
   isCommitChoiceType,
   legalOptionsForSeat,
+  setupUnitsByType,
   unitKey,
   useSeatPlaySession,
 } from './play';
 export type {
+  CardEconomyView,
   CellHighlight,
   ChoiceListItem,
+  CombatContextView,
   IssuedCommandView,
   PlayBoardCellView,
   PlayCardSlotView,
   PlayHighlights,
   SeatSelection,
+  SetupUnitTypeGroup,
+  SideCardEconomy,
   UseSeatPlaySessionResult,
 } from './play';
 export { RouteResponseError } from '@ports';

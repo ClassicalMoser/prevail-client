@@ -3,6 +3,7 @@ import type { UnitInstance } from '@classicalmoser/prevail-rules/domain';
 import { Button } from '@interface/components';
 import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import { humanChoiceTitle } from '../playPageHelpers';
 import { ChoiceListButtons } from './ChoiceListButtons';
 import { CommitChoice } from './CommitChoice';
 import { IssueCommandChoice } from './IssueCommandChoice';
@@ -25,22 +26,22 @@ export function PlayChoicePanel(props: {
   return (
     <Show when={props.session.legalOptions()}>
       {(options) => (
-        <div class="flex flex-col gap-2 border-t border-border pt-3">
+        <div class="play-choice flex flex-col gap-2 border-t border-border pt-3">
           <div>
-            <p class="text-sm font-medium">Your choice</p>
-            <p class="text-muted-foreground text-xs">
+            <p class="play-choice__title text-sm font-medium">
+              {humanChoiceTitle(options().choiceType)}
+            </p>
+            <p class="text-muted-foreground text-[0.65rem]">
               {options().choiceType} · event #{options().expectedEventNumber}
             </p>
           </div>
 
           <Show when={options().choiceType === 'setupUnits'}>
             <SetupChoice
-              setupUnits={props.setupUnits}
-              selection={props.session.selection}
               awaitingCommander={props.awaitingCommander}
               choicePending={props.session.choicePending}
               canUndo={props.session.canUndo}
-              onSelectSetupUnit={props.session.onSelectSetupUnit}
+              hasSetupUnits={() => props.setupUnits().length > 0}
               onUndo={props.session.onUndo}
               onReset={props.session.onResetSelection}
             />

@@ -8,6 +8,10 @@ import type {
 import type { BoardCellView } from '@application/gameState';
 import type { Accessor } from 'solid-js';
 import { createMemo } from 'solid-js';
+import type { CardEconomyView } from './cardEconomyFromState';
+import { cardEconomyFromState } from './cardEconomyFromState';
+import type { CombatContextView } from './combatContextFromState';
+import { combatContextFromState } from './combatContextFromState';
 import { projectPlayBoardCells } from './playBoardProjection';
 import type { PlayBoardCellView } from './playBoardProjection';
 import {
@@ -58,6 +62,8 @@ export function createSeatPlayViewMemos(args: {
   }>;
   issuedCommands: Accessor<IssuedCommandView[]>;
   remainingCommands: Accessor<ReturnType<typeof remainingCommandsBySide>>;
+  cardEconomy: Accessor<CardEconomyView>;
+  combatContext: Accessor<CombatContextView | null>;
 } {
   const highlights = createMemo(() =>
     computeHighlights(
@@ -83,8 +89,14 @@ export function createSeatPlayViewMemos(args: {
     ) {
       return [];
     }
-    return choiceListItems(options);
+    return choiceListItems(options, args.readGameState()?.boardState);
   });
+  const cardEconomy = createMemo(() =>
+    cardEconomyFromState(args.readGameState(), args.side()),
+  );
+  const combatContext = createMemo(() =>
+    combatContextFromState(args.readGameState()),
+  );
   const issueCommands = createMemo(() =>
     issueCommandLabels(args.legalOptions()),
   );
@@ -154,5 +166,7 @@ export function createSeatPlayViewMemos(args: {
     playCardSlots,
     issuedCommands,
     remainingCommands,
+    cardEconomy,
+    combatContext,
   };
 }

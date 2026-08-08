@@ -1,4 +1,7 @@
-import type { LegalPlayerChoiceOptions } from '@classicalmoser/prevail-rules/domain';
+import type {
+  Board,
+  LegalPlayerChoiceOptions,
+} from '@classicalmoser/prevail-rules/domain';
 import type { ChoiceListItem } from '../core/types';
 import { itemsForCommit } from '../phases/commit';
 import {
@@ -11,6 +14,7 @@ import {
 
 export function choiceListItems(
   options: LegalPlayerChoiceOptions | null,
+  board?: Board,
 ): ChoiceListItem[] {
   if (options === null) {
     return [];
@@ -21,7 +25,7 @@ export function choiceListItems(
       return itemsForChooseCard(options);
     }
     case 'chooseMeleeResolution': {
-      return itemsForMeleeResolution(options);
+      return itemsForMeleeResolution(options, board);
     }
     case 'chooseRally': {
       return itemsForRally(options);

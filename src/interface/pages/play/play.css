@@ -1,0 +1,492 @@
+/* Seat play — tabletop card presence over quiet paper/bronze accents. */
+.play-page {
+  --play-ink: oklch(0.2 0.01 85);
+  --play-bronze: #a89060;
+  --play-paper: oklch(0.985 0.004 95);
+  --play-line: oklch(0.2 0.01 85 / 0.1);
+  --play-card-back: color-mix(in oklab, var(--play-bronze) 42%, #2a2418);
+  --play-card-back-edge: color-mix(in oklab, var(--play-bronze) 55%, #1a1610);
+}
+
+.play-header__phase {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  animation: play-rise 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.play-header__pressure {
+  border-inline-start: 1px solid var(--play-line);
+  padding-inline-start: 0.75rem;
+}
+
+.play-rail {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--play-bronze) 6%, transparent) 0%,
+      transparent 4.5rem
+    ),
+    var(--background, var(--play-paper));
+}
+
+.play-tabletop {
+  /* Quiet table surface — board sits on it; piles/hand live in gutters. */
+  background: color-mix(in oklab, var(--play-paper) 92%, var(--play-bronze));
+  overflow: visible;
+}
+
+.play-table__piles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.play-card-row {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  flex-shrink: 0;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.75rem;
+}
+
+.play-card-row--opp {
+  position: relative;
+  z-index: 2;
+  align-items: end;
+  padding-top: 0.4rem;
+  padding-bottom: 0.55rem;
+  pointer-events: none;
+}
+
+.play-card-row--opp .play-opp-hand,
+.play-card-row--opp .play-seat-piles {
+  pointer-events: none;
+}
+
+.play-card-row--you {
+  position: relative;
+  z-index: 6;
+  align-items: start;
+  padding-top: 0.55rem;
+  padding-bottom: 0.35rem;
+  pointer-events: none;
+}
+
+.play-tabletop .board-host {
+  flex: 1 1 0;
+  min-height: 0;
+  padding: 0.35rem 0.65rem 0.45rem;
+}
+
+/* Soft depth so the felt reads apart from pile/hand gutters — no hard rule. */
+.play-tabletop .board-shell {
+  filter: drop-shadow(0 0.2rem 0.55rem rgb(0 0 0 / 0.18));
+}
+
+.play-field {
+  position: relative;
+  z-index: 1;
+  min-height: min(52vh, 28rem);
+  gap: 0.35rem;
+}
+
+.play-card-row__spacer {
+  width: 5.5rem;
+}
+
+.play-seat-piles {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.play-seat-piles--end {
+  justify-content: flex-end;
+}
+
+/* Active cards — vertical stack left of the board */
+.play-in-play {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.45rem 0.5rem 0.65rem;
+  /* Sit beside the felt, not on it. */
+  background: transparent;
+}
+
+.play-in-play__seat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.play-in-play__label {
+  margin: 0;
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--play-ink) 50%, transparent);
+}
+
+.play-in-play__empty {
+  display: none;
+}
+
+/* Facedown pile stack ----------------------------------------------------- */
+.play-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.12rem;
+}
+
+.play-stack__deck {
+  position: relative;
+  width: 1.65rem;
+  height: 2.2rem;
+  border-radius: 0.16rem;
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklab, var(--play-card-back) 88%, white) 0%,
+    var(--play-card-back) 55%,
+    var(--play-card-back-edge) 100%
+  );
+  box-shadow:
+    1px 1px 0 color-mix(in oklab, var(--play-card-back-edge) 80%, black),
+    2px 2px 0 color-mix(in oklab, var(--play-card-back-edge) 45%, black);
+}
+
+.play-stack__deck--empty {
+  background: linear-gradient(
+    145deg,
+    color-mix(in oklab, var(--play-card-back) 48%, transparent) 0%,
+    color-mix(in oklab, var(--play-card-back-edge) 38%, transparent) 100%
+  );
+  box-shadow: none;
+  border: 1px solid color-mix(in oklab, var(--play-card-back) 40%, transparent);
+}
+
+.play-stack__count {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  color: color-mix(in oklab, var(--play-paper) 92%, white);
+  text-shadow: 0 1px 1px rgb(0 0 0 / 0.45);
+}
+
+.play-stack__deck--empty .play-stack__count {
+  color: color-mix(in oklab, var(--play-ink) 42%, transparent);
+  text-shadow: none;
+}
+
+.play-stack__label {
+  font-size: 0.48rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--play-ink) 48%, transparent);
+}
+
+/* Opponent hand — count-forward peek -------------------------------------- */
+.play-opp-hand {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.1rem 0;
+  pointer-events: none;
+}
+
+.play-opp-hand__peek {
+  position: relative;
+  width: 1.85rem;
+  height: 1.55rem;
+}
+
+.play-opp-hand__edge,
+.play-opp-hand__top {
+  position: absolute;
+  border-radius: 0.18rem 0.18rem 0 0;
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--play-card-back) 90%, white) 0%,
+    var(--play-card-back) 55%,
+    var(--play-card-back-edge) 100%
+  );
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.2);
+}
+
+.play-opp-hand__edge:nth-child(1) {
+  inset: 0.35rem 0.35rem auto 0;
+  height: 1.2rem;
+  opacity: 0.55;
+}
+
+.play-opp-hand__edge:nth-child(2) {
+  inset: 0.18rem 0.18rem auto 0.12rem;
+  height: 1.35rem;
+  opacity: 0.75;
+}
+
+.play-opp-hand__top {
+  inset: 0 0 auto 0.22rem;
+  width: 1.55rem;
+  height: 1.55rem;
+}
+
+.play-opp-hand__count {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  color: var(--play-ink);
+}
+
+/* Your hand — title-band peek in its own gutter; dock enlarge on hover --- */
+.play-hand {
+  --play-hand-peek: 2.25rem;
+  --play-hand-full: 5.75rem;
+  --play-hand-face-width: 4.5rem;
+  --play-hand-scale: 3;
+  --play-hand-ease: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --play-hand-spread: calc(
+    (var(--play-hand-face-width) * (var(--play-hand-scale) - 1)) / 2
+  );
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  height: var(--play-hand-peek);
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  pointer-events: none;
+}
+
+.play-hand__row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 100%;
+  height: var(--play-hand-peek);
+  padding: 0 0.35rem;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.play-hand__card {
+  position: relative;
+  flex: 0 0 auto;
+  width: max-content;
+  height: var(--play-hand-peek);
+  margin-left: -1.55rem;
+  overflow: hidden;
+  pointer-events: auto;
+  transition:
+    margin 220ms var(--play-hand-ease),
+    z-index 0s;
+  z-index: 1;
+}
+
+.play-hand__card:first-child {
+  margin-left: 0;
+}
+
+.play-hand__card--dim {
+  opacity: 0.42;
+}
+
+.play-hand__card--lit .play-hand__lift {
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--play-bronze) 75%, white);
+  border-radius: 0.2rem;
+}
+
+/*
+ * Peek-sized hit target only. Expanded art uses pointer-events: none so the
+ * cursor can reach neighboring peeks through the magnified face (dock-style).
+ */
+.play-hand__hit {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0.2rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.play-hand__hit:disabled {
+  cursor: default;
+}
+
+.play-hand__hit--static {
+  pointer-events: none;
+}
+
+.play-hand__lift {
+  position: relative;
+  transform-origin: top center;
+  transition: transform 240ms var(--play-hand-ease);
+  will-change: transform;
+  pointer-events: none;
+}
+
+.play-hand__count {
+  position: absolute;
+  top: 0.2rem;
+  right: 0.15rem;
+  z-index: 2;
+  min-width: 1rem;
+  padding: 0.05rem 0.28rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--play-ink) 82%, transparent);
+  color: var(--play-paper);
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  line-height: 1.1;
+  text-align: center;
+  pointer-events: none;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.25);
+}
+
+.play-hand__card:hover,
+.play-hand__card:focus-within {
+  z-index: 40;
+  overflow: visible;
+  /* (a) Fan neighbors clear of the 3× face. */
+  margin-left: var(--play-hand-spread);
+  margin-right: var(--play-hand-spread);
+}
+
+.play-hand__card:hover .play-hand__lift,
+.play-hand__card:focus-within .play-hand__lift {
+  /* Pull up over the board from the hand gutter. */
+  transform: translateY(
+      calc(
+        -0.55rem + var(--play-hand-peek) -
+          var(--play-hand-full) * var(--play-hand-scale)
+      )
+    )
+    scale(var(--play-hand-scale));
+}
+
+/* Lighten face chrome inside the dock (art already has an edge). */
+.play-hand__card img {
+  border-radius: 0.2rem;
+}
+
+/* FaceDown skip tile: hide caption text in the peek strip */
+.play-hand__card > * {
+  gap: 0;
+}
+
+.play-hand__card p {
+  display: none;
+}
+
+.play-combat {
+  border: 1px solid var(--play-line);
+  border-radius: 0.35rem;
+  padding: 0.65rem 0.75rem;
+  background: color-mix(in oklab, var(--play-bronze) 8%, transparent);
+  animation: play-rise 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.play-combat__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--play-ink) 70%, transparent);
+}
+
+.play-combat__engagement {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.play-combat__commit {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: 0.15rem 0 0;
+  font-size: 0.7rem;
+  color: color-mix(in oklab, var(--play-ink) 65%, transparent);
+}
+
+.play-combat__commit-status {
+  font-weight: 500;
+  color: var(--play-ink);
+}
+
+.play-choice__title {
+  font-family: var(--font-display);
+  letter-spacing: 0.03em;
+}
+
+@keyframes play-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .play-header__phase,
+  .play-combat,
+  .play-hand__card {
+    animation: none;
+    transition: none;
+  }
+
+  .play-hand__lift {
+    transition: none;
+  }
+
+  .play-hand__card:hover,
+  .play-hand__card:focus-within {
+    margin-left: -1.55rem;
+    margin-right: 0;
+  }
+
+  .play-hand__card:first-child:hover,
+  .play-hand__card:first-child:focus-within {
+    margin-left: 0;
+  }
+
+  .play-hand__card:hover .play-hand__lift,
+  .play-hand__card:focus-within .play-hand__lift {
+    transform: none;
+  }
+}

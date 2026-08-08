@@ -8,15 +8,22 @@ import { useParams } from '@tanstack/solid-router';
 import type { JSX } from 'solid-js';
 import { createMemo, Show } from 'solid-js';
 import { PlayChoicePanel } from './choices/PlayChoicePanel';
+import { CombatContextPanel } from './CombatContextPanel';
 import { assignUnitSupportHint } from './hints/assignUnitSupportHint';
 import { boardProgressHint } from './hints/boardProgressHint';
 import { commitHint } from './hints/commitHint';
 import { routDiscardHint } from './hints/routDiscardHint';
 import { waitHint } from './hints/waitHint';
+import { PlayGameOverBanner } from './PlayGameOverBanner';
 import { PlayHandStrip } from './PlayHandStrip';
 import { PlayHeader } from './PlayHeader';
-import { parseSide } from './playPageHelpers';
+import { PlayInPlayRow } from './PlayInPlayRow';
+import { PlayOpponentHand } from './PlayOpponentHand';
+import { formatPressureChip, parseSide } from './playPageHelpers';
+import { PlaySeatPiles } from './PlaySeatPiles';
+import { PlaySetupUnitStrip } from './PlaySetupUnitStrip';
 import { PlayTableStrip } from './PlayTableStrip';
+import './play.css';
 
 export function PlayPage(): JSX.Element {
   const params = useParams({ from: '/admin/play/$gameId/$side' });
@@ -54,7 +61,9 @@ export function PlayPage(): JSX.Element {
     );
   });
 
-  const commitHintText = createMemo(() => commitHint(session.legalOptions()));
+  const commitHintText = createMemo(() =>
+    commitHint(session.legalOptions(), session.combatContext()),
+  );
   const routDiscardHintText = createMemo(() =>
     routDiscardHint(session.legalOptions(), session.selection()),
   );
@@ -71,7 +80,12 @@ export function PlayPage(): JSX.Element {
       phaseSummary: core.game.phaseSummary(),
       remaining: session.remainingCommands(),
       playCardSlots: session.playCardSlots(),
+      outcome: core.game.outcome(),
     }),
+  );
+
+  const gameFinished = createMemo(
+    () => core.game.outcome().status !== 'ongoing',
   );
 
   const canSelectRemaining = createMemo(
@@ -92,6 +106,13 @@ export function PlayPage(): JSX.Element {
     const idx = remaining.indexOf(sel.command);
     return idx !== -1 ? idx : undefined;
   });
+
+  const pressure = createMemo(() =>
+    formatPressureChip({
+      routedCount: core.game.routedUnits()?.length ?? 0,
+      lostCommanders: core.game.lostCommanders() ?? [],
+    }),
+  );
 
   const onHandCardActivate = (card: CommandCard): void => {
     const options = session.legalOptions();
@@ -115,7 +136,7 @@ export function PlayPage(): JSX.Element {
   };
 
   return (
-    <main class="flex h-[calc(100dvh-3.5rem)] flex-col overflow-hidden">
+    <main class="play-page flex h-[calc(100dvh-3.5rem)] flex-col overflow-hidden">
       <Show
         when={side()}
         fallback={
@@ -135,24 +156,76 @@ export function PlayPage(): JSX.Element {
               roundNumber={core.game.roundNumber}
               initiative={core.game.initiative}
               phaseSummary={core.game.phaseSummary}
+              outcome={core.game.outcome}
+              pressure={pressure}
             />
 
             <div class="flex min-h-0 flex-1 flex-col lg:flex-row">
-              <div class="board-host flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden p-2">
-                <BoardComponent
-                  board={core.game.board}
-                  cells={session.boardCells}
-                  onCellClick={session.onCellClick}
-                  onFacingClick={session.onFacingClick}
-                />
+              <div class="play-tabletop relative flex min-h-0 min-w-0 flex-1 flex-col">
+                <Show when={!gameFinished()}>
+                  <div class="play-card-row play-card-row--opp shrink-0">
+                    <PlaySeatPiles
+                      economy={() => session.cardEconomy().opponent}
+                      align="start"
+                    />
+                    <PlayOpponentHand
+                      count={() => session.cardEconomy().opponent.hand}
+                    />
+                    <div class="play-card-row__spacer" aria-hidden="true" />
+                  </div>
+                </Show>
+                <div class="play-field flex min-h-0 min-w-0 flex-1">
+                  <Show when={!gameFinished()}>
+                    <PlayInPlayRow
+                      you={() => session.playCardSlots().you}
+                      opponent={() => session.playCardSlots().opponent}
+                    />
+                  </Show>
+                  <div class="board-host flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden">
+                    <BoardComponent
+                      board={core.game.board}
+                      cells={session.boardCells}
+                      onCellClick={
+                        gameFinished() ? undefined : session.onCellClick
+                      }
+                      onFacingClick={
+                        gameFinished() ? undefined : session.onFacingClick
+                      }
+                    />
+                  </div>
+                </div>
+                <Show when={!gameFinished()}>
+                  <div class="play-card-row play-card-row--you shrink-0">
+                    <PlaySeatPiles
+                      economy={() => session.cardEconomy().you}
+                      align="start"
+                    />
+                    <Show
+                      when={setupUnits().length > 0}
+                      fallback={
+                        <PlayHandStrip
+                          session={session}
+                          handSelectable={handSelectable}
+                          onHandCardActivate={onHandCardActivate}
+                        />
+                      }
+                    >
+                      <PlaySetupUnitStrip
+                        setupUnits={setupUnits}
+                        selection={session.selection}
+                        choicePending={session.choicePending}
+                        onSelectSetupUnit={session.onSelectSetupUnit}
+                      />
+                    </Show>
+                    <div class="play-card-row__spacer" aria-hidden="true" />
+                  </div>
+                </Show>
               </div>
 
-              <aside class="border-border flex max-h-[38vh] w-full shrink-0 flex-col gap-3 overflow-hidden border-t px-3 py-3 lg:max-h-none lg:w-72 lg:border-t-0 lg:border-l xl:w-80">
+              <aside class="play-rail border-border flex max-h-[38vh] w-full shrink-0 flex-col gap-3 overflow-hidden border-t px-3 py-3 lg:max-h-none lg:w-72 lg:border-t-0 lg:border-l xl:w-80">
                 <div class="shrink-0 overflow-visible">
                   <PlayTableStrip
                     humanSide={humanSide}
-                    you={() => session.playCardSlots().you}
-                    opponent={() => session.playCardSlots().opponent}
                     remaining={session.remainingCommands}
                     issued={session.issuedCommands}
                     canSelectRemaining={canSelectRemaining}
@@ -160,25 +233,33 @@ export function PlayPage(): JSX.Element {
                     onSelectRemaining={session.onSelectIssueCommand}
                   />
                 </div>
+                <CombatContextPanel
+                  context={session.combatContext}
+                  humanSide={humanSide}
+                />
                 <div class="min-h-0 flex-1 overflow-y-auto">
-                  <PlayChoicePanel
-                    session={session}
-                    setupUnits={setupUnits}
-                    awaitingCommander={awaitingCommander}
-                    commitHint={commitHintText}
-                    routDiscardHint={routDiscardHintText}
-                    assignUnitSupportHint={assignUnitSupportHintText}
-                    boardProgress={boardProgress}
-                  />
+                  <Show
+                    when={gameFinished()}
+                    fallback={
+                      <PlayChoicePanel
+                        session={session}
+                        setupUnits={setupUnits}
+                        awaitingCommander={awaitingCommander}
+                        commitHint={commitHintText}
+                        routDiscardHint={routDiscardHintText}
+                        assignUnitSupportHint={assignUnitSupportHintText}
+                        boardProgress={boardProgress}
+                      />
+                    }
+                  >
+                    <PlayGameOverBanner
+                      outcome={core.game.outcome}
+                      humanSide={humanSide}
+                    />
+                  </Show>
                 </div>
               </aside>
             </div>
-
-            <PlayHandStrip
-              session={session}
-              handSelectable={handSelectable}
-              onHandCardActivate={onHandCardActivate}
-            />
           </>
         )}
       </Show>

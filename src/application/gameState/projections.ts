@@ -9,6 +9,8 @@ import type { Accessor } from 'solid-js';
 import { createMemo } from 'solid-js';
 import type { BoardCellView } from './boardCellView';
 import { projectBoardCells } from './boardCellView';
+import type { GameOutcome } from './gameOutcome';
+import { gameOutcomeFromState } from './gameOutcome';
 import type { GameStateStore } from './gameStateStore';
 
 /** Safe phase readout; never calls `getExpectedEvent` (throws when phase is `'none'`). */
@@ -27,6 +29,8 @@ export interface GameStateProjections {
   reservedUnits: Accessor<UnitInstance[] | undefined>;
   routedUnits: Accessor<UnitInstance[] | undefined>;
   lostCommanders: Accessor<PlayerSide[] | undefined>;
+  /** Endgame status from {@link GameState.winner} / pending game-over checks. */
+  outcome: Accessor<GameOutcome>;
   hasGameState: Accessor<boolean>;
 }
 
@@ -69,6 +73,8 @@ export const createGameStateProjections = (
 
   const lostCommanders = createMemo(() => state()?.lostCommanders);
 
+  const outcome = createMemo(() => gameOutcomeFromState(state()));
+
   const hasGameState = createMemo(() => state() !== undefined);
 
   return {
@@ -82,6 +88,7 @@ export const createGameStateProjections = (
     reservedUnits,
     routedUnits,
     lostCommanders,
+    outcome,
     hasGameState,
   };
 };

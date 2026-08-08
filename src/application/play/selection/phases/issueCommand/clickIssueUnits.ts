@@ -29,15 +29,24 @@ export function clickIssueUnits(args: {
   const already = issueSelection.selected.some(
     (u) => unitKey(u.unit) === unitKey(hit.unit),
   );
-  const selected = already
-    ? issueSelection.selected.filter(
-        (u) => unitKey(u.unit) !== unitKey(hit.unit),
-      )
-    : [...issueSelection.selected, hit];
+  if (already) {
+    return {
+      selection: {
+        ...issueSelection,
+        selected: issueSelection.selected.filter(
+          (u) => unitKey(u.unit) !== unitKey(hit.unit),
+        ),
+      },
+    };
+  }
+  // `command.number` is a selection cap — refuse going over.
+  if (issueSelection.selected.length >= command.number) {
+    return { selection: issueSelection };
+  }
   return {
     selection: {
       ...issueSelection,
-      selected,
+      selected: [...issueSelection.selected, hit],
     },
   };
 }

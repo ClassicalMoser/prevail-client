@@ -1,3 +1,5 @@
+import { plainGameState } from '@application/gameState';
+import { applyEvent } from '@classicalmoser/prevail-rules/domain';
 import type {
   FailValidationResult,
   GameModeName,
@@ -5,7 +7,6 @@ import type {
   PlayerChoiceEvent,
   PlayerSide,
 } from '@classicalmoser/prevail-rules/domain';
-import { applyEvent } from '@classicalmoser/prevail-rules/domain';
 import type {
   GameSeat,
   GameSeatConnection,
@@ -109,7 +110,8 @@ export function createSeatStreamSession(
           return;
         }
         try {
-          const next = applyEvent(message.payload, current);
+          // Rules must see a plain tree — store proxies break apply/fold.
+          const next = applyEvent(message.payload, plainGameState(current));
           logSeatStreamInbound(message, {
             before: current,
             after: next,

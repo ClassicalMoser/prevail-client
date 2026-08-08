@@ -25,6 +25,8 @@ import {
   subscribeRouteGame,
 } from './gameStateIngest';
 import type { PlayBoardCellView } from './playBoardProjection';
+import type { CardEconomyView } from './cardEconomyFromState';
+import type { CombatContextView } from './combatContextFromState';
 import type { IssuedCommandView, PlayCardSlotView } from './playVisibility';
 import { createSeatPlayActions } from './seatPlayActions';
 import type { SeatPlayActions } from './seatPlayActions';
@@ -61,6 +63,8 @@ export type UseSeatPlaySessionResult = {
   }>;
   issuedCommands: Accessor<IssuedCommandView[]>;
   remainingCommands: Accessor<Partial<Record<PlayerSide, Command[]>> | null>;
+  cardEconomy: Accessor<CardEconomyView>;
+  combatContext: Accessor<CombatContextView | null>;
   boardCells: Accessor<Readonly<Partial<Record<string, PlayBoardCellView>>>>;
   canRefuseCommit: Accessor<boolean>;
   canDoneIssuing: Accessor<boolean>;

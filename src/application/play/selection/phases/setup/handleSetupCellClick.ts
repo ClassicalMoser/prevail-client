@@ -2,11 +2,13 @@ import type {
   Coordinate,
   LegalPlayerChoiceOptions,
 } from '@classicalmoser/prevail-rules/domain';
+import { defaultFacingForSide } from '@application/play/selection/core/defaultFacingForSide';
 import type {
   CellClickResult,
   SeatSelection,
 } from '@application/play/selection/core/types';
 import { buildSetupSubmit } from './buildSetupSubmit';
+import { placeSetupUnit } from './placeSetupUnit';
 import { selectSetupUnit } from './selectSetupUnit';
 
 export function handleSetupCellClick(args: {
@@ -27,7 +29,18 @@ export function handleSetupCellClick(args: {
         selection: selectSetupUnit(selection, staged.unit),
       };
     }
-    return { selection };
+    if (
+      selection.selectedUnit === undefined ||
+      !options.setupUnits.coordinates.includes(coordinate)
+    ) {
+      return { selection };
+    }
+    return placeSetupUnit({
+      coordinate,
+      facing: defaultFacingForSide(options.setupUnits.player),
+      options,
+      selection,
+    });
   }
   if (!options.setupUnits.coordinates.includes(coordinate)) {
     return { selection };

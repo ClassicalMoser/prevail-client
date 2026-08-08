@@ -6,7 +6,7 @@ import type {
 import type { GameStateSubscriber } from '@domain';
 import type { Accessor } from 'solid-js';
 import { createMemo } from 'solid-js';
-import { createStore, reconcile } from 'solid-js/store';
+import { createStore, reconcile, unwrap } from 'solid-js/store';
 
 export interface GameStateIngest {
   gameId: string;
@@ -69,7 +69,7 @@ export const createGameStateStore = (): GameStateStore => {
       engineSubscriber.gameId = change.gameId;
       engineSubscriber.gameMode = change.gameMode;
     }
-    setStore('gameState', reconcile(change.gameState));
+    setStore('gameState', reconcile(change.gameState, { key: null }));
   };
 
   engineSubscriber.onGameStateChange = (change: GameStateChange) => {
@@ -91,9 +91,13 @@ export const createGameStateStore = (): GameStateStore => {
     }
   };
 
-  const state: Accessor<GameState | undefined> = createMemo(
-    () => store.gameState,
-  );
+  /**
+   * Read the store path directly — do not wrap in `createMemo`.
+   * A memoized `store.gameState` keeps the same proxy identity across
+   * `reconcile`, so dependents that only track that memo never see folds
+   * (remaining commands, legal options, etc. stay stale).
+   */
+  const state: Accessor<GameState | undefined> = () => store.gameState;
   const gameId: Accessor<string> = createMemo(() => store.gameId);
   const gameMode: Accessor<GameModeName> = createMemo(() => store.gameMode);
 
@@ -107,3 +111,11 @@ export const createGameStateStore = (): GameStateStore => {
     engineSubscriber,
   };
 };
+
+/**
+ * Deep plain clone for prevail-rules pure functions / applyEvent.
+ * Store proxies break array membership / trait checks in rules code.
+ */
+export function plainGameState(state: GameState): GameState {
+  return structuredClone(unwrap(state));
+}

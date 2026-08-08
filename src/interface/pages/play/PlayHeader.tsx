@@ -1,9 +1,14 @@
-import type { PhaseSummary, UseSeatPlaySessionResult } from '@application';
+import type {
+  GameOutcome,
+  PhaseSummary,
+  UseSeatPlaySessionResult,
+} from '@application';
+import { gameOutcomeHeadline } from '@application';
 import type { PlayerSide } from '@classicalmoser/prevail-rules/domain';
 import { Button } from '@interface/components';
 import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
-import { formatPhase } from './playPageHelpers';
+import { formatPhase, humanPhaseLabel } from './playPageHelpers';
 
 export function PlayHeader(props: {
   gameId: Accessor<string>;
@@ -14,19 +19,39 @@ export function PlayHeader(props: {
   roundNumber: Accessor<number | undefined>;
   initiative: Accessor<PlayerSide | undefined>;
   phaseSummary: Accessor<PhaseSummary | undefined>;
+  outcome: Accessor<GameOutcome>;
+  pressure: Accessor<string | undefined>;
 }): JSX.Element {
+  const outcomeLabel = (): string | undefined =>
+    gameOutcomeHeadline(props.outcome(), props.humanSide());
+
   return (
-    <header class="border-border flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 border-b px-3 py-2 text-sm">
+    <header class="play-header border-border flex shrink-0 flex-wrap items-center gap-x-4 gap-y-1 border-b px-3 py-2 text-sm">
       <span class="font-display tracking-wide">Play</span>
       <span class="text-muted-foreground text-xs">
         {props.gameId()} · {props.humanSide()} ·{' '}
         {props.session.connectionStatus()}
       </span>
       <Show when={props.hasGameState()}>
-        <span class="text-muted-foreground hidden text-xs sm:inline">
+        <span
+          class="play-header__phase text-foreground hidden text-xs sm:inline"
+          title={formatPhase(props.phaseSummary())}
+        >
           R{props.roundNumber() ?? '—'} · {props.initiative() ?? '—'} ·{' '}
-          {formatPhase(props.phaseSummary())}
+          {humanPhaseLabel(props.phaseSummary())}
         </span>
+      </Show>
+      <Show when={props.pressure()}>
+        {(chip) => (
+          <span class="play-header__pressure text-muted-foreground text-xs">
+            {chip()}
+          </span>
+        )}
+      </Show>
+      <Show when={outcomeLabel()}>
+        {(label) => (
+          <span class="text-foreground text-xs font-medium">{label()}</span>
+        )}
       </Show>
       <Show when={props.session.choicePending()}>
         <span class="text-muted-foreground text-xs">Waiting for server…</span>

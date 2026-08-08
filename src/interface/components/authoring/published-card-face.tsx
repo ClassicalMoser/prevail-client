@@ -21,14 +21,25 @@ export const PublishedCardFace = (rawProps: {
   version: string;
   name: string;
   size?: PublishedCardFaceSize;
+  /**
+   * `chrome` — bordered tile (catalog).
+   * `bare` — art only; the SVG already carries its own edge (play hand).
+   */
+  frame?: 'chrome' | 'bare';
   class?: string;
 }): JSX.Element => {
-  const props = mergeProps({ size: 'sm' as const }, rawProps);
+  const props = mergeProps(
+    { size: 'sm' as const, frame: 'chrome' as const },
+    rawProps,
+  );
 
   return (
     <div
       class={cx(
-        'overflow-hidden rounded-md border bg-card shadow-sm',
+        'overflow-hidden',
+        props.frame === 'bare'
+          ? 'rounded-sm bg-transparent'
+          : 'rounded-md border bg-card shadow-sm',
         sizeClass[props.size],
         props.class,
       )}

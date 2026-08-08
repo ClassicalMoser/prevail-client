@@ -19,6 +19,14 @@ export const PublishedCardThumb = (props: {
   name: string;
   meta?: string;
   size?: PublishedCardFaceSize;
+  /** Where the name caption sits relative to the face (default below). */
+  captionPlacement?: 'above' | 'below';
+  /** Hide name/meta caption (face art already carries the title). */
+  hideCaption?: boolean;
+  /** Skip portaled enlarge — use when the parent lifts the face itself (hand peek). */
+  disableHoverPreview?: boolean;
+  /** Face frame; use `bare` in the play hand so SVG edges aren’t doubled. */
+  frame?: 'chrome' | 'bare';
   disabled?: boolean;
   selected?: boolean;
   onActivate?: () => void;
@@ -34,6 +42,9 @@ export const PublishedCardThumb = (props: {
   };
 
   const showPreview = (el: Element): void => {
+    if (props.disableHoverPreview === true) {
+      return;
+    }
     clearPreview();
     setAnchor(el.getBoundingClientRect());
     const dismiss = (): void => {
@@ -49,15 +60,8 @@ export const PublishedCardThumb = (props: {
 
   onCleanup(clearPreview);
 
-  const ThumbBody = (): JSX.Element => (
+  const Caption = (): JSX.Element => (
     <>
-      <PublishedCardFace
-        kind={props.kind}
-        id={props.id}
-        version={props.version}
-        name={props.name}
-        size={props.size ?? 'xs'}
-      />
       <p
         class="max-w-16 truncate text-[0.65rem] font-medium leading-tight sm:max-w-18"
         title={props.name}
@@ -73,6 +77,25 @@ export const PublishedCardThumb = (props: {
             {meta()}
           </p>
         )}
+      </Show>
+    </>
+  );
+
+  const ThumbBody = (): JSX.Element => (
+    <>
+      <Show when={!props.hideCaption && props.captionPlacement === 'above'}>
+        <Caption />
+      </Show>
+      <PublishedCardFace
+        kind={props.kind}
+        id={props.id}
+        version={props.version}
+        name={props.name}
+        size={props.size ?? 'xs'}
+        frame={props.frame}
+      />
+      <Show when={!props.hideCaption && props.captionPlacement !== 'above'}>
+        <Caption />
       </Show>
       {props.children}
     </>

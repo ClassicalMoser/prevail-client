@@ -5,11 +5,16 @@ import type {
 } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor, JSX } from 'solid-js';
 import { createMemo, createSignal, For, onCleanup, Show } from 'solid-js';
+import commanderBlack from '../assets/Icons/commander-black.svg';
+import commanderWhite from '../assets/Icons/commander-white.svg';
 import singleTile from '../assets/singleTile.png';
 import { AnchoredPublishedCardPreview } from './components';
 import { FacingArrowPad } from './facing-arrow-pad';
 import { UnitComponent } from './unit';
 import './board.css';
+
+const commanderIconSrc = (side: PlayerSide): string =>
+  side === 'white' ? commanderWhite : commanderBlack;
 
 /** Presentational unit chip projected from authoritative board state. */
 export interface BoardUnitViewProps {
@@ -78,10 +83,20 @@ const BoardCellBody = (props: {
       {(view) => (
         <>
           <Show when={view().commanders.length > 0}>
-            <span class="board-cell-commanders bg-background/75 text-foreground absolute top-0.5 right-0.5 left-0.5 z-110 text-center text-xs leading-tight">
-              {view().commanders.join(', ')} commander
-              {view().commanders.length > 1 ? 's' : ''}
-            </span>
+            <div
+              class="board-cell-commanders"
+              aria-label={`${view().commanders.join(' and ')} commander${view().commanders.length > 1 ? 's' : ''}`}
+            >
+              <For each={view().commanders}>
+                {(side) => (
+                  <img
+                    class={`board-cell-commander board-cell-commander--${side}`}
+                    src={commanderIconSrc(side)}
+                    alt=""
+                  />
+                )}
+              </For>
+            </div>
           </Show>
           <For each={view().units}>
             {(unit) => (
