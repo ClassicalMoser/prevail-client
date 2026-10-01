@@ -37,9 +37,8 @@ const commitmentStatus = (commitment: Commitment): CommitmentStatusView => {
   if (commitment.commitmentType === 'declined') {
     return { kind: 'declined' };
   }
-  if (commitment.card === 'hidden') {
-    return { kind: 'completed', cardLabel: 'Hidden' };
-  }
+  // A completed commitment always carries the real card. Opponent chooseCard
+  // events are the ones projected as 'hidden'; commits stay public.
   return { kind: 'completed', cardLabel: commitment.card.name };
 };
 

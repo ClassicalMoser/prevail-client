@@ -100,7 +100,7 @@ const meleeState = (): GameState => {
         whiteCommitment: { commitmentType: 'pending' },
         blackCommitment: {
           commitmentType: 'completed',
-          card: 'hidden',
+          card: tempCommandCards[1],
         },
         completed: false,
       },
@@ -126,7 +126,7 @@ describe('melee context derived from game state', () => {
     expect(context?.whiteCommitment).toStrictEqual({ kind: 'pending' });
     expect(context?.blackCommitment).toStrictEqual({
       kind: 'completed',
-      cardLabel: 'Hidden',
+      cardLabel: tempCommandCards[1].name,
     });
   }, 1000);
 
