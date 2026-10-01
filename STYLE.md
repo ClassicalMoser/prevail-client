@@ -1,8 +1,6 @@
 # Style
 
-Code shape for this repository. Import edges are in [`boundaries.ts`](./boundaries.ts). What each layer is for is [`LAYERS.md`](./LAYERS.md). The target layering and where the repo does not yet match it are in [`src/ARCHITECTURE.md`](./src/ARCHITECTURE.md).
-
-The Solid rules in this file are the same rules as [`.cursor/rules/solid-reactivity.mdc`](./.cursor/rules/solid-reactivity.mdc). Both copies stay. Do not shorten one and leave the other as the only statement.
+Code shape for this repository. Import edges are in [`boundaries.ts`](./boundaries.ts). What each layer is for is [`LAYERS.md`](./LAYERS.md). The target layering is [`src/ARCHITECTURE.md`](./src/ARCHITECTURE.md). What the interface must do for a player is [`UI.md`](./UI.md).
 
 ## Shape
 
@@ -54,14 +52,10 @@ This project uses Solid, not React. React-style patterns compile but silently br
 ### Smart and dumb
 
 - Smart (pages, application hooks) owns queries, signals, and mutations, and passes accessors and callbacks down.
-- Dumb (`src/interface` presentational components) does not call `useQuery` or context hooks. It reads `props.field()` in JSX only.
+- Dumb (`src/interface` presentational) does not call `useQuery` or context hooks. It reads `props.field()` in JSX only.
 - Do not prop-drill a TanStack query store into a dumb child. Pass accessors built by the smart parent.
 
-Idiomatic Solid control flow (`<Show>`, `<For>`) belongs in the interface when it is purely presentational. That is not the same as embedding domain logic or a new reactive source of truth.
-
-Presentation-only derivation (sorting keys for a grid, CSS variables from props) may live in the interface. Domain-shaped derivation, and anything that feeds the rules engine, does not.
-
-### Checklist before shipping UI
+### Before shipping UI
 
 - [ ] Every `useQuery` / `useMutation` uses a factory: `() => ({ ... })`
 - [ ] No `{ data, isLoading } = query` anywhere
@@ -71,12 +65,4 @@ Presentation-only derivation (sorting keys for a grid, CSS variables from props)
 
 ## Tests
 
-How a test is written is [`TESTING.md`](./TESTING.md). The short form:
-
-A test should be almost as easy to read as its name. The `it` title states the fact. The body shows that fact and little else. Do not start a title with "given" or "should".
-
-A factory builds a value from raw inputs. A transform changes an existing state. Both live in `@classicalmoser/prevail-rules`. A local fixture does what neither of those can. Do not give two of them the same job. If a factory or a transform can do it, there is no fixture for it.
-
-Assert a value this test wrote. Do not assert a default some other helper filled in.
-
-A helper used by one suite may stay in that file. The same helper in a second suite, when no factory or transform covers it, belongs in a shared testing module imported only by tests. Production code does not import it.
+[`TESTING.md`](./TESTING.md).

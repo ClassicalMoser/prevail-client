@@ -10,7 +10,11 @@ import type { Games } from './games';
 import type { CommandCards } from './commandCards';
 import type { UnitCards } from './unitCards';
 import type { ServerPorts } from './serverPorts';
-import { RouteResponseError } from './RouteResponseError';
+import {
+  createRouteResponseError,
+  isRouteResponseError,
+} from './RouteResponseError';
+import type { RouteResponseError } from './RouteResponseError';
 
 export {
   type Armies,
@@ -23,5 +27,7 @@ export {
   type CommandCards,
   type UnitCards,
   type ServerPorts,
-  RouteResponseError,
+  type RouteResponseError,
+  createRouteResponseError,
+  isRouteResponseError,
 };

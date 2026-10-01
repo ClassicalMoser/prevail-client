@@ -2,11 +2,11 @@ import type {
   GameModeName,
   PlayerChoiceEvent,
 } from '@classicalmoser/prevail-rules/domain';
-import { useEngine } from '@domain';
+import { createEngine } from '@domain';
 import type { GameStateChange, PortResponse } from '@domain';
 import { createGameStateProjections } from './gameState';
 import type { GameStateProjections } from './gameState';
-import { useEngineServices } from './repositories';
+import { createEngineServices } from './repositories';
 
 /**
  * Must match the game id used when creating a game (see prevail-rules `startNewGame`).
@@ -30,8 +30,8 @@ interface Core {
 }
 
 const createCore = (): Core => {
-  const { ports, gameStateStore } = useEngineServices();
-  const engine = useEngine(ports);
+  const { ports, gameStateStore } = createEngineServices();
+  const engine = createEngine(ports);
   const game = createGameStateProjections(gameStateStore);
 
   const startNewGame = async (gameMode: GameModeName): Promise<void> => {

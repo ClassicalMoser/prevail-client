@@ -2,7 +2,7 @@
 
 This document describes the **target** layering for Prevail client code. It also states plainly where the repo **does not yet** match that target.
 
-Code shape is [`STYLE.md`](../STYLE.md). The same principles, the provider stack, and this status are restated in [`DESIGN.md`](../DESIGN.md). Layers are [`LAYERS.md`](../LAYERS.md). Import edges are [`boundaries.ts`](../boundaries.ts). Keep this file and `DESIGN.md` in agreement when either changes.
+Design principles are [`DESIGN.md`](../DESIGN.md). What the interface must do for a player is [`UI.md`](../UI.md). Layers are [`LAYERS.md`](../LAYERS.md). Import edges are [`boundaries.ts`](../boundaries.ts). Code shape is [`STYLE.md`](../STYLE.md).
 
 ## Target principles
 
@@ -30,37 +30,11 @@ Wiring is easy to find: either a thin root that only passes props/handlers into 
 
 ### 5. Solid reactivity and TanStack Solid Query
 
-Hard rules (see also `.cursor/rules/solid-reactivity.mdc`):
-
-**Query**
-
-- Options are **always a function**: `useQuery(() => ({ queryKey, queryFn }))`.
-- **Never destructure** query/mutation stores (`const { data } = useQuery(...)`).
-- Keep the store (`const query = useQuery(...)`) and read `query.data`, `query.isLoading` in JSX or reactive primitives.
-- Resolve context ports once at hook setup; close over them in `queryFn` / `mutationFn`.
-
-**Props and dumb components**
-
-- **Never destructure props.** Use `(props)` and read `props.field` in JSX. Use `mergeProps` / `splitProps` for defaults (see UI primitives).
-- **Pass accessors down, not values:** `name={() => query.data?.name}`, not `name={query.data?.name}`.
-- Dumb interface components read `props.accessor()` in JSX; they do not call `useQuery` or context hooks.
-- Smart pages/hooks own queries and pass accessor props to presentational children.
-- Use `createMemo` for derived display values; do not assign reactive reads to `const` at component setup.
-
-**Layering**
-
-- `src/interface` presentational: accessors + callbacks in, DOM out.
-- `src/application`: queries, signals, editor state, view-model accessors for pages.
+The rules are [`STYLE.md`](../STYLE.md).
 
 ## Layer map
 
-| Area                 | Role                                                                                     |
-| -------------------- | ---------------------------------------------------------------------------------------- |
-| `src/domain`         | Ports and engine wiring that depend only on domain packages (no Solid).                  |
-| `src/application`    | Solid reactivity, in-memory adapters, bootstrap, context, query hooks.                   |
-| `src/interface`      | Views: props in, DOM out; `Show` / `For` as needed. call signals to maintain reactivity. |
-| `src/composition`    | Root wiring: providers, query client, auth and server port construction.                 |
-| `src/infrastructure` | Auth0, HTTP adapters implementing port interfaces.                                       |
+[`LAYERS.md`](../LAYERS.md).
 
 ## Provider stack
 

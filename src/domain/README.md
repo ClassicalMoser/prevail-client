@@ -4,7 +4,7 @@ Import as `@domain`.
 
 Builds the rules-package game runner and re-exports the port types that runner needs. It does not contain rules. It does not import `solid-js`.
 
-`useEngine` is `createGameRunner` from `@classicalmoser/prevail-rules/application`. Callers pass `EnginePorts` in and get a `GameRunner` back.
+`createEngine` calls `createGameRunner` from `@classicalmoser/prevail-rules/application`. Callers pass `EnginePorts` in and get a `GameRunner` back.
 
 This directory depends on the rules package only. It does not import `@application`, `@ports`, `@infrastructure`, or `@interface`.
 
@@ -16,4 +16,4 @@ Legality, validation of play, expected events, procedures, and state transitions
 
 - [`LAYERS.md`](../../LAYERS.md)
 - [`DESIGN.md`](../../DESIGN.md)
-- [`src/ARCHITECTURE.md`](../ARCHITECTURE.md) — domain stays pure
+- [`ARCHITECTURE.md`](../ARCHITECTURE.md)

@@ -28,7 +28,7 @@ Assert a value this test wrote. Do not assert a default some other helper filled
 
 A helper used by one suite may stay in that file. The same helper in a second suite, when no factory or transform covers it, belongs in a shared testing module imported only by tests. Production code does not import it.
 
-No type assertion (`as`, `!`) unless the test must pass a value the type forbids. That line carries a comment saying why, and it stays in the test file.
+Type assertions follow [`STYLE.md`](./STYLE.md).
 
 ## What is worth a spec
 
@@ -45,10 +45,10 @@ The rules engine's own coverage stays in `prevail-rules`. A client test that onl
 
 ## Commentary
 
-When a setup does several steps, comment each step: what it writes, and why. A block comment on the first `describe` says what the file is proving when the title alone is not enough. Leave that commentary in place.
+Commentary follows [`STYLE.md`](./STYLE.md). A block comment on the first `describe` says what the file is proving when the title alone is not enough.
 
 ## Inventory
 
 There is no coverage script in `package.json`. Do not treat a percentage in chat or in a report from another repo as this repo's number.
 
-The conventions audit ([`src/AUDIT.md`](./src/AUDIT.md)) records which modules have a colocated spec. Until that pass, the five colocated specs under `src/application/play/` are the suite.
+The conventions audit ([`src/AUDIT.md`](./src/AUDIT.md)) records which modules have a colocated spec. Specs added during that walk sit next to the module they exercise.

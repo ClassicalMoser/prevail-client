@@ -37,7 +37,8 @@ Path aliases (`@domain`, `@application`, `@ports`, `@infrastructure`, `@interfac
 ## Documentation
 
 - [`CONTRIBUTING.md`](./CONTRIBUTING.md) — scripts and review checks
-- [`STYLE.md`](./STYLE.md) — functions, files, commentary, Solid, tests
+- [`STYLE.md`](./STYLE.md) — functions, files, commentary, Solid
+- [`UI.md`](./UI.md) — semantics, accessibility, input, tokens, layout
 - [`DESIGN.md`](./DESIGN.md) — rules package, purity, immutability, events
 - [`src/ARCHITECTURE.md`](./src/ARCHITECTURE.md) — target layering and current alignment
 - [`LAYERS.md`](./LAYERS.md) — what each layer is for

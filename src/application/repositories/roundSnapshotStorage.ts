@@ -2,7 +2,11 @@ import type { GameState } from '@classicalmoser/prevail-rules/domain';
 import type { PortResponse, RoundSnapshotStorage } from '@domain';
 import { composeRoundKey } from './composeRoundKey';
 
-export const useRoundSnapshotStorage = (): RoundSnapshotStorage => {
+/**
+ * In-memory {@link RoundSnapshotStorage}, keyed by game and round.
+ * A new map is allocated per call. Mount the result once with the engine.
+ */
+function createRoundSnapshotStorage(): RoundSnapshotStorage {
   const snapshots = new Map<string, GameState>();
 
   /**
@@ -15,9 +19,17 @@ export const useRoundSnapshotStorage = (): RoundSnapshotStorage => {
     const key = composeRoundKey(gameId, roundNumber);
     const stored = snapshots.get(key);
     if (stored === undefined) {
-      return { result: true, data: undefined };
+      const missing: PortResponse<GameState | undefined> = {
+        result: true,
+        data: undefined,
+      };
+      return missing;
     }
-    return { result: true, data: stored };
+    const found: PortResponse<GameState | undefined> = {
+      result: true,
+      data: stored,
+    };
+    return found;
   };
 
   /**
@@ -30,11 +42,15 @@ export const useRoundSnapshotStorage = (): RoundSnapshotStorage => {
   ): Promise<PortResponse<void>> => {
     const key = composeRoundKey(gameId, roundNumber);
     snapshots.set(key, gameState);
-    return { result: true, data: undefined };
+    const saved: PortResponse<void> = { result: true, data: undefined };
+    return saved;
   };
 
-  return {
+  const storage: RoundSnapshotStorage = {
     getRoundSnapshot,
     saveRoundSnapshot,
   };
-};
+  return storage;
+}
+
+export { createRoundSnapshotStorage };

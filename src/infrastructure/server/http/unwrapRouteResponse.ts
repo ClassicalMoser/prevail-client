@@ -1,4 +1,4 @@
-import { RouteResponseError } from '@ports';
+import { createRouteResponseError } from '@ports';
 import type { ErrorResponse, Response200, Response201 } from './responseTypes';
 
 /**
@@ -18,7 +18,10 @@ function isErrorResponse(
 
 function unwrapEnvelope<T>(response: Response200<T> | Response201<T>): T {
   if (isErrorResponse(response)) {
-    throw new RouteResponseError(response.message, response.statusCode);
+    const message = response.message;
+    const statusCode = response.statusCode;
+    const error = createRouteResponseError(message, statusCode);
+    throw error;
   }
 
   return response.data;
@@ -45,7 +48,10 @@ async function unwrapDeleteRouteResponsePromise(
   const response = await responsePromise;
 
   if (response !== undefined) {
-    throw new RouteResponseError(response.message, response.statusCode);
+    const message = response.message;
+    const statusCode = response.statusCode;
+    const error = createRouteResponseError(message, statusCode);
+    throw error;
   }
 }
 

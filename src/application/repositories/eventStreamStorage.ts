@@ -2,11 +2,21 @@ import type { Event } from '@classicalmoser/prevail-rules/domain';
 import type { EventStreamStorage, PortResponse } from '@domain';
 import { composeRoundKey } from './composeRoundKey';
 
+/**
+ * Copy the buffer and freeze it so a caller cannot append through the returned list.
+ * The map keeps the mutable buffer. That buffer is how this store appends.
+ */
 function frozenCopy<T>(items: readonly T[]): readonly T[] {
-  return Object.freeze([...items]);
+  const copy = [...items];
+  const frozen = Object.freeze(copy);
+  return frozen;
 }
 
-export const useEventStreamStorage = (): EventStreamStorage => {
+/**
+ * In-memory {@link EventStreamStorage}, keyed by game and round.
+ * A new map is allocated per call. Mount the result once with the engine.
+ */
+function createEventStreamStorage(): EventStreamStorage {
   const streams = new Map<string, Event[]>();
 
   /**
@@ -19,9 +29,18 @@ export const useEventStreamStorage = (): EventStreamStorage => {
     const key = composeRoundKey(gameId, roundNumber);
     const events = streams.get(key);
     if (events === undefined) {
-      return { result: true, data: undefined };
+      const missing: PortResponse<readonly Event[] | undefined> = {
+        result: true,
+        data: undefined,
+      };
+      return missing;
     }
-    return { result: true, data: frozenCopy(events) };
+    const data = frozenCopy(events);
+    const found: PortResponse<readonly Event[] | undefined> = {
+      result: true,
+      data,
+    };
+    return found;
   };
 
   /**
@@ -34,13 +53,17 @@ export const useEventStreamStorage = (): EventStreamStorage => {
   ): Promise<PortResponse<readonly Event[] | undefined>> => {
     const key = composeRoundKey(gameId, roundNumber);
     let list = streams.get(key);
-    if (!list) {
+    if (list === undefined) {
       list = [];
       streams.set(key, list);
     }
     list.push(event);
     const nextStream = frozenCopy(list);
-    return { result: true, data: nextStream };
+    const appended: PortResponse<readonly Event[] | undefined> = {
+      result: true,
+      data: nextStream,
+    };
+    return appended;
   };
 
   /**
@@ -50,8 +73,10 @@ export const useEventStreamStorage = (): EventStreamStorage => {
     gameId: string,
     roundNumber: number,
   ): Promise<PortResponse<void>> => {
-    streams.delete(composeRoundKey(gameId, roundNumber));
-    return { result: true, data: undefined };
+    const key = composeRoundKey(gameId, roundNumber);
+    streams.delete(key);
+    const flushed: PortResponse<void> = { result: true, data: undefined };
+    return flushed;
   };
 
   /**
@@ -63,14 +88,17 @@ export const useEventStreamStorage = (): EventStreamStorage => {
   ): Promise<PortResponse<readonly Event[]>> => {
     const key = composeRoundKey(gameId, roundNumber);
     if (streams.has(key)) {
-      return {
+      const duplicate: PortResponse<readonly Event[]> = {
         result: false,
         errorReason: 'Event stream already exists for this game and round',
       };
+      return duplicate;
     }
     const empty: Event[] = [];
     streams.set(key, empty);
-    return { result: true, data: frozenCopy(empty) };
+    const data = frozenCopy(empty);
+    const created: PortResponse<readonly Event[]> = { result: true, data };
+    return created;
   };
 
   /**
@@ -83,24 +111,34 @@ export const useEventStreamStorage = (): EventStreamStorage => {
   ): Promise<PortResponse<readonly Event[]>> => {
     const key = composeRoundKey(gameId, roundNumber);
     const list = streams.get(key);
-    if (!list) {
-      return { result: false, errorReason: 'Event stream not found' };
+    if (list === undefined) {
+      const missing: PortResponse<readonly Event[]> = {
+        result: false,
+        errorReason: 'Event stream not found',
+      };
+      return missing;
     }
     if (firstEventToRemove < 0 || firstEventToRemove > list.length) {
-      return {
+      const outOfRange: PortResponse<readonly Event[]> = {
         result: false,
         errorReason: 'firstEventToRemove out of range for event stream',
       };
+      return outOfRange;
     }
     list.splice(firstEventToRemove);
-    return { result: true, data: frozenCopy(list) };
+    const data = frozenCopy(list);
+    const truncated: PortResponse<readonly Event[]> = { result: true, data };
+    return truncated;
   };
 
-  return {
+  const storage: EventStreamStorage = {
     getEventStream,
     addEventToStream,
     flushEventStream,
     newEventStream,
     truncateEventStream,
   };
-};
+  return storage;
+}
+
+export { createEventStreamStorage };

@@ -1,11 +1,85 @@
 import type {
+  CardStateForVisibility,
   Game,
-  GameState,
+  GameForVisibility,
   GameModeName,
+  GameState,
+  GameStateForVisibility,
+  GameStateVisibility,
 } from '@classicalmoser/prevail-rules/domain';
 import type { GameStorage, PortResponse } from '@domain';
 
-export const useGameStorage = (): GameStorage => {
+/**
+ * Copy the shared game-state fields and attach one narrowed card state.
+ * Spreading the wide {@link GameState} keeps the union, so the card state is set by name.
+ */
+function stateForVisibility<V extends GameStateVisibility>(
+  gameState: GameState,
+  cardState: CardStateForVisibility<V>,
+): GameStateForVisibility<V> {
+  const next: GameStateForVisibility<V> = {
+    currentRoundNumber: gameState.currentRoundNumber,
+    currentRoundState: gameState.currentRoundState,
+    currentInitiative: gameState.currentInitiative,
+    cardState,
+    reservedUnits: gameState.reservedUnits,
+    routedUnits: gameState.routedUnits,
+    lostCommanders: gameState.lostCommanders,
+    boardState: gameState.boardState,
+  };
+  if (gameState.winner !== undefined) {
+    next.winner = gameState.winner;
+  }
+  return next;
+}
+
+/**
+ * Replace `existing.gameState` when the next snapshot uses the same card visibility.
+ * A mismatch returns undefined.
+ */
+function gameWithState(existing: Game, gameState: GameState): Game | undefined {
+  const cardState = gameState.cardState;
+
+  if (existing.gameState.cardState.visibility === 'authoritative') {
+    if (cardState.visibility !== 'authoritative') {
+      return undefined;
+    }
+    const state = stateForVisibility(gameState, cardState);
+    const next: GameForVisibility<'authoritative'> = {
+      ...existing,
+      gameState: state,
+    };
+    return next;
+  }
+
+  if (existing.gameState.cardState.visibility === 'whiteSeen') {
+    if (cardState.visibility !== 'whiteSeen') {
+      return undefined;
+    }
+    const state = stateForVisibility(gameState, cardState);
+    const next: GameForVisibility<'whiteSeen'> = {
+      ...existing,
+      gameState: state,
+    };
+    return next;
+  }
+
+  if (cardState.visibility !== 'blackSeen') {
+    return undefined;
+  }
+  const state = stateForVisibility(gameState, cardState);
+  const next: GameForVisibility<'blackSeen'> = {
+    ...existing,
+    gameState: state,
+  };
+  return next;
+}
+
+/**
+ * In-memory {@link GameStorage}.
+ * A new map is allocated per call. Mount the result once with the engine.
+ */
+function createGameStorage(): GameStorage {
   const games = new Map<string, Game>();
 
   /**
@@ -19,13 +93,22 @@ export const useGameStorage = (): GameStorage => {
     gameMode: GameModeName,
   ): Promise<PortResponse<Game>> => {
     const foundGame = games.get(gameId);
-    if (!foundGame) {
-      return { result: false, errorReason: 'Game not found' };
+    if (foundGame === undefined) {
+      const missing: PortResponse<Game> = {
+        result: false,
+        errorReason: 'Game not found',
+      };
+      return missing;
     }
     if (foundGame.gameMode !== gameMode) {
-      return { result: false, errorReason: 'Game type mismatch' };
+      const mismatch: PortResponse<Game> = {
+        result: false,
+        errorReason: 'Game type mismatch',
+      };
+      return mismatch;
     }
-    return { result: true, data: foundGame };
+    const found: PortResponse<Game> = { result: true, data: foundGame };
+    return found;
   };
 
   /**
@@ -35,10 +118,15 @@ export const useGameStorage = (): GameStorage => {
    */
   const saveNewGame = async (game: Game): Promise<PortResponse<void>> => {
     if (games.has(game.id)) {
-      return { result: false, errorReason: 'Game already exists' };
+      const duplicate: PortResponse<void> = {
+        result: false,
+        errorReason: 'Game already exists',
+      };
+      return duplicate;
     }
     games.set(game.id, game);
-    return { result: true, data: undefined };
+    const saved: PortResponse<void> = { result: true, data: undefined };
+    return saved;
   };
 
   /**
@@ -52,16 +140,32 @@ export const useGameStorage = (): GameStorage => {
     gameState: GameState,
   ): Promise<PortResponse<void>> => {
     const existing = games.get(gameId);
-    if (!existing) {
-      return { result: false, errorReason: 'Game not found' };
+    if (existing === undefined) {
+      const missing: PortResponse<void> = {
+        result: false,
+        errorReason: 'Game not found',
+      };
+      return missing;
     }
-    games.set(gameId, { ...existing, gameState } as Game);
-    return { result: true, data: undefined };
+    const next = gameWithState(existing, gameState);
+    if (next === undefined) {
+      const mismatch: PortResponse<void> = {
+        result: false,
+        errorReason: 'Game state visibility mismatch',
+      };
+      return mismatch;
+    }
+    games.set(gameId, next);
+    const updated: PortResponse<void> = { result: true, data: undefined };
+    return updated;
   };
 
-  return {
+  const storage: GameStorage = {
     getGame,
     saveNewGame,
     updateGameState,
   };
-};
+  return storage;
+}
+
+export { createGameStorage };

@@ -1,5 +1,5 @@
 import type { AccessTokenGetter, AuthPort, AuthState, AuthUser } from './auth';
-import { RouteResponseError } from './server';
+import { createRouteResponseError, isRouteResponseError } from './server';
 import type {
   Armies,
   CommandCards,
@@ -9,6 +9,7 @@ import type {
   GameSeatConnectionStatus,
   GameSeatOutbound,
   Games,
+  RouteResponseError,
   ServerPorts,
   UnitCards,
 } from './server';
@@ -28,5 +29,7 @@ export {
   type Games,
   type ServerPorts,
   type UnitCards,
-  RouteResponseError,
+  type RouteResponseError,
+  createRouteResponseError,
+  isRouteResponseError,
 };

@@ -1,9 +1,9 @@
 import { createGameStateStore } from '@application/gameState';
 import type { GameStateStore } from '@application/gameState';
 import type { EnginePorts, GameStateSubscriber } from '@domain';
-import { useEventStreamStorage } from './eventStreamStorage';
-import { useGameStorage } from './gameStorage';
-import { useRoundSnapshotStorage } from './roundSnapshotStorage';
+import { createEventStreamStorage } from './eventStreamStorage';
+import { createGameStorage } from './gameStorage';
+import { createRoundSnapshotStorage } from './roundSnapshotStorage';
 
 interface EngineServicesBundle {
   ports: EnginePorts;
@@ -11,12 +11,19 @@ interface EngineServicesBundle {
   gameStateStore: GameStateStore;
 }
 
-const useEngineServices = (): EngineServicesBundle => {
-  const gameStorage = useGameStorage();
-  const eventStreamStorage = useEventStreamStorage();
-  const roundSnapshotStorage = useRoundSnapshotStorage();
+/**
+ * Allocate the in-memory engine ports and the game-state store.
+ * Call once, from `createCore`. Each call builds a new map set.
+ */
+function createEngineServices(): EngineServicesBundle {
+  const gameStorage = createGameStorage();
+  const eventStreamStorage = createEventStreamStorage();
+  const roundSnapshotStorage = createRoundSnapshotStorage();
   const gameStateStore = createGameStateStore();
-  /** Runner-scoped list; same reference for `createGameRunner` — push/splice to add or remove listeners. */
+  /**
+   * Runner-scoped list. The same reference is handed to `createGameRunner`.
+   * Push or splice to add or remove listeners.
+   */
   const gameStateSubscribers: GameStateSubscriber[] = [];
   gameStateSubscribers.push(gameStateStore.engineSubscriber);
   const ports: EnginePorts = {
@@ -25,7 +32,8 @@ const useEngineServices = (): EngineServicesBundle => {
     roundSnapshotStorage,
     gameStateSubscribers,
   };
-  return { ports, gameStateStore };
-};
+  const bundle: EngineServicesBundle = { ports, gameStateStore };
+  return bundle;
+}
 
-export { type EngineServicesBundle, useEngineServices };
+export { type EngineServicesBundle, createEngineServices };

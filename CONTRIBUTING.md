@@ -26,12 +26,12 @@ In an editor that type-checks as you type and applies fixes on save, a lot of th
 
 ## Standards
 
-- [`STYLE.md`](./STYLE.md) — functions, files, commentary, Solid, tests
-- [`DESIGN.md`](./DESIGN.md) — rules package, purity, immutability, events, ports
+- [`STYLE.md`](./STYLE.md) — functions, files, commentary, Solid
+- [`UI.md`](./UI.md) — semantics, accessibility, input, tokens, layout
+- [`DESIGN.md`](./DESIGN.md) — rules package, purity, immutability, events
 - [`src/ARCHITECTURE.md`](./src/ARCHITECTURE.md) — target layering, provider stack, current alignment
 - [`LAYERS.md`](./LAYERS.md) — what each layer is for
 - [`boundaries.ts`](./boundaries.ts) — which package may import which
 - [`TESTING.md`](./TESTING.md) — how a spec is written and where it lives
-- [`.cursor/rules/solid-reactivity.mdc`](./.cursor/rules/solid-reactivity.mdc) — the same Solid rules, kept for the editor
-- [`src/ports/NOTE.md`](./src/ports/NOTE.md) — ports are contracts only
+- [`src/ports/README.md`](./src/ports/README.md) — ports are contracts only
 - [`src/application/repositories/README.md`](./src/application/repositories/README.md) — the in-memory engine binding

@@ -4,9 +4,9 @@ Import as `@infrastructure`.
 
 Concrete adapters for the ports in `@ports`. This is the only layer that knows Auth0 and `fetch`.
 
-| Area     | Role                                                                                |
-| -------- | ----------------------------------------------------------------------------------- |
-| `auth/`  | `createAuth0Port` implements `AuthPort`. Config is `auth0Config`.                  |
+| Area      | Role                                                                              |
+| --------- | --------------------------------------------------------------------------------- |
+| `auth/`   | `createAuth0Port` implements `AuthPort`. Config is `auth0Config`.                 |
 | `server/` | `createServerPorts` implements `ServerPorts`: HTTP, callers, resources, adapters. |
 
 An adapter maps a wire response onto the port's return type. Schema failures are logged and surfaced as `RouteResponseError` or a rejected call. They are not swallowed.

@@ -1,11 +1,11 @@
-import { useEngineServices } from './engineServices';
-import { useEventStreamStorage } from './eventStreamStorage';
-import { useGameStorage } from './gameStorage';
-import { useRoundSnapshotStorage } from './roundSnapshotStorage';
+import { createEngineServices } from './engineServices';
+import { createEventStreamStorage } from './eventStreamStorage';
+import { createGameStorage } from './gameStorage';
+import { createRoundSnapshotStorage } from './roundSnapshotStorage';
 
 export {
-  useEngineServices,
-  useEventStreamStorage,
-  useGameStorage,
-  useRoundSnapshotStorage,
+  createEngineServices,
+  createEventStreamStorage,
+  createGameStorage,
+  createRoundSnapshotStorage,
 };

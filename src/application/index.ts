@@ -111,8 +111,9 @@ import type {
   SideCardEconomy,
   UseSeatPlaySessionResult,
 } from './play';
-import { RouteResponseError } from '@ports';
-import { useGameStorage } from './repositories';
+import { createRouteResponseError, isRouteResponseError } from '@ports';
+import type { RouteResponseError } from '@ports';
+import { createGameStorage } from './repositories';
 import { useGreetMsg, useName } from './signals';
 
 export {
@@ -216,8 +217,10 @@ export {
   type SetupUnitTypeGroup,
   type SideCardEconomy,
   type UseSeatPlaySessionResult,
-  RouteResponseError,
-  useGameStorage,
+  type RouteResponseError,
+  createRouteResponseError,
+  isRouteResponseError,
+  createGameStorage,
   useGreetMsg,
   useName,
 };

@@ -6,8 +6,6 @@ Interfaces for connecting with external infrastructure live here.
 
 Composition (bootstrap / providers) wires concrete adapters from `@infrastructure` to these ports. This directory defines contracts only — no implementations.
 
-That paragraph is also [`NOTE.md`](./NOTE.md). Both copies stay.
-
 ## What lives here
 
 - `auth/` — `AuthPort`: session state, `subscribe`, access tokens, login, logout
@@ -19,7 +17,6 @@ A port is a function bag. It does not fetch, and it does not touch Solid. Adapte
 
 ## Related
 
-- [`NOTE.md`](./NOTE.md)
 - [`../infrastructure/README.md`](../infrastructure/README.md)
 - [`../composition/README.md`](../composition/README.md)
 - [`DESIGN.md`](../../DESIGN.md)

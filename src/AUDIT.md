@@ -2,9 +2,9 @@
 
 Running checklist for a manual, end-to-end conventions audit of this client (layers, import boundaries, Solid reactivity, commentary, colocated tests). Work up the dependency tree. Check a box only when that directory has been walked and brought in line.
 
-The walk has not started.
+The full walk has not started.
 
-**Criteria:** [`STYLE.md`](../STYLE.md), [`DESIGN.md`](../DESIGN.md), [`ARCHITECTURE.md`](./ARCHITECTURE.md), [`LAYERS.md`](../LAYERS.md), [`boundaries.ts`](../boundaries.ts), [`TESTING.md`](../TESTING.md), [`.cursor/rules/solid-reactivity.mdc`](../.cursor/rules/solid-reactivity.mdc), [`ports/NOTE.md`](./ports/NOTE.md), and [`application/repositories/README.md`](./application/repositories/README.md).
+**Criteria:** [`STYLE.md`](../STYLE.md), [`UI.md`](../UI.md), [`DESIGN.md`](../DESIGN.md), [`ARCHITECTURE.md`](./ARCHITECTURE.md), [`LAYERS.md`](../LAYERS.md), [`boundaries.ts`](../boundaries.ts), [`TESTING.md`](../TESTING.md), [`ports/README.md`](./ports/README.md), and [`application/repositories/README.md`](./application/repositories/README.md).
 
 **Last updated:** 2026-09-30
 
