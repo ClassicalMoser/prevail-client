@@ -1,9 +1,9 @@
 import { Button } from '@interface/components';
-import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 
 export function CommitChoice(props: {
-  hint: Accessor<string | null>;
+  hint: Accessor<string | undefined>;
   canRefuseCommit: Accessor<boolean>;
   choicePending: Accessor<boolean>;
   onRefuseCommit: () => void;

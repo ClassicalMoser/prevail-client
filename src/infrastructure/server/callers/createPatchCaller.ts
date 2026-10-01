@@ -1,9 +1,9 @@
 import type { PatchRoute } from '@classicalmoser/prevail-contracts';
-import type { BodyRouteCallArgs, PatchResponse } from '../http';
 import { buildRequestUrl } from '../http';
+import type { BodyRouteCallArgs, PatchResponse } from '../http';
 import type { CallerDependencies } from './callerDependencies';
 
-export type CallPatch = <
+type CallPatch = <
   TData,
   TParams extends Record<string, unknown>,
   TQuery extends Record<string, unknown>,
@@ -13,7 +13,7 @@ export type CallPatch = <
   args: BodyRouteCallArgs<TParams, TQuery, TBody>,
 ) => Promise<PatchResponse<TData>>;
 
-export function createPatchCaller({
+function createPatchCaller({
   serverUrl,
   routeFetch,
 }: CallerDependencies): CallPatch {
@@ -26,8 +26,14 @@ export function createPatchCaller({
     route: PatchRoute<TParams, TQuery, TBody, TData>,
     args: BodyRouteCallArgs<TParams, TQuery, TBody>,
   ): Promise<PatchResponse<TData>> {
-    const url = buildRequestUrl(serverUrl, route.path, args.params, args.query);
+    const url = buildRequestUrl(serverUrl, {
+      path: route.path,
+      params: args.params,
+      query: args.query,
+    });
 
     return routeFetch.fetchPatchResponse(url, route, args.body);
   };
 }
+
+export { type CallPatch, createPatchCaller };

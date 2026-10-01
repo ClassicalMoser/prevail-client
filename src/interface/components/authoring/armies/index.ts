@@ -1,7 +1,17 @@
-export { ArmyCardThumb } from './army-card-thumb';
-export { ArmyCommandCardsSection } from './army-command-cards-section';
-export { ArmyCompositionHeader } from './army-composition-header';
-export { ArmyEditorForm } from './army-editor-form';
-export { ArmyUnitsSection } from './army-units-section';
-export { PublishedCardFace } from '../published-card-face';
-export { PublishedCardThumb } from '../published-card-thumb';
+import { ArmyCardThumb } from './army-card-thumb';
+import { ArmyCommandCardsSection } from './army-command-cards-section';
+import { ArmyCompositionHeader } from './army-composition-header';
+import { ArmyEditorForm } from './army-editor-form';
+import { ArmyUnitsSection } from './army-units-section';
+import { PublishedCardFace } from '../published-card-face';
+import { PublishedCardThumb } from '../published-card-thumb';
+
+export {
+  ArmyCardThumb,
+  ArmyCommandCardsSection,
+  ArmyCompositionHeader,
+  ArmyEditorForm,
+  ArmyUnitsSection,
+  PublishedCardFace,
+  PublishedCardThumb,
+};

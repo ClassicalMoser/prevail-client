@@ -1,4 +1,11 @@
-export { applyCommitCardHighlights } from './applyCommitCardHighlights';
-export { commitRefuseEvent } from './commitRefuseEvent';
-export { isCommitChoiceType } from './isCommitChoiceType';
-export { itemsForCommit } from './itemsForCommit';
+import { applyCommitCardHighlights } from './applyCommitCardHighlights';
+import { commitRefuseEvent } from './commitRefuseEvent';
+import { isCommitChoiceType } from './isCommitChoiceType';
+import { itemsForCommit } from './itemsForCommit';
+
+export {
+  applyCommitCardHighlights,
+  commitRefuseEvent,
+  isCommitChoiceType,
+  itemsForCommit,
+};

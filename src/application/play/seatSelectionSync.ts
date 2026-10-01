@@ -2,8 +2,8 @@ import type {
   GameState,
   LegalPlayerChoiceOptions,
 } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor, Setter } from 'solid-js';
 import { createEffect, createMemo, untrack } from 'solid-js';
+import type { Accessor, Setter } from 'solid-js';
 import { resetStagedSelection } from './selection';
 import type { SeatSelection } from './selection';
 
@@ -38,7 +38,7 @@ function needsDraft(options: LegalPlayerChoiceOptions): boolean {
 
 /** Keep local seat draft in sync when legal options identity / kind drifts. */
 export function bindSeatSelectionSync(args: {
-  legalOptions: Accessor<LegalPlayerChoiceOptions | null>;
+  legalOptions: Accessor<LegalPlayerChoiceOptions | undefined>;
   selection: Accessor<SeatSelection>;
   setSelection: Setter<SeatSelection>;
   readGameState: () => GameState | undefined;
@@ -48,7 +48,7 @@ export function bindSeatSelectionSync(args: {
 }): void {
   const optionsIdentity = createMemo(() => {
     const options = args.legalOptions();
-    if (options === null) {
+    if (options === undefined) {
       return 'none';
     }
     return `${options.choiceType}:${options.expectedEventNumber}`;
@@ -73,7 +73,7 @@ export function bindSeatSelectionSync(args: {
   createEffect(() => {
     const options = args.legalOptions();
     const sel = args.selection();
-    if (options === null) {
+    if (options === undefined) {
       return;
     }
     if (needsDraft(options) && !draftAligned(options, sel)) {

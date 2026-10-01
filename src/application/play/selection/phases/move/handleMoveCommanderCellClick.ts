@@ -1,9 +1,9 @@
+import { PLAYER_CHOICE_EVENT_TYPE } from '@classicalmoser/prevail-rules/domain';
 import type {
   Coordinate,
   GameState,
   LegalPlayerChoiceOptions,
 } from '@classicalmoser/prevail-rules/domain';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@classicalmoser/prevail-rules/domain';
 import { concretePlayer } from '@application/play/selection/core';
 import type {
   CellClickResult,

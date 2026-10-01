@@ -1,6 +1,6 @@
 import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor, JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { Button } from '@interface/button';
 import {
   Card,

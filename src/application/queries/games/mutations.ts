@@ -1,6 +1,6 @@
 import type { CreateVsBotGameBody } from '@classicalmoser/prevail-contracts';
-import type { UseMutationResult } from '@tanstack/solid-query';
 import { useMutation } from '@tanstack/solid-query';
+import type { UseMutationResult } from '@tanstack/solid-query';
 import { useGames } from '@application/serverPortsContext';
 
 export function useCreateVsBotGameMutation(): UseMutationResult<
@@ -10,7 +10,10 @@ export function useCreateVsBotGameMutation(): UseMutationResult<
 > {
   const games = useGames();
 
-  return useMutation(() => ({
-    mutationFn: (body: CreateVsBotGameBody) => games.createVsBot(body),
-  }));
+  return useMutation(
+    (): { mutationFn: (body: CreateVsBotGameBody) => Promise<string> } => ({
+      mutationFn: (body: CreateVsBotGameBody): Promise<string> =>
+        games.createVsBot(body),
+    }),
+  );
 }

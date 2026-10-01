@@ -1,6 +1,6 @@
 import type { PublishedCardKind } from '@interface/lib';
-import type { Accessor, JSX } from 'solid-js';
 import { createMemo, Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { PublishedCardFace } from './published-card-face';
 
@@ -20,8 +20,9 @@ export function AnchoredPublishedCardPreview(props: {
 }): JSX.Element {
   const placement = createMemo(() => {
     const rect = props.anchor();
+    // No anchor rect yet, so there is no place to pin the preview.
     if (!rect) {
-      return null;
+      return;
     }
     const showAbove = rect.top >= PREVIEW_HEIGHT_PX;
     return {

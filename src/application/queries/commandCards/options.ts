@@ -1,11 +1,11 @@
 import type { CardListItem } from '@classicalmoser/prevail-contracts';
 import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
 import type { CommandCards } from '@ports';
-import type { QueryOptions } from '@tanstack/solid-query';
 import { queryOptions } from '@tanstack/solid-query';
+import type { QueryOptions } from '@tanstack/solid-query';
 import { commandCardKeys } from '../keys';
 
-export function allCommandCardsQueryOptions(
+function allCommandCardsQueryOptions(
   commandCards: CommandCards,
 ): QueryOptions<
   CardListItem[],
@@ -19,7 +19,7 @@ export function allCommandCardsQueryOptions(
   });
 }
 
-export function currentCommandCardsQueryOptions(
+function currentCommandCardsQueryOptions(
   commandCards: CommandCards,
 ): QueryOptions<
   CommandCard[],
@@ -33,7 +33,7 @@ export function currentCommandCardsQueryOptions(
   });
 }
 
-export function commandCardByIdQueryOptions(
+function commandCardByIdQueryOptions(
   commandCards: CommandCards,
   id: string,
 ): QueryOptions<
@@ -48,7 +48,7 @@ export function commandCardByIdQueryOptions(
   });
 }
 
-export function commandCardsByIdsQueryOptions(
+function commandCardsByIdsQueryOptions(
   commandCards: CommandCards,
   ids: readonly string[],
 ): QueryOptions<
@@ -62,3 +62,10 @@ export function commandCardsByIdsQueryOptions(
     queryFn: () => commandCards.getByIds(ids),
   });
 }
+
+export {
+  allCommandCardsQueryOptions,
+  currentCommandCardsQueryOptions,
+  commandCardByIdQueryOptions,
+  commandCardsByIdsQueryOptions,
+};

@@ -29,7 +29,7 @@ import type {
  * One function per prevail-contracts command-card route.
  * Wires contract constants to the matching caller; still returns HTTP envelopes.
  */
-export interface CommandCardResources {
+interface CommandCardResources {
   getAllCommandCards(): Promise<GetResponse<CardListItem[]>>;
   getCommandCardById(params: GetByIdParams): Promise<GetResponse<CommandCard>>;
   getCommandCardsByIds(
@@ -47,7 +47,7 @@ export interface CommandCardResources {
   previewCommandCard(card: CommandCard): Promise<MediaPostResponse<string>>;
 }
 
-export function createCommandCardResources({
+function createCommandCardResources({
   callDelete,
   callGet,
   callMediaPost,
@@ -117,3 +117,5 @@ export function createCommandCardResources({
     },
   };
 }
+
+export { type CommandCardResources, createCommandCardResources };

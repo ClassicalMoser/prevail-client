@@ -3,13 +3,13 @@ import type { CreateVsBotGameBody } from '@classicalmoser/prevail-contracts';
 import type { Callers } from '../callers';
 import type { CreatedPostResponse } from '../http';
 
-export interface GameResources {
+interface GameResources {
   createVsBotGame(
     body: CreateVsBotGameBody,
   ): Promise<CreatedPostResponse<string>>;
 }
 
-export function createGameResources({
+function createGameResources({
   callPost,
 }: Pick<Callers, 'callPost'>): GameResources {
   return {
@@ -22,3 +22,5 @@ export function createGameResources({
     },
   };
 }
+
+export { type GameResources, createGameResources };

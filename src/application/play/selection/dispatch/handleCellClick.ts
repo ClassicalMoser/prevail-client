@@ -19,12 +19,12 @@ import { handleSupportCellClick } from '../phases/support';
 
 export function handleCellClick(args: {
   coordinate: Coordinate;
-  options: LegalPlayerChoiceOptions | null;
+  options: LegalPlayerChoiceOptions | undefined;
   selection: SeatSelection;
   state: GameState;
 }): CellClickResult {
   const { coordinate, options, selection, state } = args;
-  if (options === null) {
+  if (options === undefined) {
     return { selection };
   }
 

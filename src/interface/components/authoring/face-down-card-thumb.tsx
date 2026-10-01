@@ -1,6 +1,6 @@
 import { cx } from '@interface/lib';
-import type { JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 
 /** Placeholder for a seat-hidden / skip-style card tile. */
 export const FaceDownCardThumb = (props: {

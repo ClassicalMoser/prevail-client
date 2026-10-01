@@ -1,13 +1,13 @@
-import type { BadgeRootProps } from '@kobalte/core/badge';
 import { Root } from '@kobalte/core/badge';
+import type { BadgeRootProps } from '@kobalte/core/badge';
 import type { PolymorphicProps } from '@kobalte/core/polymorphic';
 import type { VariantProps } from 'cva';
+import { splitProps } from 'solid-js';
 import type { JSX, ValidComponent } from 'solid-js';
 import { cva } from '@interface/lib';
-import { splitProps } from 'solid-js';
 
 /** Zaidan vega — https://zaidan.carere.dev/r/kobalte/badge.json */
-export const badgeVariants = cva({
+const badgeVariants = cva({
   base: 'group/badge z-badge inline-flex w-fit shrink-0 items-center justify-center overflow-hidden whitespace-nowrap transition-colors focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none',
   variants: {
     variant: {
@@ -24,13 +24,13 @@ export const badgeVariants = cva({
   },
 });
 
-export type BadgeProps<T extends ValidComponent = 'span'> = PolymorphicProps<
+type BadgeProps<T extends ValidComponent = 'span'> = PolymorphicProps<
   T,
   BadgeRootProps<T>
 > &
   VariantProps<typeof badgeVariants>;
 
-export const Badge = <T extends ValidComponent = 'span'>(
+const Badge = <T extends ValidComponent = 'span'>(
   props: BadgeProps<T>,
 ): JSX.Element => {
   const [local, others] = splitProps(props as BadgeProps, ['class', 'variant']);
@@ -44,3 +44,5 @@ export const Badge = <T extends ValidComponent = 'span'>(
     />
   );
 };
+
+export { badgeVariants, type BadgeProps, Badge };

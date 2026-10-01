@@ -1,8 +1,8 @@
 import type { UnitFacing } from '@classicalmoser/prevail-rules/domain';
 
-export type CellHighlight = 'legal' | 'selected';
+type CellHighlight = 'legal' | 'selected';
 
-export interface PlayHighlights {
+interface PlayHighlights {
   cells: Readonly<Partial<Record<string, CellHighlight>>>;
   /** Cells that should show the eight-direction facing picker. */
   facingPickerCells: ReadonlySet<string>;
@@ -11,3 +11,5 @@ export interface PlayHighlights {
   /** Command card ids highlighted as legal / selected. */
   cardIds: Readonly<Partial<Record<string, CellHighlight>>>;
 }
+
+export type { CellHighlight, PlayHighlights };

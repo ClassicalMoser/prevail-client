@@ -1,3 +1,4 @@
+import type { UnitSupport } from '@classicalmoser/prevail-rules/domain';
 import {
   buildAssignUnitSupportSubmit,
   selectAssignUnitSupportCard,
@@ -7,12 +8,12 @@ import { unlockDraft } from './unlockDraft';
 
 export function createSupportActions(deps: SeatPlayActionsDeps): {
   onConfirmAssignUnitSupport: () => void;
-  onSelectAssignUnitSupportCard: (cardId: string) => void;
+  onSelectAssignUnitSupportCard: (card: { unitSupport: UnitSupport }) => void;
 } {
   return {
     onConfirmAssignUnitSupport: () => {
       const options = deps.legalOptions();
-      if (options === null) {
+      if (options === undefined) {
         return;
       }
       const event = buildAssignUnitSupportSubmit(options, deps.selection());
@@ -20,14 +21,14 @@ export function createSupportActions(deps: SeatPlayActionsDeps): {
         deps.submit(event);
       }
     },
-    onSelectAssignUnitSupportCard: (cardId) => {
+    onSelectAssignUnitSupportCard: (card) => {
       unlockDraft(deps);
       const options = deps.legalOptions();
-      if (options === null) {
+      if (options === undefined) {
         return;
       }
       deps.setSelection(
-        selectAssignUnitSupportCard(options, deps.selection(), cardId),
+        selectAssignUnitSupportCard(options, deps.selection(), card),
       );
     },
   };

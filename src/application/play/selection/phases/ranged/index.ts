@@ -1,6 +1,15 @@
-export { applyRangedHighlights } from './applyRangedHighlights';
-export { buildPerformRangedAttackSubmit } from './buildPerformRangedAttackSubmit';
-export { canConfirmPerformRangedAttack } from './canConfirmPerformRangedAttack';
-export { handleRangedCellClick } from './handleRangedCellClick';
-export { initialRangedSelection } from './initialSelection';
-export { undoRanged } from './undoRanged';
+import { applyRangedHighlights } from './applyRangedHighlights';
+import { buildPerformRangedAttackSubmit } from './buildPerformRangedAttackSubmit';
+import { canConfirmPerformRangedAttack } from './canConfirmPerformRangedAttack';
+import { handleRangedCellClick } from './handleRangedCellClick';
+import { initialRangedSelection } from './initialSelection';
+import { undoRanged } from './undoRanged';
+
+export {
+  applyRangedHighlights,
+  buildPerformRangedAttackSubmit,
+  canConfirmPerformRangedAttack,
+  handleRangedCellClick,
+  initialRangedSelection,
+  undoRanged,
+};

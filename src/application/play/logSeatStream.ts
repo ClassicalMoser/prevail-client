@@ -33,7 +33,7 @@ function eventHead(payload: unknown): string {
 }
 
 /** Dev aid: print seat WS traffic and fold outcomes to the browser console. */
-export function logSeatStreamInbound(
+function logSeatStreamInbound(
   message: GameSeatOutbound,
   fold?: { before: GameState | undefined; after?: GameState; error?: unknown },
 ): void {
@@ -74,10 +74,16 @@ export function logSeatStreamInbound(
   }
 }
 
-export function logSeatStreamOutbound(choice: unknown): void {
+function logSeatStreamOutbound(choice: unknown): void {
   console.log('[seat stream] → playerChoice', eventHead(choice), choice);
 }
 
-export function logSeatStreamSnapshotRequest(): void {
+function logSeatStreamSnapshotRequest(): void {
   console.log('[seat stream] → requestGameSnapshot');
 }
+
+export {
+  logSeatStreamInbound,
+  logSeatStreamOutbound,
+  logSeatStreamSnapshotRequest,
+};

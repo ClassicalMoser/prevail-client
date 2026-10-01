@@ -1,8 +1,8 @@
 import type { CellHighlight, UseSeatPlaySessionResult } from '@application';
 import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
 import { FaceDownCardThumb, PublishedCardThumb } from '@interface/components';
-import type { Accessor, JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 
 /**
  * Your hand — title-band peek; dock enlarge follows the small hit targets
@@ -31,7 +31,7 @@ export function PlayHandStrip(props: {
                 class="play-hand__hit"
                 aria-label="Skip commit"
                 disabled={props.session.choicePending()}
-                onClick={props.session.onRefuseCommit}
+                onClick={() => props.session.onRefuseCommit()}
               />
             </div>
           </Show>
@@ -39,9 +39,9 @@ export function PlayHandStrip(props: {
             {(card) => {
               const highlight = (): CellHighlight | undefined =>
                 props.session.cardHighlights()[card.id];
-              const selected = () => highlight() === 'selected';
-              const legal = () => highlight() === 'legal';
-              const canActivate = () =>
+              const selected = (): boolean => highlight() === 'selected';
+              const legal = (): boolean => highlight() === 'legal';
+              const canActivate = (): boolean =>
                 props.handSelectable() &&
                 highlight() !== undefined &&
                 !props.session.choicePending();
@@ -58,7 +58,7 @@ export function PlayHandStrip(props: {
                       id={card.id}
                       version={card.version}
                       name={card.name}
-                      size="xs"
+                      size="hand"
                       hideCaption
                       frame="bare"
                       disableHoverPreview

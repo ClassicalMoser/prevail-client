@@ -7,7 +7,7 @@ export function createRangedActions(deps: SeatPlayActionsDeps): {
   return {
     onConfirmPerformRangedAttack: () => {
       const options = deps.legalOptions();
-      if (options === null) {
+      if (options === undefined) {
         return;
       }
       const event = buildPerformRangedAttackSubmit(options, deps.selection());

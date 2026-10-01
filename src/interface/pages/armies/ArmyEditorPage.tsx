@@ -12,8 +12,8 @@ import {
   buttonVariants,
 } from '@interface/components';
 import { Link, useParams } from '@tanstack/solid-router';
-import type { JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 
 export function ArmyEditorPage(): JSX.Element {
   const params = useParams({ from: '/admin/armies/$gameMode/$armyId' });
@@ -25,7 +25,7 @@ export function ArmyEditorPage(): JSX.Element {
     () => params().gameMode,
   );
 
-  const modeOk = () => isGameModeName(params().gameMode);
+  const modeOk = (): boolean => isGameModeName(params().gameMode);
 
   return (
     <main class="container mx-auto flex flex-col gap-6 p-4 py-8">

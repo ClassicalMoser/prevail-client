@@ -1,13 +1,7 @@
 import type { LegalPlayerChoiceOptions } from '@classicalmoser/prevail-rules/domain';
+import { unitKey } from '@application/play/selection/core';
 import type { SeatSelection } from '@application/play/selection/core/types';
-
-function unitKey(unit: {
-  playerSide: string;
-  unitType: { id: string };
-  instanceNumber: number;
-}): string {
-  return `${unit.playerSide}:${unit.unitType.id}:${unit.instanceNumber}`;
-}
+import { supportKind } from './supportKind';
 
 /**
  * Confirm only when assignment is maximal: every unused support slot has no
@@ -15,7 +9,7 @@ function unitKey(unit: {
  */
 export function canConfirmAssignUnitSupport(
   selection: SeatSelection,
-  options: LegalPlayerChoiceOptions | null,
+  options: LegalPlayerChoiceOptions | undefined,
 ): boolean {
   if (
     selection.kind !== 'assignUnitSupport' ||
@@ -25,25 +19,27 @@ export function canConfirmAssignUnitSupport(
   }
 
   const covered = new Set<string>();
-  const usedByCard = new Map<string, number>();
+  const usedByKind = new Map<string, number>();
   for (const assignment of selection.assignments) {
-    usedByCard.set(assignment.cardId, assignment.units.length);
+    usedByKind.set(
+      supportKind(assignment.unitSupport),
+      assignment.units.length,
+    );
     for (const unit of assignment.units) {
       covered.add(unitKey(unit));
     }
   }
 
-  for (const grant of options.unitSupportGrants.grants) {
-    const used = usedByCard.get(grant.card.id) ?? 0;
-    const remaining = grant.unitSupport.count - used;
-    if (remaining <= 0) {
-      continue;
-    }
-    const canCoverMore = grant.eligibleUnits.some(
-      (unit) => !covered.has(unitKey(unit)),
-    );
-    if (canCoverMore) {
-      return false;
+  for (const category of options.assignUnitSupport.categories) {
+    const used = usedByKind.get(supportKind(category.unitSupport)) ?? 0;
+    const remaining = category.unitSupport.count - used;
+    if (remaining > 0) {
+      const canCoverMore = category.eligibleUnits.some(
+        (unit) => !covered.has(unitKey(unit)),
+      );
+      if (canCoverMore) {
+        return false;
+      }
     }
   }
 

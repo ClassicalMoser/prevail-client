@@ -1,10 +1,14 @@
-import type { LegalPlayerChoiceOptions } from '@classicalmoser/prevail-rules/domain';
+import type {
+  LegalPlayerChoiceOptions,
+  UnitSupport,
+} from '@classicalmoser/prevail-rules/domain';
 import type { SeatSelection } from '@application/play/selection/core/types';
+import { supportKind } from './supportKind';
 
 export function selectAssignUnitSupportCard(
   options: LegalPlayerChoiceOptions,
   selection: SeatSelection,
-  cardId: string,
+  card: { unitSupport: UnitSupport },
 ): SeatSelection {
   if (
     options.choiceType !== 'assignUnitSupport' ||
@@ -12,8 +16,11 @@ export function selectAssignUnitSupportCard(
   ) {
     return selection;
   }
-  if (!options.unitSupportGrants.grants.some((g) => g.card.id === cardId)) {
+  const category = options.assignUnitSupport.categories.find(
+    (entry) => supportKind(entry.unitSupport) === supportKind(card.unitSupport),
+  );
+  if (category === undefined) {
     return selection;
   }
-  return { ...selection, activeCardId: cardId };
+  return { ...selection, activeSupport: category.unitSupport };
 }

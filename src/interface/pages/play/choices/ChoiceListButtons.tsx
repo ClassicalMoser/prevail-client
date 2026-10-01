@@ -1,7 +1,7 @@
 import type { ChoiceListItem } from '@application';
 import { Button } from '@interface/components';
-import type { Accessor, JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 
 export function ChoiceListButtons(props: {
   items: Accessor<ChoiceListItem[]>;

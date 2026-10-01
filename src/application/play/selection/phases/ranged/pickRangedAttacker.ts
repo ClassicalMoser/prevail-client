@@ -1,9 +1,9 @@
+import { getLegalRangedAttackTargets } from '@classicalmoser/prevail-rules/domain';
 import type {
   Coordinate,
   GameState,
   LegalPlayerChoiceOptions,
 } from '@classicalmoser/prevail-rules/domain';
-import { getLegalRangedAttackTargets } from '@classicalmoser/prevail-rules/domain';
 import type {
   CellClickResult,
   SeatSelection,
@@ -11,7 +11,7 @@ import type {
 
 type RangedSelection = Extract<SeatSelection, { kind: 'performRangedAttack' }>;
 
-export function pickRangedAttacker(args: {
+function pickRangedAttacker(args: {
   coordinate: Coordinate;
   options: Extract<
     LegalPlayerChoiceOptions,
@@ -39,7 +39,7 @@ export function pickRangedAttacker(args: {
   };
 }
 
-export function clearRangedAttacker(args: {
+function clearRangedAttacker(args: {
   options: Extract<
     LegalPlayerChoiceOptions,
     { choiceType: 'performRangedAttack' }
@@ -57,3 +57,5 @@ export function clearRangedAttacker(args: {
     },
   };
 }
+
+export { pickRangedAttacker, clearRangedAttacker };

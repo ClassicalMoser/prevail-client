@@ -1,9 +1,9 @@
+import { getOwnedPlayerCardState } from '@classicalmoser/prevail-rules/domain';
 import type {
   CommandCard,
   GameState,
   PlayerSide,
 } from '@classicalmoser/prevail-rules/domain';
-import { getOwnedPlayerCardState } from '@classicalmoser/prevail-rules/domain';
 
 export function handCardsFromState(
   state: GameState | undefined,

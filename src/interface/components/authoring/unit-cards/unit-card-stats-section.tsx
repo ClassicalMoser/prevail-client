@@ -1,7 +1,7 @@
-import type { UnitStats, UnitType } from '@classicalmoser/prevail-rules/domain';
 import { unitStatNames } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor, JSX } from 'solid-js';
+import type { UnitStats, UnitType } from '@classicalmoser/prevail-rules/domain';
 import { For } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import {
   Card,
   CardContent,

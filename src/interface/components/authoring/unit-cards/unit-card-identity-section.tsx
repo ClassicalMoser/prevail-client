@@ -1,3 +1,4 @@
+import { unitArtworkUrlFromInput } from '@application';
 import type { UnitType } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor, JSX } from 'solid-js';
 import {
@@ -54,8 +55,9 @@ export const UnitCardIdentitySection = (props: {
               type="url"
               value={props.unit().imageUrl ?? ''}
               onInput={(event) => {
-                const value = event.currentTarget.value.trim();
-                update({ imageUrl: value === '' ? null : value });
+                update({
+                  imageUrl: unitArtworkUrlFromInput(event.currentTarget.value),
+                });
               }}
             />
           </FormField>

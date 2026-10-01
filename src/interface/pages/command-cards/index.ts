@@ -1,2 +1,4 @@
-export { CommandCardsPage } from './CommandCardsPage';
-export { CommandCardEditorPage } from './CommandCardEditorPage';
+import { CommandCardsPage } from './CommandCardsPage';
+import { CommandCardEditorPage } from './CommandCardEditorPage';
+
+export { CommandCardsPage, CommandCardEditorPage };

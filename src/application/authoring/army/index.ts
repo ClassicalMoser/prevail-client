@@ -1,15 +1,31 @@
-export type {
+import { isGameModeName, useArmyEditor } from './useArmyEditor';
+import type {
   ArmyBudgetProjection,
   ArmyDraft,
   UseArmyEditorResult,
 } from './useArmyEditor';
-export { isGameModeName, useArmyEditor } from './useArmyEditor';
-export type { ArmyDraftValidationResult } from './validateArmyDraft';
-export { validateArmyForMode, validateArmyShape } from './validateArmyDraft';
-export {
+import { validateArmyForMode, validateArmyShape } from './validateArmyDraft';
+import type { ArmyDraftValidationResult } from './validateArmyDraft';
+import {
   canAddCommandCard,
   canAddUnitType,
   compositionRules,
   maxCommandCardsForMode,
   maxCopiesForUnit,
 } from './armyEditLimits';
+
+export {
+  type ArmyBudgetProjection,
+  type ArmyDraft,
+  type UseArmyEditorResult,
+  isGameModeName,
+  useArmyEditor,
+  type ArmyDraftValidationResult,
+  validateArmyForMode,
+  validateArmyShape,
+  canAddCommandCard,
+  canAddUnitType,
+  compositionRules,
+  maxCommandCardsForMode,
+  maxCopiesForUnit,
+};

@@ -2,11 +2,11 @@
  * Zaidan-based UI primitives (vega preset).
  * Styles: src/styles/zaidan-vega.css — components: zaidan.carere.dev/r/kobalte
  */
-export { Badge, badgeVariants } from './badge';
-export type { BadgeProps } from './badge';
-export { Button, buttonVariants } from './button';
-export type { ButtonProps } from './button';
-export {
+import { Badge, badgeVariants } from './badge';
+import type { BadgeProps } from './badge';
+import { Button, buttonVariants } from './button';
+import type { ButtonProps } from './button';
+import {
   Card,
   CardAction,
   CardContent,
@@ -15,22 +15,21 @@ export {
   CardHeader,
   CardTitle,
 } from './card';
-export { CardGallery } from './card-browser';
-export { Checkbox, CheckboxLabel } from './checkbox';
-export type { CheckboxLabelProps, CheckboxProps } from './checkbox';
-export { FormField } from './form-field';
-export { Input } from './input';
-export type { InputProps } from './input';
-export {
+import { CardGallery } from './card-browser';
+import { Checkbox, CheckboxLabel } from './checkbox';
+import type { CheckboxLabelProps, CheckboxProps } from './checkbox';
+import { FormField } from './form-field';
+import { Input } from './input';
+import type { InputProps } from './input';
+import {
   NativeSelect,
   NativeSelectOptGroup,
   NativeSelectOption,
 } from './native-select';
-export type { NativeSelectProps } from './native-select';
-export { Separator } from './separator';
-export type { SeparatorProps } from './separator';
-
-export {
+import type { NativeSelectProps } from './native-select';
+import { Separator } from './separator';
+import type { SeparatorProps } from './separator';
+import {
   AnchoredPublishedCardPreview,
   AppNav,
   ArmyCardThumb,
@@ -47,4 +46,51 @@ export {
   PublishedCardThumb,
   UnitCardForm,
 } from './authoring';
-export type { CardCatalogItem, PublishedCardFaceSize } from './authoring';
+import type { CardCatalogItem, PublishedCardFaceSize } from './authoring';
+
+export {
+  Badge,
+  badgeVariants,
+  type BadgeProps,
+  Button,
+  buttonVariants,
+  type ButtonProps,
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+  CardGallery,
+  Checkbox,
+  CheckboxLabel,
+  type CheckboxLabelProps,
+  type CheckboxProps,
+  FormField,
+  Input,
+  type InputProps,
+  NativeSelect,
+  NativeSelectOptGroup,
+  NativeSelectOption,
+  type NativeSelectProps,
+  Separator,
+  type SeparatorProps,
+  AnchoredPublishedCardPreview,
+  AppNav,
+  ArmyCardThumb,
+  ArmyCommandCardsSection,
+  ArmyCompositionHeader,
+  ArmyEditorForm,
+  ArmyUnitsSection,
+  CardCatalogPage,
+  CardPreviewPanel,
+  CommandCardForm,
+  EditorToolbar,
+  FaceDownCardThumb,
+  PublishedCardFace,
+  PublishedCardThumb,
+  UnitCardForm,
+  type CardCatalogItem,
+  type PublishedCardFaceSize,
+};

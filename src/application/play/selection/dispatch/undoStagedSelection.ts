@@ -16,10 +16,10 @@ import { undoSupport } from '../phases/support/undoSupport';
  */
 export function undoStagedSelection(
   selection: SeatSelection,
-  options: LegalPlayerChoiceOptions | null,
+  options: LegalPlayerChoiceOptions | undefined,
   state: GameState | undefined,
 ): SeatSelection {
-  if (options === null) {
+  if (options === undefined) {
     return selection;
   }
 

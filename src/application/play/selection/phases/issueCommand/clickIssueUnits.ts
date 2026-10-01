@@ -1,10 +1,10 @@
+import { getLegalUnitsForIssueCommand } from '@classicalmoser/prevail-rules/domain';
 import type {
   Command,
   Coordinate,
   GameState,
   PlayerSide,
 } from '@classicalmoser/prevail-rules/domain';
-import { getLegalUnitsForIssueCommand } from '@classicalmoser/prevail-rules/domain';
 import { unitKey } from '@application/play/selection/core';
 import type {
   CellClickResult,

@@ -1,30 +1,40 @@
 import type { CardListItem } from '@classicalmoser/prevail-contracts';
 import type { UnitType } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor } from 'solid-js';
-import type { UseQueryResult } from '@tanstack/solid-query';
 import { useQuery } from '@tanstack/solid-query';
+import type { UseQueryResult } from '@tanstack/solid-query';
 import { useUnitCards } from '@application/serverPortsContext';
 import { unitCardKeys } from '../keys';
 
-export function useAllUnitCardsQuery(): UseQueryResult<CardListItem[], Error> {
+function useAllUnitCardsQuery(): UseQueryResult<CardListItem[], Error> {
   const unitCards = useUnitCards();
 
-  return useQuery(() => ({
-    queryKey: unitCardKeys.all,
-    queryFn: () => unitCards.getAll(),
-  }));
+  return useQuery(
+    (): {
+      queryKey: readonly ['unitCards', 'list', 'all'];
+      queryFn: () => Promise<CardListItem[]>;
+    } => ({
+      queryKey: unitCardKeys.all,
+      queryFn: (): Promise<CardListItem[]> => unitCards.getAll(),
+    }),
+  );
 }
 
-export function useCurrentUnitCardsQuery(): UseQueryResult<UnitType[], Error> {
+function useCurrentUnitCardsQuery(): UseQueryResult<UnitType[], Error> {
   const unitCards = useUnitCards();
 
-  return useQuery(() => ({
-    queryKey: unitCardKeys.current,
-    queryFn: () => unitCards.getCurrent(),
-  }));
+  return useQuery(
+    (): {
+      queryKey: readonly ['unitCards', 'list', 'current'];
+      queryFn: () => Promise<UnitType[]>;
+    } => ({
+      queryKey: unitCardKeys.current,
+      queryFn: (): Promise<UnitType[]> => unitCards.getCurrent(),
+    }),
+  );
 }
 
-export function useUnitCardByIdQuery(
+function useUnitCardByIdQuery(
   id: Accessor<string | undefined>,
   options?: { enabled?: Accessor<boolean> },
 ): UseQueryResult<UnitType, Error> {
@@ -46,14 +56,27 @@ export function useUnitCardByIdQuery(
   });
 }
 
-export function useUnitCardsByIdsQuery(
+function useUnitCardsByIdsQuery(
   ids: Accessor<readonly string[]>,
 ): UseQueryResult<UnitType[], Error> {
   const unitCards = useUnitCards();
 
-  return useQuery(() => ({
-    queryKey: unitCardKeys.byIds(ids()),
-    queryFn: () => unitCards.getByIds(ids()),
-    enabled: ids().length > 0,
-  }));
+  return useQuery(
+    (): {
+      queryKey: readonly ['unitCards', 'list', 'byIds', ...string[]];
+      queryFn: () => Promise<UnitType[]>;
+      enabled: boolean;
+    } => ({
+      queryKey: unitCardKeys.byIds(ids()),
+      queryFn: (): Promise<UnitType[]> => unitCards.getByIds(ids()),
+      enabled: ids().length > 0,
+    }),
+  );
 }
+
+export {
+  useAllUnitCardsQuery,
+  useCurrentUnitCardsQuery,
+  useUnitCardByIdQuery,
+  useUnitCardsByIdsQuery,
+};

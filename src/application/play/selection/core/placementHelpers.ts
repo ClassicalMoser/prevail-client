@@ -4,30 +4,32 @@ import type {
   UnitPlacement,
 } from '@classicalmoser/prevail-rules/domain';
 
-export function placementForCoordinate(
+function placementForCoordinate(
   destinations: UnitPlacement[],
   coordinate: Coordinate,
 ): UnitPlacement | undefined {
   return destinations.find((d) => d.coordinate === coordinate);
 }
 
-export function facingsForCoordinate(
+function facingsForCoordinate(
   destinations: UnitPlacement[],
   coordinate: Coordinate,
 ): UnitFacing[] {
   const seen = new Set<UnitFacing>();
   const facings: UnitFacing[] = [];
   for (const destination of destinations) {
-    if (destination.coordinate !== coordinate || seen.has(destination.facing)) {
-      continue;
+    if (
+      destination.coordinate === coordinate &&
+      !seen.has(destination.facing)
+    ) {
+      seen.add(destination.facing);
+      facings.push(destination.facing);
     }
-    seen.add(destination.facing);
-    facings.push(destination.facing);
   }
   return facings;
 }
 
-export function placementForCoordinateAndFacing(
+function placementForCoordinateAndFacing(
   destinations: UnitPlacement[],
   coordinate: Coordinate,
   facing: UnitFacing,
@@ -36,3 +38,9 @@ export function placementForCoordinateAndFacing(
     (d) => d.coordinate === coordinate && d.facing === facing,
   );
 }
+
+export {
+  placementForCoordinate,
+  facingsForCoordinate,
+  placementForCoordinateAndFacing,
+};

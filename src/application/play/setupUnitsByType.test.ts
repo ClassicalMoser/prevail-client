@@ -1,8 +1,8 @@
-import type { UnitInstance } from '@classicalmoser/prevail-rules/domain';
 import {
   createUnitInstance,
   tempUnits,
 } from '@classicalmoser/prevail-rules/domain';
+import type { UnitInstance } from '@classicalmoser/prevail-rules/domain';
 import { describe, expect, it } from 'vite-plus/test';
 import { setupUnitsByType } from './setupUnitsByType';
 
@@ -11,8 +11,9 @@ const equites = (n: number): UnitInstance =>
 const velites = (n: number): UnitInstance =>
   createUnitInstance('black', tempUnits[1], n);
 
-describe(setupUnitsByType, () => {
+describe('setup roster grouped by unit type', () => {
   it('groups by unit type id in first-seen order', () => {
+    expect.hasAssertions();
     const units = [equites(1), equites(2), velites(1), equites(3)];
     const groups = setupUnitsByType(units, []);
 
@@ -23,17 +24,19 @@ describe(setupUnitsByType, () => {
     expect(groups[0]?.remaining).toBe(3);
     expect(groups[0]?.total).toBe(3);
     expect(groups[1]?.remaining).toBe(1);
-  });
+  }, 1000);
 
   it('subtracts placed instances from remaining', () => {
+    expect.hasAssertions();
     const units = [equites(1), equites(2), velites(1)];
     const groups = setupUnitsByType(units, [equites(1), equites(2)]);
 
     expect(groups[0]?.remaining).toBe(0);
     expect(groups[1]?.remaining).toBe(1);
-  });
+  }, 1000);
 
   it('picks the first unplaced instance, else the first placed', () => {
+    expect.hasAssertions();
     const units = [equites(1), equites(2), velites(1)];
     const withRemaining = setupUnitsByType(units, [equites(1)]);
     expect(withRemaining[0]?.pick.instanceNumber).toBe(2);
@@ -44,5 +47,5 @@ describe(setupUnitsByType, () => {
       velites(1),
     ]);
     expect(allPlaced[0]?.pick.instanceNumber).toBe(1);
-  });
+  }, 1000);
 });

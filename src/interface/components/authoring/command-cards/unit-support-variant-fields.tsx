@@ -1,11 +1,11 @@
+import { traits } from '@classicalmoser/prevail-rules/domain';
 import type {
   Trait,
   UnitSupport,
   UnitType,
 } from '@classicalmoser/prevail-rules/domain';
-import { traits } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor, JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { FormField } from '@interface/form-field';
 import { NativeSelect, NativeSelectOption } from '@interface/native-select';
 import { PublishedCardThumb } from '../published-card-thumb';

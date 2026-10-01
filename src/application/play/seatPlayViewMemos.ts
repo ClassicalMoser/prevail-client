@@ -6,12 +6,12 @@ import type {
   PlayerSide,
 } from '@classicalmoser/prevail-rules/domain';
 import type { BoardCellView } from '@application/gameState';
-import type { Accessor } from 'solid-js';
 import { createMemo } from 'solid-js';
-import type { CardEconomyView } from './cardEconomyFromState';
+import type { Accessor } from 'solid-js';
 import { cardEconomyFromState } from './cardEconomyFromState';
-import type { CombatContextView } from './combatContextFromState';
+import type { CardEconomyView } from './cardEconomyFromState';
 import { combatContextFromState } from './combatContextFromState';
+import type { CombatContextView } from './combatContextFromState';
 import { projectPlayBoardCells } from './playBoardProjection';
 import type { PlayBoardCellView } from './playBoardProjection';
 import {
@@ -35,7 +35,7 @@ import {
 import type { CellHighlight, ChoiceListItem, SeatSelection } from './selection';
 
 export function createSeatPlayViewMemos(args: {
-  legalOptions: Accessor<LegalPlayerChoiceOptions | null>;
+  legalOptions: Accessor<LegalPlayerChoiceOptions | undefined>;
   selection: Accessor<SeatSelection>;
   choicePending: Accessor<boolean>;
   choiceRejected: Accessor<FailValidationResult | undefined>;
@@ -63,7 +63,7 @@ export function createSeatPlayViewMemos(args: {
   issuedCommands: Accessor<IssuedCommandView[]>;
   remainingCommands: Accessor<ReturnType<typeof remainingCommandsBySide>>;
   cardEconomy: Accessor<CardEconomyView>;
-  combatContext: Accessor<CombatContextView | null>;
+  combatContext: Accessor<CombatContextView | undefined>;
 } {
   const highlights = createMemo(() =>
     computeHighlights(
@@ -82,7 +82,7 @@ export function createSeatPlayViewMemos(args: {
   const choiceItems = createMemo(() => {
     const options = args.legalOptions();
     if (
-      options !== null &&
+      options !== undefined &&
       (options.choiceType === 'chooseCard' ||
         options.choiceType === 'chooseRoutDiscard' ||
         isCommitChoiceType(options.choiceType))
@@ -107,7 +107,7 @@ export function createSeatPlayViewMemos(args: {
   );
   const canDoneIssuing = createMemo(() => {
     const options = args.legalOptions();
-    if (options === null || args.choicePending()) {
+    if (options === undefined || args.choicePending()) {
       return false;
     }
     if (options.choiceType === 'doneIssuingCommands') {
@@ -134,7 +134,8 @@ export function createSeatPlayViewMemos(args: {
     () =>
       args.lastAttempt() !== undefined &&
       !args.choicePending() &&
-      (args.choiceRejected() !== undefined || args.legalOptions() !== null),
+      (args.choiceRejected() !== undefined ||
+        args.legalOptions() !== undefined),
   );
   const handCards = createMemo(() =>
     handCardsFromState(args.readGameState(), args.side()),

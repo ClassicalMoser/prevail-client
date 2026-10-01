@@ -12,9 +12,9 @@ import { createContext, useContext } from 'solid-js';
  * Server ports are a session-stable singleton built once at the composition root,
  * so the provider is mounted with a constant value in composition (no reactive prop).
  */
-export const ServerPortsContext = createContext<ServerPorts>();
+const ServerPortsContext = createContext<ServerPorts>();
 
-export const useServerPorts = (): ServerPorts => {
+const useServerPorts = (): ServerPorts => {
   const value = useContext(ServerPortsContext);
   if (value === undefined) {
     throw new Error(
@@ -24,13 +24,22 @@ export const useServerPorts = (): ServerPorts => {
   return value;
 };
 
-export const useArmies = (): Armies => useServerPorts().armies;
+const useArmies = (): Armies => useServerPorts().armies;
 
-export const useGames = (): Games => useServerPorts().games;
+const useGames = (): Games => useServerPorts().games;
 
-export const useGameSeat = (): GameSeat => useServerPorts().gameSeat;
+const useGameSeat = (): GameSeat => useServerPorts().gameSeat;
 
-export const useCommandCards = (): CommandCards =>
-  useServerPorts().commandCards;
+const useCommandCards = (): CommandCards => useServerPorts().commandCards;
 
-export const useUnitCards = (): UnitCards => useServerPorts().unitCards;
+const useUnitCards = (): UnitCards => useServerPorts().unitCards;
+
+export {
+  ServerPortsContext,
+  useServerPorts,
+  useArmies,
+  useGames,
+  useGameSeat,
+  useCommandCards,
+  useUnitCards,
+};

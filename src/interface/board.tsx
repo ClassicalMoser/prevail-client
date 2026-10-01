@@ -3,8 +3,8 @@ import type {
   PlayerSide,
   UnitFacing,
 } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor, JSX } from 'solid-js';
 import { createMemo, createSignal, For, onCleanup, Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import commanderBlack from '../assets/Icons/commander-black.svg';
 import commanderWhite from '../assets/Icons/commander-white.svg';
 import singleTile from '../assets/singleTile.png';
@@ -17,7 +17,7 @@ const commanderIconSrc = (side: PlayerSide): string =>
   side === 'white' ? commanderWhite : commanderBlack;
 
 /** Presentational unit chip projected from authoritative board state. */
-export interface BoardUnitViewProps {
+interface BoardUnitViewProps {
   label: string;
   facing: UnitFacing;
   imageSrc: string | undefined;
@@ -29,7 +29,7 @@ export interface BoardUnitViewProps {
 }
 
 /** Presentational cell content projected from authoritative board state. */
-export interface BoardCellViewProps {
+interface BoardCellViewProps {
   commanders: PlayerSide[];
   units: BoardUnitViewProps[];
   highlight?: 'legal' | 'selected';
@@ -129,7 +129,7 @@ const BoardCellBody = (props: {
   </>
 );
 
-export const BoardComponent = (props: {
+const BoardComponent = (props: {
   board: Accessor<Board | undefined>;
   cells: Accessor<Readonly<Partial<Record<string, BoardCellViewProps>>>>;
   onCellClick?: (coordinate: string) => void;
@@ -138,7 +138,7 @@ export const BoardComponent = (props: {
   const [unitHover, setUnitHover] = createSignal<
     UnitHoverPreview | undefined
   >();
-  let dismissHoverListeners: (() => void) | undefined;
+  let dismissHoverListeners: (() => void) | undefined = undefined;
 
   const clearUnitHover = (): void => {
     setUnitHover(undefined);
@@ -167,7 +167,7 @@ export const BoardComponent = (props: {
     };
     window.addEventListener('scroll', dismiss, true);
     window.addEventListener('resize', dismiss);
-    dismissHoverListeners = () => {
+    dismissHoverListeners = (): void => {
       window.removeEventListener('scroll', dismiss, true);
       window.removeEventListener('resize', dismiss);
     };
@@ -183,18 +183,20 @@ export const BoardComponent = (props: {
     }
     const cellCoordinates = Object.keys(boardMap);
 
-    const getCoordinateRow = (cellCoordinate: string) =>
+    const getCoordinateRow = (cellCoordinate: string): string =>
       parseCellCoordinate(cellCoordinate).row;
-    const getCoordinateColumn = (cellCoordinate: string) =>
+    const getCoordinateColumn = (cellCoordinate: string): string =>
       parseCellCoordinate(cellCoordinate).column;
 
-    const sorted = cellCoordinates.toSorted((a, b) => {
-      const rowA = getCoordinateRow(a);
-      const rowB = getCoordinateRow(b);
+    const sorted = cellCoordinates.toSorted((cellA, cellB) => {
+      const rowA = getCoordinateRow(cellA);
+      const rowB = getCoordinateRow(cellB);
       if (rowA !== rowB) {
         return rowA.localeCompare(rowB);
       }
-      return Number(getCoordinateColumn(a)) - Number(getCoordinateColumn(b));
+      return (
+        Number(getCoordinateColumn(cellA)) - Number(getCoordinateColumn(cellB))
+      );
     });
 
     const rows = sorted.reduce<string[][]>((acc, coord) => {
@@ -243,8 +245,9 @@ export const BoardComponent = (props: {
                   <div class="board-row">
                     <For each={row}>
                       {(cell) => {
-                        const cellView = () => props.cells()[cell];
-                        const cellClass = () =>
+                        const cellView = (): BoardCellViewProps | undefined =>
+                          props.cells()[cell];
+                        const cellClass = (): string =>
                           `board-cell ${cellHighlightClass(cellView()?.highlight)} ${cellView()?.facingPicker === true ? 'board-cell--facing' : ''}`;
                         return (
                           <Show
@@ -301,3 +304,5 @@ export const BoardComponent = (props: {
     </Show>
   );
 };
+
+export { type BoardUnitViewProps, type BoardCellViewProps, BoardComponent };

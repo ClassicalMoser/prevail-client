@@ -1,4 +1,4 @@
-export {
+import {
   defaultFacingForSide,
   emptySelection,
   formatPlayerChoiceZodIssues,
@@ -7,14 +7,14 @@ export {
   preflightPlayerChoice,
   unitKey,
 } from './core';
-export type {
+import type {
   CellClickResult,
   CellHighlight,
   ChoiceListItem,
   PlayHighlights,
   SeatSelection,
 } from './core';
-export {
+import {
   choiceListItems,
   computeHighlights,
   handleCellClick,
@@ -25,23 +25,62 @@ export {
   selectionForOptions,
   undoStagedSelection,
 } from './dispatch';
-export { handCardsFromState } from './handCardsFromState';
-export {
+import { handCardsFromState } from './handCardsFromState';
+import {
   buildDoneIssuingSubmit,
   buildIssueCommandSubmit,
   canConfirmIssueCommand,
   issueCommandLabels,
   selectIssueCommand,
 } from './phases/issueCommand';
-export {
+import {
   buildPerformRangedAttackSubmit,
   canConfirmPerformRangedAttack,
 } from './phases/ranged';
-export { toggleRoutDiscardCard } from './phases/rout';
-export { selectSetupUnit } from './phases/setup';
-export {
+import { toggleRoutDiscardCard } from './phases/rout';
+import { selectSetupUnit } from './phases/setup';
+import {
   buildAssignUnitSupportSubmit,
   canConfirmAssignUnitSupport,
   selectAssignUnitSupportCard,
 } from './phases/support';
-export { commitRefuseEvent, isCommitChoiceType } from './phases/commit';
+import { commitRefuseEvent, isCommitChoiceType } from './phases/commit';
+
+export {
+  defaultFacingForSide,
+  emptySelection,
+  formatPlayerChoiceZodIssues,
+  lineUnitsFromStartToEnd,
+  patchEventNumber,
+  preflightPlayerChoice,
+  unitKey,
+  type CellClickResult,
+  type CellHighlight,
+  type ChoiceListItem,
+  type PlayHighlights,
+  type SeatSelection,
+  choiceListItems,
+  computeHighlights,
+  handleCellClick,
+  handleFacingClick,
+  hasStagedUndo,
+  legalOptionsForSeat,
+  resetStagedSelection,
+  selectionForOptions,
+  undoStagedSelection,
+  handCardsFromState,
+  buildDoneIssuingSubmit,
+  buildIssueCommandSubmit,
+  canConfirmIssueCommand,
+  issueCommandLabels,
+  selectIssueCommand,
+  buildPerformRangedAttackSubmit,
+  canConfirmPerformRangedAttack,
+  toggleRoutDiscardCard,
+  selectSetupUnit,
+  buildAssignUnitSupportSubmit,
+  canConfirmAssignUnitSupport,
+  selectAssignUnitSupportCard,
+  commitRefuseEvent,
+  isCommitChoiceType,
+};

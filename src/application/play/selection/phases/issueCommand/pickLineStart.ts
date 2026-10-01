@@ -1,12 +1,12 @@
+import {
+  getLegalLineEndsForIssueCommand,
+  getLegalUnitsForIssueCommand,
+} from '@classicalmoser/prevail-rules/domain';
 import type {
   Command,
   Coordinate,
   GameState,
   PlayerSide,
-} from '@classicalmoser/prevail-rules/domain';
-import {
-  getLegalLineEndsForIssueCommand,
-  getLegalUnitsForIssueCommand,
 } from '@classicalmoser/prevail-rules/domain';
 import type {
   CellClickResult,

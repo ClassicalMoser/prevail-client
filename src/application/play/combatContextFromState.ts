@@ -1,3 +1,9 @@
+import {
+  getBoardSpace,
+  getMeleeResolutionState,
+  hasEngagedUnits,
+  hasSingleUnit,
+} from '@classicalmoser/prevail-rules/domain';
 import type {
   Board,
   Commitment,
@@ -5,24 +11,18 @@ import type {
   GameState,
   PlayerSide,
 } from '@classicalmoser/prevail-rules/domain';
-import {
-  getBoardSpace,
-  getMeleeResolutionState,
-  hasEngagedUnits,
-  hasSingleUnit,
-} from '@classicalmoser/prevail-rules/domain';
 
-export type CommitmentStatusView =
+type CommitmentStatusView =
   | { kind: 'pending' }
   | { kind: 'declined' }
   | { kind: 'completed'; cardLabel: string };
 
-export interface CombatUnitLabel {
+interface CombatUnitLabel {
   name: string;
   playerSide: PlayerSide;
 }
 
-export interface CombatContextView {
+interface CombatContextView {
   kind: 'melee';
   location: Coordinate;
   units: CombatUnitLabel[];
@@ -46,7 +46,7 @@ const commitmentStatus = (commitment: Commitment): CommitmentStatusView => {
 /**
  * Labels for units occupying a board space (single or engaged pair).
  */
-export function unitLabelsAtCoordinate(
+function unitLabelsAtCoordinate(
   board: Board | undefined,
   coordinate: Coordinate,
 ): CombatUnitLabel[] {
@@ -82,7 +82,7 @@ export function unitLabelsAtCoordinate(
   return [];
 }
 
-export function engagementLabelAtCoordinate(
+function engagementLabelAtCoordinate(
   board: Board | undefined,
   coordinate: Coordinate,
 ): string {
@@ -98,12 +98,14 @@ export function engagementLabelAtCoordinate(
 
 /**
  * Active melee resolution context for the rail (location, units, commitments).
+ * Undefined outside resolveMelee, including when no game state has arrived.
  */
-export function combatContextFromState(
+function combatContextFromState(
   state?: GameState,
-): CombatContextView | null {
+): CombatContextView | undefined {
+  // Nothing ingested yet, so there is no engagement to describe.
   if (state === undefined) {
-    return null;
+    return undefined;
   }
   try {
     const melee = getMeleeResolutionState(state);
@@ -115,11 +117,12 @@ export function combatContextFromState(
       blackCommitment: commitmentStatus(melee.blackCommitment),
     };
   } catch {
-    return null;
+    // getMeleeResolutionState throws when the phase is not resolveMelee.
+    return undefined;
   }
 }
 
-export function formatCombatEngagementLine(context: CombatContextView): string {
+function formatCombatEngagementLine(context: CombatContextView): string {
   const units = context.units;
   if (units.length >= 2) {
     return `${units[0].name} vs ${units[1].name} at ${context.location}`;
@@ -130,7 +133,7 @@ export function formatCombatEngagementLine(context: CombatContextView): string {
   return `Melee at ${context.location}`;
 }
 
-export function formatCommitmentStatus(status: CommitmentStatusView): string {
+function formatCommitmentStatus(status: CommitmentStatusView): string {
   if (status.kind === 'pending') {
     return 'Pending';
   }
@@ -139,3 +142,14 @@ export function formatCommitmentStatus(status: CommitmentStatusView): string {
   }
   return status.cardLabel;
 }
+
+export {
+  type CommitmentStatusView,
+  type CombatUnitLabel,
+  type CombatContextView,
+  unitLabelsAtCoordinate,
+  engagementLabelAtCoordinate,
+  combatContextFromState,
+  formatCombatEngagementLine,
+  formatCommitmentStatus,
+};

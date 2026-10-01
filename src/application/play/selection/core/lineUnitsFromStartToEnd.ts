@@ -1,5 +1,5 @@
-import type { UnitWithPlacement } from '@classicalmoser/prevail-rules/domain';
 import { isSameUnitInstance } from '@classicalmoser/prevail-rules/domain';
+import type { UnitWithPlacement } from '@classicalmoser/prevail-rules/domain';
 
 /**
  * Contiguous start→end segment along flanking geometry. Order matters:

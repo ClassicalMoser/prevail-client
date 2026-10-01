@@ -1,9 +1,21 @@
-export { applyIssueCommandHighlights } from './applyIssueCommandHighlights';
-export { buildDoneIssuingSubmit } from './buildDoneIssuingSubmit';
-export { buildIssueCommandSubmit } from './buildIssueCommandSubmit';
-export { canConfirmIssueCommand } from './canConfirmIssueCommand';
-export { handleIssueCommandCellClick } from './handleIssueCommandCellClick';
-export { initialIssueCommandSelection } from './initialSelection';
-export { issueCommandLabels } from './issueCommandLabels';
-export { selectIssueCommand } from './selectIssueCommand';
-export { undoIssueCommand } from './undoIssueCommand';
+import { applyIssueCommandHighlights } from './applyIssueCommandHighlights';
+import { buildDoneIssuingSubmit } from './buildDoneIssuingSubmit';
+import { buildIssueCommandSubmit } from './buildIssueCommandSubmit';
+import { canConfirmIssueCommand } from './canConfirmIssueCommand';
+import { handleIssueCommandCellClick } from './handleIssueCommandCellClick';
+import { initialIssueCommandSelection } from './initialSelection';
+import { issueCommandLabels } from './issueCommandLabels';
+import { selectIssueCommand } from './selectIssueCommand';
+import { undoIssueCommand } from './undoIssueCommand';
+
+export {
+  applyIssueCommandHighlights,
+  buildDoneIssuingSubmit,
+  buildIssueCommandSubmit,
+  canConfirmIssueCommand,
+  handleIssueCommandCellClick,
+  initialIssueCommandSelection,
+  issueCommandLabels,
+  selectIssueCommand,
+  undoIssueCommand,
+};

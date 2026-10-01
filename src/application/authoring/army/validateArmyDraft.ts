@@ -1,10 +1,10 @@
-import type { Army, GameModeName } from '@classicalmoser/prevail-rules/domain';
 import {
   armySchema,
   armySchemaForMode,
 } from '@classicalmoser/prevail-rules/domain';
+import type { Army, GameModeName } from '@classicalmoser/prevail-rules/domain';
 
-export type ArmyDraftValidationResult =
+type ArmyDraftValidationResult =
   | { success: true; data: Army }
   | { success: false; messages: string[] };
 
@@ -20,7 +20,7 @@ const messagesFromIssues = (
   });
 
 /** Shape-only validation — use on load / reset. */
-export function validateArmyShape(army: Army): ArmyDraftValidationResult {
+function validateArmyShape(army: Army): ArmyDraftValidationResult {
   const result = armySchema.safeParse(army);
   if (result.success) {
     return { success: true, data: result.data };
@@ -29,7 +29,7 @@ export function validateArmyShape(army: Army): ArmyDraftValidationResult {
 }
 
 /** Mode composition validation — use while editing with a prespecified mode. */
-export function validateArmyForMode(
+function validateArmyForMode(
   army: Army,
   mode: GameModeName,
 ): ArmyDraftValidationResult {
@@ -39,3 +39,9 @@ export function validateArmyForMode(
   }
   return { success: false, messages: messagesFromIssues(result.error.issues) };
 }
+
+export {
+  type ArmyDraftValidationResult,
+  validateArmyShape,
+  validateArmyForMode,
+};

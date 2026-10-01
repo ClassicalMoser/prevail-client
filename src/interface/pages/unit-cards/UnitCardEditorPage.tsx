@@ -9,8 +9,8 @@ import {
 } from '@interface/components';
 import type { UnitType } from '@classicalmoser/prevail-rules/domain';
 import { Link, useParams } from '@tanstack/solid-router';
-import type { JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 
 export function UnitCardEditorPage(): JSX.Element {
   const params = useParams({ from: '/admin/unit-cards/$cardId' });

@@ -5,20 +5,20 @@ import type {
   PlayerSide,
   UnitInstance,
 } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor } from 'solid-js';
 import { createMemo } from 'solid-js';
-import type { BoardCellView } from './boardCellView';
+import type { Accessor } from 'solid-js';
 import { projectBoardCells } from './boardCellView';
-import type { GameOutcome } from './gameOutcome';
+import type { BoardCellView } from './boardCellView';
 import { gameOutcomeFromState } from './gameOutcome';
+import type { GameOutcome } from './gameOutcome';
 import type { GameStateStore } from './gameStateStore';
 
 /** Safe phase readout; never calls `getExpectedEvent` (throws when phase is `'none'`). */
-export type PhaseSummary =
+type PhaseSummary =
   | { kind: 'none' }
   | { kind: 'phase'; phase: string; step: string };
 
-export interface GameStateProjections {
+interface GameStateProjections {
   state: Accessor<GameState | undefined>;
   board: Accessor<Board | undefined>;
   boardCells: Accessor<Readonly<Partial<Record<string, BoardCellView>>>>;
@@ -45,7 +45,7 @@ const phaseSummaryFromState = (state: GameState): PhaseSummary => {
 /**
  * Read-only accessors derived from the authoritative {@link GameStateStore}.
  */
-export const createGameStateProjections = (
+const createGameStateProjections = (
   store: GameStateStore,
 ): GameStateProjections => {
   const state = store.state;
@@ -91,4 +91,10 @@ export const createGameStateProjections = (
     outcome,
     hasGameState,
   };
+};
+
+export {
+  type PhaseSummary,
+  type GameStateProjections,
+  createGameStateProjections,
 };

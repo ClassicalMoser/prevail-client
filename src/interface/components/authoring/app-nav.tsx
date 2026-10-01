@@ -1,8 +1,8 @@
 import { useAuth } from '@application';
 import { Button } from '../button';
 import { Link } from '@tanstack/solid-router';
-import type { JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 
 const navLinkClass =
   'text-sm font-medium text-muted-foreground transition-colors hover:text-foreground';

@@ -1,2 +1,4 @@
-export { auth0Config, createAuth0Port } from './auth';
-export { createServerPorts } from './server';
+import { auth0Config, createAuth0Port } from './auth';
+import { createServerPorts } from './server';
+
+export { auth0Config, createAuth0Port, createServerPorts };

@@ -1,8 +1,8 @@
-import type { UnitFacing } from '@classicalmoser/prevail-rules/domain';
 import { unitFacings } from '@classicalmoser/prevail-rules/domain';
+import type { UnitFacing } from '@classicalmoser/prevail-rules/domain';
 import { cx } from './lib';
-import type { JSX } from 'solid-js';
 import { createMemo, For, mergeProps } from 'solid-js';
+import type { JSX } from 'solid-js';
 import './facing-arrow-pad.css';
 
 const FACING_GLYPH: Record<UnitFacing, string> = {
@@ -28,7 +28,7 @@ const FACING_GRID_AREA: Record<UnitFacing, string> = {
   southEast: '3 / 3',
 };
 
-export interface FacingArrowPadProps {
+interface FacingArrowPadProps {
   /**
    * Facings that can be chosen. Only these arrows are rendered.
    * Omit or pass all eight when every facing is legal (e.g. setup).
@@ -46,7 +46,7 @@ export interface FacingArrowPadProps {
  * Facing control laid out as a 3×3 pad (center empty).
  * Renders only the enabled facing arrows — illegal directions are omitted.
  */
-export const FacingArrowPad = (rawProps: FacingArrowPadProps): JSX.Element => {
+const FacingArrowPad = (rawProps: FacingArrowPadProps): JSX.Element => {
   const props = mergeProps(
     { disabled: false, enabledFacings: unitFacings },
     rawProps,
@@ -61,7 +61,7 @@ export const FacingArrowPad = (rawProps: FacingArrowPadProps): JSX.Element => {
     >
       <For each={facings()}>
         {(facing) => {
-          const isSelected = () => props.selectedFacing === facing;
+          const isSelected = (): boolean => props.selectedFacing === facing;
           return (
             <button
               type="button"
@@ -89,3 +89,5 @@ export const FacingArrowPad = (rawProps: FacingArrowPadProps): JSX.Element => {
     </fieldset>
   );
 };
+
+export { type FacingArrowPadProps, FacingArrowPad };

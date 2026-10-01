@@ -1,5 +1,5 @@
-import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 
 /**
  * Opponent hand — count is the signal; backs are a shallow peek, not a full fan.

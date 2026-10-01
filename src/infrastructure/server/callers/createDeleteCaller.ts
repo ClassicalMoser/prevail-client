@@ -1,9 +1,9 @@
 import type { DeleteRoute } from '@classicalmoser/prevail-contracts';
-import type { ErrorResponse, RouteCallArgs } from '../http';
 import { buildRequestUrl } from '../http';
+import type { ErrorResponse, RouteCallArgs } from '../http';
 import type { CallerDependencies } from './callerDependencies';
 
-export type CallDelete = <
+type CallDelete = <
   TParams extends Record<string, unknown>,
   TQuery extends Record<string, unknown>,
 >(
@@ -12,7 +12,7 @@ export type CallDelete = <
 ) => Promise<ErrorResponse | undefined>;
 
 /** DELETE caller: URL assembly only; transport lives in {@link RouteFetch}. */
-export function createDeleteCaller({
+function createDeleteCaller({
   serverUrl,
   routeFetch,
 }: CallerDependencies): CallDelete {
@@ -23,8 +23,14 @@ export function createDeleteCaller({
     route: DeleteRoute<TParams, TQuery>,
     args: RouteCallArgs<TParams, TQuery>,
   ): Promise<ErrorResponse | undefined> {
-    const url = buildRequestUrl(serverUrl, route.path, args.params, args.query);
+    const url = buildRequestUrl(serverUrl, {
+      path: route.path,
+      params: args.params,
+      query: args.query,
+    });
 
     return routeFetch.fetchDeleteResponse(url, route);
   };
 }
+
+export { type CallDelete, createDeleteCaller };

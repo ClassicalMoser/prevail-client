@@ -1,5 +1,13 @@
-export { createArmiesAdapter } from './armies';
-export { createCommandCardsAdapter } from './commandCards';
-export { createGameSeatAdapter } from './gameSeat';
-export { createGamesAdapter } from './games';
-export { createUnitCardsAdapter } from './unitCards';
+import { createArmiesAdapter } from './armies';
+import { createCommandCardsAdapter } from './commandCards';
+import { createGameSeatAdapter } from './gameSeat';
+import { createGamesAdapter } from './games';
+import { createUnitCardsAdapter } from './unitCards';
+
+export {
+  createArmiesAdapter,
+  createCommandCardsAdapter,
+  createGameSeatAdapter,
+  createGamesAdapter,
+  createUnitCardsAdapter,
+};

@@ -1,2 +1,4 @@
-export { CardBrowserPage } from './CardBrowserPage';
-export { CardBrowserRoute, CardBrowserRoutePending } from './route';
+import { CardBrowserPage } from './CardBrowserPage';
+import { CardBrowserRoute, CardBrowserRoutePending } from './route';
+
+export { CardBrowserPage, CardBrowserRoute, CardBrowserRoutePending };

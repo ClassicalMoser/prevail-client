@@ -1,7 +1,7 @@
-import type { Trait, UnitType } from '@classicalmoser/prevail-rules/domain';
 import { traits } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor, JSX } from 'solid-js';
+import type { Trait, UnitType } from '@classicalmoser/prevail-rules/domain';
 import { For } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import {
   Card,
   CardContent,

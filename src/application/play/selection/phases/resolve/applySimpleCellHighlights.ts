@@ -1,7 +1,7 @@
 import type { LegalPlayerChoiceOptions } from '@classicalmoser/prevail-rules/domain';
 import type { HighlightDraft } from '@application/play/selection/core/highlightDraft';
 
-export function applyMeleeResolutionHighlights(
+function applyMeleeResolutionHighlights(
   draft: HighlightDraft,
   options: Extract<
     LegalPlayerChoiceOptions,
@@ -13,7 +13,7 @@ export function applyMeleeResolutionHighlights(
   }
 }
 
-export function applyRetreatOptionHighlights(
+function applyRetreatOptionHighlights(
   draft: HighlightDraft,
   options: Extract<
     LegalPlayerChoiceOptions,
@@ -24,3 +24,5 @@ export function applyRetreatOptionHighlights(
     draft.cells[event.retreatOption.coordinate] = 'legal';
   }
 }
+
+export { applyMeleeResolutionHighlights, applyRetreatOptionHighlights };

@@ -9,14 +9,14 @@ import type {
 import type { InGameSeatOutboundMessage } from '@classicalmoser/prevail-contracts';
 
 /** Outbound seat WebSocket message (presentation stream). */
-export type GameSeatOutbound = InGameSeatOutboundMessage<
+type GameSeatOutbound = InGameSeatOutboundMessage<
   ProjectedPlayerChoiceEvent,
   GameEffectEvent,
   GameForVisibility<'whiteSeen'> | GameForVisibility<'blackSeen'>,
   FailValidationResult
 >;
 
-export interface GameSeatConnection {
+interface GameSeatConnection {
   /** Returns false when the socket cannot send (caller should unlock pending). */
   sendChoice: (choice: PlayerChoiceEvent) => boolean;
   /** Ask the server for a fresh seat-visible gameSnapshot (reconcile). */
@@ -30,13 +30,9 @@ export interface GameSeatConnection {
   ) => () => void;
 }
 
-export type GameSeatConnectionStatus =
-  | 'connecting'
-  | 'open'
-  | 'closed'
-  | 'error';
+type GameSeatConnectionStatus = 'connecting' | 'open' | 'closed' | 'error';
 
-export interface GameSeatConnectArgs {
+interface GameSeatConnectArgs {
   gameId: string;
   side: PlayerSide;
   /** Fresh access token for the upgrade (query param). */
@@ -44,6 +40,14 @@ export interface GameSeatConnectArgs {
 }
 
 /** Outbound port for in-game seat WebSocket sessions. */
-export interface GameSeat {
+interface GameSeat {
   connect(args: GameSeatConnectArgs): Promise<GameSeatConnection>;
 }
+
+export type {
+  GameSeatOutbound,
+  GameSeatConnection,
+  GameSeatConnectionStatus,
+  GameSeatConnectArgs,
+  GameSeat,
+};

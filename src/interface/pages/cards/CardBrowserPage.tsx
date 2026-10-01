@@ -4,8 +4,8 @@ import {
 } from '@application';
 import { Button, Card, CardContent, CardGallery } from '@interface/components';
 import type { PublishedCardKind } from '@interface/lib';
-import type { JSX } from 'solid-js';
 import { createMemo, createSignal, Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 
 const sortByName = <T extends { name: string }>(cards: readonly T[]): T[] =>
   [...cards].toSorted((left, right) => left.name.localeCompare(right.name));

@@ -13,7 +13,7 @@
   position: relative;
   isolation: isolate;
   display: grid;
-  min-height: calc(100dvh - 3.5rem);
+  min-height: 100%;
   align-items: end;
   overflow: hidden;
   color: var(--home-ink);

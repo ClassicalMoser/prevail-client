@@ -8,8 +8,8 @@ import {
   buttonVariants,
 } from '@interface/components';
 import { Link, useParams } from '@tanstack/solid-router';
-import type { JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 
 export function CommandCardEditorPage(): JSX.Element {
   const params = useParams({ from: '/admin/command-cards/$cardId' });

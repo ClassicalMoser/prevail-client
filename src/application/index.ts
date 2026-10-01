@@ -1,32 +1,24 @@
-export type { AuthViewModel } from './authContext';
-export { AuthContext, useAuth, useAuthPort } from './authContext';
-export {
+import { AuthContext, useAuth, useAuthPort } from './authContext';
+import type { AuthViewModel } from './authContext';
+import {
   useArmyEditor,
   useCommandCardEditor,
   useUnitCardEditor,
+  unitArtworkUrlFromInput,
   isGameModeName,
   validateArmyForMode,
   validateArmyShape,
 } from './authoring';
-export type {
+import type {
   ArmyBudgetProjection,
   ArmyDraft,
   ArmyDraftValidationResult,
   UseArmyEditorResult,
 } from './authoring';
-export type { Core } from './bootstrap';
-export { createCore } from './bootstrap';
-export { CoreProvider, useCore } from './coreContext';
-export type {
-  BoardCellView,
-  BoardUnitView,
-  GameOutcome,
-  GameStateIngest,
-  GameStateProjections,
-  GameStateStore,
-  PhaseSummary,
-} from './gameState';
-export {
+import { createCore } from './bootstrap';
+import type { Core } from './bootstrap';
+import { CoreProvider, useCore } from './coreContext';
+import {
   boardSpaceToCellView,
   createGameStateProjections,
   createGameStateStore,
@@ -36,7 +28,16 @@ export {
   projectBoardCells,
   resolveUnitArtSrc,
 } from './gameState';
-export {
+import type {
+  BoardCellView,
+  BoardUnitView,
+  GameOutcome,
+  GameStateIngest,
+  GameStateProjections,
+  GameStateStore,
+  PhaseSummary,
+} from './gameState';
+import {
   allCommandCardsQueryOptions,
   allUnitCardsQueryOptions,
   armyKeys,
@@ -75,7 +76,7 @@ export {
   useUnitCardsByIdsQuery,
   useUpdateOwnedArmyMutation,
 } from './queries';
-export {
+import {
   ServerPortsContext,
   useArmies,
   useCommandCards,
@@ -84,7 +85,7 @@ export {
   useServerPorts,
   useUnitCards,
 } from './serverPortsContext';
-export {
+import {
   computeHighlights,
   formatCardEconomyMeter,
   formatCombatEngagementLine,
@@ -96,7 +97,7 @@ export {
   unitKey,
   useSeatPlaySession,
 } from './play';
-export type {
+import type {
   CardEconomyView,
   CellHighlight,
   ChoiceListItem,
@@ -110,6 +111,113 @@ export type {
   SideCardEconomy,
   UseSeatPlaySessionResult,
 } from './play';
-export { RouteResponseError } from '@ports';
-export { useGameStorage } from './repositories';
-export { useGreetMsg, useName } from './signals';
+import { RouteResponseError } from '@ports';
+import { useGameStorage } from './repositories';
+import { useGreetMsg, useName } from './signals';
+
+export {
+  type AuthViewModel,
+  AuthContext,
+  useAuth,
+  useAuthPort,
+  useArmyEditor,
+  useCommandCardEditor,
+  useUnitCardEditor,
+  unitArtworkUrlFromInput,
+  isGameModeName,
+  validateArmyForMode,
+  validateArmyShape,
+  type ArmyBudgetProjection,
+  type ArmyDraft,
+  type ArmyDraftValidationResult,
+  type UseArmyEditorResult,
+  type Core,
+  createCore,
+  CoreProvider,
+  useCore,
+  type BoardCellView,
+  type BoardUnitView,
+  type GameOutcome,
+  type GameStateIngest,
+  type GameStateProjections,
+  type GameStateStore,
+  type PhaseSummary,
+  boardSpaceToCellView,
+  createGameStateProjections,
+  createGameStateStore,
+  gameOutcomeDetail,
+  gameOutcomeFromState,
+  gameOutcomeHeadline,
+  projectBoardCells,
+  resolveUnitArtSrc,
+  allCommandCardsQueryOptions,
+  allUnitCardsQueryOptions,
+  armyKeys,
+  commandCardKeys,
+  commandCardByIdQueryOptions,
+  commandCardsByIdsQueryOptions,
+  currentCommandCardsQueryOptions,
+  currentUnitCardsQueryOptions,
+  ownedArmiesQueryOptions,
+  ownedArmyByIdQueryOptions,
+  unitCardByIdQueryOptions,
+  unitCardKeys,
+  unitCardsByIdsQueryOptions,
+  useAllCommandCardsQuery,
+  useAllUnitCardsQuery,
+  useArchiveOwnedArmyMutation,
+  useCertifyLatestCommandCardVersionsMutation,
+  useCertifyLatestUnitCardVersionsMutation,
+  useCommandCardByIdQuery,
+  useCommandCardsByIdsQuery,
+  useCreateCommandCardVersionMutation,
+  useCreateEmptyCommandCardMutation,
+  useCreateEmptyUnitCardMutation,
+  useCreateOwnedArmyMutation,
+  useCreateVsBotGameMutation,
+  useCreateUnitCardVersionMutation,
+  useCurrentCommandCardsQuery,
+  useCurrentUnitCardsQuery,
+  useDeleteEmptyCommandCardsMutation,
+  useDeleteEmptyUnitCardsMutation,
+  useOwnedArmiesQuery,
+  useOwnedArmyByIdQuery,
+  usePreviewCommandCardMutation,
+  usePreviewUnitCardMutation,
+  useUnitCardByIdQuery,
+  useUnitCardsByIdsQuery,
+  useUpdateOwnedArmyMutation,
+  ServerPortsContext,
+  useArmies,
+  useCommandCards,
+  useGameSeat,
+  useGames,
+  useServerPorts,
+  useUnitCards,
+  computeHighlights,
+  formatCardEconomyMeter,
+  formatCombatEngagementLine,
+  formatCommitmentStatus,
+  formatCommandLabel,
+  isCommitChoiceType,
+  legalOptionsForSeat,
+  setupUnitsByType,
+  unitKey,
+  useSeatPlaySession,
+  type CardEconomyView,
+  type CellHighlight,
+  type ChoiceListItem,
+  type CombatContextView,
+  type IssuedCommandView,
+  type PlayBoardCellView,
+  type PlayCardSlotView,
+  type PlayHighlights,
+  type SeatSelection,
+  type SetupUnitTypeGroup,
+  type SideCardEconomy,
+  type UseSeatPlaySessionResult,
+  RouteResponseError,
+  useGameStorage,
+  useGreetMsg,
+  useName,
+};

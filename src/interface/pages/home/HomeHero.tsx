@@ -1,7 +1,7 @@
 import { useAuth } from '@application';
 import { Link } from '@tanstack/solid-router';
-import type { JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 
 export function HomeHero(): JSX.Element {
   const auth = useAuth();

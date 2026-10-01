@@ -6,10 +6,10 @@ import type {
 } from '@classicalmoser/prevail-rules/domain';
 
 export function waitHint(args: {
-  options: LegalPlayerChoiceOptions | null;
+  options: LegalPlayerChoiceOptions | undefined;
   side: PlayerSide | undefined;
   phaseSummary: PhaseSummary | undefined;
-  remaining: Partial<Record<PlayerSide, Command[]>> | null;
+  remaining: Partial<Record<PlayerSide, Command[]>> | undefined;
   playCardSlots: { you: PlayCardSlotView; opponent: PlayCardSlotView };
   outcome?: GameOutcome;
 }): string | undefined {
@@ -18,7 +18,7 @@ export function waitHint(args: {
   if (outcome !== undefined && outcome.status !== 'ongoing') {
     return undefined;
   }
-  if (options !== null) {
+  if (options !== undefined) {
     return undefined;
   }
   if (side === undefined) {

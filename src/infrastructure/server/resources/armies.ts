@@ -23,7 +23,7 @@ import type {
  * One function per prevail-contracts owned-army route.
  * Wires contract constants to the matching caller; still returns HTTP envelopes.
  */
-export interface ArmyResources {
+interface ArmyResources {
   getOwnedArmies(): Promise<GetResponse<Army[]>>;
   getOwnedArmyById(params: GetByIdParams): Promise<GetResponse<Army>>;
   createOwnedArmy(): Promise<CreatedPostResponse<string>>;
@@ -34,7 +34,7 @@ export interface ArmyResources {
   archiveOwnedArmy(params: GetByIdParams): Promise<ErrorResponse | undefined>;
 }
 
-export function createArmyResources({
+function createArmyResources({
   callDelete,
   callGet,
   callPost,
@@ -76,3 +76,5 @@ export function createArmyResources({
     },
   };
 }
+
+export { type ArmyResources, createArmyResources };

@@ -1,8 +1,8 @@
 import type { BoardCellView } from '@application';
 import type { Board } from '@classicalmoser/prevail-rules/domain';
 import { BoardComponent } from '@interface/board';
-import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 
 export function HomeTutorial(props: {
   hasGameState: Accessor<boolean>;

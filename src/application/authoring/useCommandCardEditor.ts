@@ -1,7 +1,7 @@
 import type { CardListItem } from '@classicalmoser/prevail-contracts';
 import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor } from 'solid-js';
 import { createEffect, createSignal } from 'solid-js';
+import type { Accessor } from 'solid-js';
 import type { UseMutationResult, UseQueryResult } from '@tanstack/solid-query';
 import {
   useAllCommandCardsQuery,
@@ -61,7 +61,7 @@ function useCommandCardEditorState(
     readonly string[]
   >([]);
 
-  const listItem = () => {
+  const listItem = (): CardListItem | undefined => {
     const resolvedId = cardId();
     if (resolvedId === undefined) {
       return;

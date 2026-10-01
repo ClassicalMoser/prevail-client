@@ -1,7 +1,7 @@
 import type { PlayCardSlotView } from '@application';
 import { FaceDownCardThumb, PublishedCardThumb } from '@interface/components';
-import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 
 function SlotView(props: {
   slot: Accessor<PlayCardSlotView>;

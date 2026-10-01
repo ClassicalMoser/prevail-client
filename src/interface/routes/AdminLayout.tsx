@@ -1,8 +1,8 @@
 import { useAuth } from '@application';
 import { Button } from '@interface/components';
 import { Outlet } from '@tanstack/solid-router';
-import type { JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 
 export function AdminLayout(): JSX.Element {
   const auth = useAuth();

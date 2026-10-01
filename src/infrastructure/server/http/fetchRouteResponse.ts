@@ -25,8 +25,6 @@ import type {
 import type { RouteFetch } from './routeFetch';
 import { logSchemaParseFailure } from './logSchemaParseFailure';
 
-export type { RouteFetch } from './routeFetch';
-
 /** True when the server returned a contract-shaped error body. */
 function hasStringMessage(json: unknown): json is { message: string } {
   return (
@@ -45,6 +43,61 @@ function parseErrorMessage(json: unknown): string {
   throw new Error('Invalid error response body');
 }
 
+function isMediaPayload(
+  result: MediaPayload<MediaContentType> | ErrorResponse,
+): result is MediaPayload<MediaContentType> {
+  return typeof result === 'string' || result instanceof Uint8Array;
+}
+
+async function decodeMediaBody<TContentType extends MediaContentType>(
+  response: Response,
+  contentType: TContentType,
+): Promise<MediaPayload<TContentType>> {
+  switch (contentType) {
+    case 'image/svg+xml': {
+      return (await response.text()) as MediaPayload<TContentType>;
+    }
+    case 'application/pdf':
+    case 'image/png': {
+      const buffer = await response.arrayBuffer();
+      return new Uint8Array(buffer) as MediaPayload<TContentType>;
+    }
+    default: {
+      const exhaustiveCheck: never = contentType;
+      throw new Error(`Unsupported media content type: ${exhaustiveCheck}`);
+    }
+  }
+}
+
+async function parseMediaPayload<TContentType extends MediaContentType>(
+  response: Response,
+  contentType: TContentType,
+): Promise<MediaPayload<TContentType> | ErrorResponse> {
+  const responseContentType = response.headers.get('content-type');
+
+  // Reject mismatched media types before reading the body.
+  if (!responseContentType?.startsWith(contentType)) {
+    return {
+      message: 'Unexpected response content type',
+      statusCode: response.status,
+    };
+  }
+
+  const payload = await decodeMediaBody(response, contentType);
+
+  if (
+    (typeof payload === 'string' && payload.length === 0) ||
+    (payload instanceof Uint8Array && payload.length === 0)
+  ) {
+    return {
+      message: 'Empty media response',
+      statusCode: response.status,
+    };
+  }
+
+  return payload;
+}
+
 /**
  * HTTP client for prevail-contracts routes.
  *
@@ -52,9 +105,7 @@ function parseErrorMessage(json: unknown): string {
  * {@link AccessTokenGetter}, validates bodies with route zod schemas, and
  * returns typed success/error envelopes (see {@link responseTypes}).
  */
-export function createRouteFetch(
-  getAccessToken: AccessTokenGetter,
-): RouteFetch {
+function createRouteFetch(getAccessToken: AccessTokenGetter): RouteFetch {
   async function sendRouteRequest(
     url: string,
     auth: RouteAuth,
@@ -198,59 +249,6 @@ export function createRouteFetch(
     return parseRouteEnvelope201(response, route);
   }
 
-  function isMediaPayload(
-    result: MediaPayload<MediaContentType> | ErrorResponse,
-  ): result is MediaPayload<MediaContentType> {
-    return typeof result === 'string' || result instanceof Uint8Array;
-  }
-
-  async function parseMediaPayload<TContentType extends MediaContentType>(
-    response: Response,
-    contentType: TContentType,
-  ): Promise<MediaPayload<TContentType> | ErrorResponse> {
-    const responseContentType = response.headers.get('content-type');
-
-    // Reject mismatched media types before reading the body.
-    if (!responseContentType?.startsWith(contentType)) {
-      return {
-        message: 'Unexpected response content type',
-        statusCode: response.status,
-      };
-    }
-
-    let payload: MediaPayload<TContentType>;
-
-    // Decode binary vs text payloads based on the declared content type.
-    switch (contentType) {
-      case 'image/svg+xml': {
-        payload = (await response.text()) as MediaPayload<TContentType>;
-        break;
-      }
-      case 'application/pdf':
-      case 'image/png': {
-        const buffer = await response.arrayBuffer();
-        payload = new Uint8Array(buffer) as MediaPayload<TContentType>;
-        break;
-      }
-      default: {
-        const exhaustiveCheck: never = contentType;
-        throw new Error(`Unsupported media content type: ${exhaustiveCheck}`);
-      }
-    }
-
-    if (
-      (typeof payload === 'string' && payload.length === 0) ||
-      (payload instanceof Uint8Array && payload.length === 0)
-    ) {
-      return {
-        message: 'Empty media response',
-        statusCode: response.status,
-      };
-    }
-
-    return payload;
-  }
-
   async function fetchMediaPostResponse<
     TContentType extends MediaContentType,
     TParams extends Record<string, unknown>,
@@ -333,3 +331,5 @@ export function createRouteFetch(
     fetchPatchResponse,
   };
 }
+
+export { type RouteFetch, createRouteFetch };

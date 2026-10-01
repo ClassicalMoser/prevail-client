@@ -1,7 +1,7 @@
 import type { CardListItem } from '@classicalmoser/prevail-contracts';
 import type { UnitType } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor } from 'solid-js';
 import { createEffect, createSignal } from 'solid-js';
+import type { Accessor } from 'solid-js';
 import type { UseMutationResult, UseQueryResult } from '@tanstack/solid-query';
 import {
   useAllUnitCardsQuery,
@@ -56,7 +56,7 @@ function useUnitCardEditorState(
   const [previewSvg, setPreviewSvg] = createSignal<string | undefined>();
   const [previewError, setPreviewError] = createSignal<string | undefined>();
 
-  const listItem = () => {
+  const listItem = (): CardListItem | undefined => {
     const resolvedId = cardId();
     if (resolvedId === undefined) {
       return;

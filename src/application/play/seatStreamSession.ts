@@ -19,13 +19,13 @@ import {
   logSeatStreamSnapshotRequest,
 } from './logSeatStream';
 
-export interface SeatGameSnapshot {
+interface SeatGameSnapshot {
   id: string;
   gameMode: GameModeName;
   gameState: GameState;
 }
 
-export interface SeatStreamSessionCallbacks {
+interface SeatStreamSessionCallbacks {
   onStatus: (status: GameSeatConnectionStatus) => void;
   onSnapshot: (game: SeatGameSnapshot) => void;
   onFoldedState: (change: {
@@ -40,7 +40,7 @@ export interface SeatStreamSessionCallbacks {
   onSendReady: (send?: (choice: PlayerChoiceEvent) => boolean) => void;
 }
 
-export interface SeatStreamSessionDeps extends SeatStreamSessionCallbacks {
+interface SeatStreamSessionDeps extends SeatStreamSessionCallbacks {
   gameId: string;
   side: PlayerSide;
   connect: GameSeat['connect'];
@@ -49,7 +49,7 @@ export interface SeatStreamSessionDeps extends SeatStreamSessionCallbacks {
   initialGameMode: GameModeName;
 }
 
-export interface SeatStreamSession {
+interface SeatStreamSession {
   start: () => Promise<void>;
   dispose: () => void;
   sendChoice: (choice: PlayerChoiceEvent) => boolean;
@@ -59,17 +59,17 @@ export interface SeatStreamSession {
  * Non-Solid seat WebSocket session: connect, fold events, request snapshots.
  * One connection per instance; call {@link SeatStreamSession.dispose} to tear down.
  */
-export function createSeatStreamSession(
+function unsubscribeNothing(): void {
+  /* No subscription is attached yet. */
+}
+
+function createSeatStreamSession(
   deps: SeatStreamSessionDeps,
 ): SeatStreamSession {
   let disposed = false;
-  let connection: GameSeatConnection | undefined;
-  let unsubStatus = (): void => {
-    /* No-op until connected. */
-  };
-  let unsubMessages = (): void => {
-    /* No-op until connected. */
-  };
+  let connection: GameSeatConnection | undefined = undefined;
+  let unsubStatus = unsubscribeNothing;
+  let unsubMessages = unsubscribeNothing;
   let activeGameMode: GameModeName = deps.initialGameMode;
 
   const requestSnapshot = (): boolean => {
@@ -157,12 +157,8 @@ export function createSeatStreamSession(
     disposed = true;
     unsubStatus();
     unsubMessages();
-    unsubStatus = () => {
-      /* Cleared. */
-    };
-    unsubMessages = () => {
-      /* Cleared. */
-    };
+    unsubStatus = unsubscribeNothing;
+    unsubMessages = unsubscribeNothing;
     connection?.close();
     connection = undefined;
     deps.onSendReady();
@@ -214,3 +210,11 @@ export function createSeatStreamSession(
     },
   };
 }
+
+export {
+  type SeatGameSnapshot,
+  type SeatStreamSessionCallbacks,
+  type SeatStreamSessionDeps,
+  type SeatStreamSession,
+  createSeatStreamSession,
+};

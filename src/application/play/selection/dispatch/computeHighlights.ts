@@ -21,12 +21,12 @@ import { applySetupHighlights } from '../phases/setup';
 import { applySupportHighlights } from '../phases/support';
 
 export function computeHighlights(
-  options: LegalPlayerChoiceOptions | null,
+  options: LegalPlayerChoiceOptions | undefined,
   selection: SeatSelection,
   state?: GameState,
 ): PlayHighlights {
   const draft = emptyHighlightDraft();
-  if (options === null) {
+  if (options === undefined) {
     return finalizeHighlights(draft);
   }
 
@@ -66,7 +66,7 @@ export function computeHighlights(
       break;
     }
     case 'assignUnitSupport': {
-      applySupportHighlights(draft, options, selection, state);
+      applySupportHighlights(draft, { options, selection, state });
       break;
     }
     case 'issueCommand': {

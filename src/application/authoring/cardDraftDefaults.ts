@@ -8,6 +8,20 @@ import type {
 
 const INITIAL_VERSION = '0.0.1';
 
+/**
+ * Map an artwork field to UnitType.imageUrl.
+ * A blank input means no artwork. The published schema uses null for that,
+ * and it rejects undefined, so the domain null is produced here and nowhere else.
+ */
+function unitArtworkUrlFromInput(raw: string): string | null {
+  const trimmed = raw.trim();
+  if (trimmed === '') {
+    // oxlint-disable-next-line unicorn/no-null -- UnitType.imageUrl is string | null
+    return null;
+  }
+  return trimmed;
+}
+
 const emptyRestrictions = (): Restrictions => ({
   inspirationRangeRestriction: -1,
   traitRestrictions: [],
@@ -20,7 +34,7 @@ const emptyRoundEffect = (): RoundEffect => ({
 });
 
 /** Default command card body for authoring the first version of an empty card. */
-export const defaultCommandCardDraft = (id: string): CommandCard => ({
+const defaultCommandCardDraft = (id: string): CommandCard => ({
   id,
   version: INITIAL_VERSION,
   name: '',
@@ -48,14 +62,20 @@ const defaultUnitStats: UnitStats = {
 };
 
 /** Default unit card body for authoring the first version of an empty card. */
-export const defaultUnitCardDraft = (id: string): UnitType => ({
+const defaultUnitCardDraft = (id: string): UnitType => ({
   id,
   version: INITIAL_VERSION,
   name: '',
-  imageUrl: null,
+  imageUrl: unitArtworkUrlFromInput(''),
   traits: [],
   stats: defaultUnitStats,
   cost: 10,
   limit: 4,
   morale: 0,
 });
+
+export {
+  unitArtworkUrlFromInput,
+  defaultCommandCardDraft,
+  defaultUnitCardDraft,
+};

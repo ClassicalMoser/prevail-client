@@ -1,7 +1,17 @@
-export { applyMoveCommanderHighlights } from './applyMoveCommanderHighlights';
-export { applyMoveUnitHighlights } from './applyMoveUnitHighlights';
-export { handleMoveCommanderCellClick } from './handleMoveCommanderCellClick';
-export { handleMoveUnitCellClick } from './handleMoveUnitCellClick';
-export { handleMoveUnitFacingClick } from './handleMoveUnitFacingClick';
-export { initialMoveUnitSelection } from './initialSelection';
-export { undoMoveUnit } from './undoMoveUnit';
+import { applyMoveCommanderHighlights } from './applyMoveCommanderHighlights';
+import { applyMoveUnitHighlights } from './applyMoveUnitHighlights';
+import { handleMoveCommanderCellClick } from './handleMoveCommanderCellClick';
+import { handleMoveUnitCellClick } from './handleMoveUnitCellClick';
+import { handleMoveUnitFacingClick } from './handleMoveUnitFacingClick';
+import { initialMoveUnitSelection } from './initialSelection';
+import { undoMoveUnit } from './undoMoveUnit';
+
+export {
+  applyMoveCommanderHighlights,
+  applyMoveUnitHighlights,
+  handleMoveCommanderCellClick,
+  handleMoveUnitCellClick,
+  handleMoveUnitFacingClick,
+  initialMoveUnitSelection,
+  undoMoveUnit,
+};

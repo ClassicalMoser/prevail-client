@@ -1,10 +1,10 @@
+import { PLAYER_CHOICE_EVENT_TYPE } from '@classicalmoser/prevail-rules/domain';
 import type {
   Coordinate,
   LegalPlayerChoiceOptions,
   PlayerChoiceEvent,
   UnitWithPlacement,
 } from '@classicalmoser/prevail-rules/domain';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@classicalmoser/prevail-rules/domain';
 import { cloneDraft } from '@application/authoring';
 
 export function buildSetupSubmit(

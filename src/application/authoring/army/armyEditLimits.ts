@@ -1,3 +1,7 @@
+import {
+  armyCompositionByMode,
+  armyCompositionInitiatives,
+} from '@classicalmoser/prevail-rules/domain';
 import type {
   Army,
   ArmyCompositionRules,
@@ -5,25 +9,27 @@ import type {
   GameModeName,
   UnitType,
 } from '@classicalmoser/prevail-rules/domain';
-import {
-  armyCompositionByMode,
-  armyCompositionInitiatives,
-} from '@classicalmoser/prevail-rules/domain';
 
-export const maxCommandCardsForMode = (mode: GameModeName): number | null => {
-  const per = armyCompositionByMode[mode].cardsPerInitiative;
-  if (per === null) {
-    return null;
+/**
+ * Total command cards a mode allows, or undefined when the mode has no cap.
+ * `cardsPerInitiative` uses null for "uncapped". That null stays on the rules
+ * object; this function answers the client with undefined.
+ */
+const maxCommandCardsForMode = (mode: GameModeName): number | undefined => {
+  const cardsPerInitiative = armyCompositionByMode[mode].cardsPerInitiative;
+  // Null on the composition rule means the mode does not limit the deck.
+  if (cardsPerInitiative === null) {
+    return undefined;
   }
-  return per * armyCompositionInitiatives.length;
+  return cardsPerInitiative * armyCompositionInitiatives.length;
 };
 
-export const maxCopiesForUnit = (unitType: UnitType): number => unitType.limit;
+const maxCopiesForUnit = (unitType: UnitType): number => unitType.limit;
 
-export const canAddUnitType = (army: Army, mode: GameModeName): boolean =>
+const canAddUnitType = (army: Army, mode: GameModeName): boolean =>
   army.units.length < armyCompositionByMode[mode].maxUnitTypeCount;
 
-export const canAddCommandCard = (
+const canAddCommandCard = (
   army: Army,
   mode: GameModeName,
   card: CommandCard,
@@ -36,7 +42,7 @@ export const canAddCommandCard = (
     return true;
   }
   const maxTotal = maxCommandCardsForMode(mode);
-  if (maxTotal !== null && army.commandCards.length >= maxTotal) {
+  if (maxTotal !== undefined && army.commandCards.length >= maxTotal) {
     return false;
   }
   const forInitiative = army.commandCards.filter(
@@ -45,5 +51,13 @@ export const canAddCommandCard = (
   return forInitiative < rules.cardsPerInitiative;
 };
 
-export const compositionRules = (mode: GameModeName): ArmyCompositionRules =>
+const compositionRules = (mode: GameModeName): ArmyCompositionRules =>
   armyCompositionByMode[mode];
+
+export {
+  maxCommandCardsForMode,
+  maxCopiesForUnit,
+  canAddUnitType,
+  canAddCommandCard,
+  compositionRules,
+};

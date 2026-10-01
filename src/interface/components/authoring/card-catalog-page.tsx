@@ -1,6 +1,6 @@
 import type { PublishedCardKind } from '@interface/lib';
-import type { Accessor, JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { Button } from '../button';
 import {
   Card,
@@ -12,12 +12,10 @@ import {
 import { CardCatalogListItem } from './card-catalog-list-item';
 import type { CardCatalogItem } from './card-catalog-types';
 
-export type { CardCatalogItem } from './card-catalog-types';
-
 const catalogGrid =
   'grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12';
 
-export interface CardCatalogPageProps<TItem extends CardCatalogItem> {
+interface CardCatalogPageProps<TItem extends CardCatalogItem> {
   title: string;
   description: string;
   loadingMessage: string;
@@ -41,7 +39,7 @@ export interface CardCatalogPageProps<TItem extends CardCatalogItem> {
 }
 
 /** Visual catalog shell shared by command and unit card authoring. */
-export const CardCatalogPage = <TItem extends CardCatalogItem>(
+const CardCatalogPage = <TItem extends CardCatalogItem>(
   props: CardCatalogPageProps<TItem>,
 ): JSX.Element => (
   <main class="container mx-auto flex flex-col gap-6 p-4 py-8">
@@ -127,3 +125,5 @@ export const CardCatalogPage = <TItem extends CardCatalogItem>(
     </Show>
   </main>
 );
+
+export { type CardCatalogItem, type CardCatalogPageProps, CardCatalogPage };

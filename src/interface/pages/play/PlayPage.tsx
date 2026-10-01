@@ -5,8 +5,8 @@ import type {
 } from '@classicalmoser/prevail-rules/domain';
 import { BoardComponent } from '@interface/board';
 import { useParams } from '@tanstack/solid-router';
-import type { JSX } from 'solid-js';
 import { createMemo, Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 import { PlayChoicePanel } from './choices/PlayChoicePanel';
 import { CombatContextPanel } from './CombatContextPanel';
 import { assignUnitSupportHint } from './hints/assignUnitSupportHint';
@@ -39,7 +39,7 @@ export function PlayPage(): JSX.Element {
 
   const setupUnits = createMemo((): UnitInstance[] => {
     const options = session.legalOptions();
-    if (options === null || options.choiceType !== 'setupUnits') {
+    if (options === undefined || options.choiceType !== 'setupUnits') {
       return [];
     }
     return [...options.setupUnits.units];
@@ -53,7 +53,7 @@ export function PlayPage(): JSX.Element {
   const handSelectable = createMemo(() => {
     const options = session.legalOptions();
     return (
-      options !== null &&
+      options !== undefined &&
       (options.choiceType === 'chooseCard' ||
         options.choiceType === 'chooseRoutDiscard' ||
         options.choiceType === 'assignUnitSupport' ||
@@ -116,7 +116,7 @@ export function PlayPage(): JSX.Element {
 
   const onHandCardActivate = (card: CommandCard): void => {
     const options = session.legalOptions();
-    if (options === null) {
+    if (options === undefined) {
       return;
     }
     if (options.choiceType === 'chooseRoutDiscard') {
@@ -124,7 +124,7 @@ export function PlayPage(): JSX.Element {
       return;
     }
     if (options.choiceType === 'assignUnitSupport') {
-      session.onSelectAssignUnitSupportCard(card.id);
+      session.onSelectAssignUnitSupportCard(card);
       return;
     }
     if (
@@ -136,7 +136,7 @@ export function PlayPage(): JSX.Element {
   };
 
   return (
-    <main class="play-page flex h-[calc(100dvh-3.5rem)] flex-col overflow-hidden">
+    <main class="play-page flex h-full min-h-0 flex-col overflow-hidden">
       <Show
         when={side()}
         fallback={
@@ -181,7 +181,7 @@ export function PlayPage(): JSX.Element {
                       opponent={() => session.playCardSlots().opponent}
                     />
                   </Show>
-                  <div class="board-host flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden">
+                  <div class="board-host flex min-h-0 min-w-0 flex-1 items-center justify-center">
                     <BoardComponent
                       board={core.game.board}
                       cells={session.boardCells}

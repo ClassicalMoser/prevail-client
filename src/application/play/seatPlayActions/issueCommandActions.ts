@@ -17,7 +17,7 @@ export function createIssueCommandActions(deps: SeatPlayActionsDeps): {
       unlockDraft(deps);
       const options = deps.legalOptions();
       const state = deps.readGameState();
-      if (options === null || state === undefined) {
+      if (options === undefined || state === undefined) {
         return;
       }
       const entry = issueCommandLabels(options)[index];
@@ -28,7 +28,7 @@ export function createIssueCommandActions(deps: SeatPlayActionsDeps): {
     },
     onConfirmIssueCommand: () => {
       const options = deps.legalOptions();
-      if (options === null) {
+      if (options === undefined) {
         return;
       }
       const event = buildIssueCommandSubmit(options, deps.selection());

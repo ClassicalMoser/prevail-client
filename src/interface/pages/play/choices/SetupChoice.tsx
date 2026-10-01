@@ -1,5 +1,5 @@
-import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { DraftControls } from './DraftControls';
 
 export function SetupChoice(props: {
@@ -23,9 +23,7 @@ export function SetupChoice(props: {
         </p>
       </Show>
       <Show when={!props.hasSetupUnits()}>
-        <p class="text-destructive text-xs">
-          No reserved units for this seat.
-        </p>
+        <p class="text-destructive text-xs">No reserved units for this seat.</p>
       </Show>
       <DraftControls
         canUndo={props.canUndo}

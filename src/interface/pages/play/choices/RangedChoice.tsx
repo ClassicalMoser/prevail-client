@@ -1,10 +1,10 @@
 import { Button } from '@interface/components';
-import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { DraftControls } from './DraftControls';
 
 export function RangedChoice(props: {
-  progress: Accessor<string | null>;
+  progress: Accessor<string | undefined>;
   canConfirm: Accessor<boolean>;
   canUndo: Accessor<boolean>;
   choicePending: Accessor<boolean>;

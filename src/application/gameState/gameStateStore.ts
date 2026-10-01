@@ -4,17 +4,17 @@ import type {
   GameState,
 } from '@classicalmoser/prevail-rules/domain';
 import type { GameStateSubscriber } from '@domain';
-import type { Accessor } from 'solid-js';
 import { createMemo } from 'solid-js';
+import type { Accessor } from 'solid-js';
 import { createStore, reconcile, unwrap } from 'solid-js/store';
 
-export interface GameStateIngest {
+interface GameStateIngest {
   gameId: string;
   gameMode: GameModeName;
   gameState: GameState;
 }
 
-export interface GameStateStore {
+interface GameStateStore {
   /** Which game the UI follows; also keeps {@link engineSubscriber} identity in sync for runner filtering. */
   setSubscribedGame: (gameId: string, gameMode: GameModeName) => void;
   /** Sole write path for authoritative snapshots (local engine today; future WS later). */
@@ -30,6 +30,21 @@ export interface GameStateStore {
   engineSubscriber: GameStateSubscriber;
 }
 
+/**
+ * Reconcile a snapshot without treating an `id` field as row identity.
+ * Solid defaults `key` to `"id"`. Passing undefined is the same as omitting
+ * it, so the default still applies. Null is the switch that turns keying off.
+ * GameState rows are not identified that way.
+ */
+function reconcileStoredGameState(
+  next: GameState,
+): (state: GameState | undefined) => GameState {
+  return reconcile(next, {
+    // oxlint-disable-next-line unicorn/no-null -- ReconcileOptions.key is string | null
+    key: null,
+  });
+}
+
 interface StoreShape {
   gameId: string;
   gameMode: GameModeName;
@@ -40,7 +55,7 @@ interface StoreShape {
  * Authoritative GameState holder with a single ingest seam.
  * Local engine and a future transport both call {@link GameStateStore.ingest}.
  */
-export const createGameStateStore = (): GameStateStore => {
+const createGameStateStore = (): GameStateStore => {
   const [store, setStore] = createStore<StoreShape>({
     gameId: '',
     gameMode: 'mini',
@@ -69,18 +84,20 @@ export const createGameStateStore = (): GameStateStore => {
       engineSubscriber.gameId = change.gameId;
       engineSubscriber.gameMode = change.gameMode;
     }
-    setStore('gameState', reconcile(change.gameState, { key: null }));
+    setStore('gameState', reconcileStoredGameState(change.gameState));
   };
 
-  engineSubscriber.onGameStateChange = (change: GameStateChange) => {
+  // Engine callback, not a Solid tracked scope — ingest closes over the store.
+  // eslint-disable-next-line solid/reactivity -- external subscriber wire-up
+  engineSubscriber.onGameStateChange = (change: GameStateChange): void => {
     ingest(change);
   };
 
-  const clear = () => {
+  const clear = (): void => {
     setStore('gameState', undefined);
   };
 
-  const setSubscribedGame = (gameId: string, gameMode: GameModeName) => {
+  const setSubscribedGame = (gameId: string, gameMode: GameModeName): void => {
     const identityChanged =
       store.gameId !== gameId || store.gameMode !== gameMode;
     setStore({ gameId, gameMode });
@@ -116,6 +133,13 @@ export const createGameStateStore = (): GameStateStore => {
  * Deep plain clone for prevail-rules pure functions / applyEvent.
  * Store proxies break array membership / trait checks in rules code.
  */
-export function plainGameState(state: GameState): GameState {
+function plainGameState(state: GameState): GameState {
   return structuredClone(unwrap(state));
 }
+
+export {
+  type GameStateIngest,
+  type GameStateStore,
+  createGameStateStore,
+  plainGameState,
+};

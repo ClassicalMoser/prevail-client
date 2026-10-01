@@ -1,10 +1,10 @@
+import { statModifiers } from '@classicalmoser/prevail-rules/domain';
 import type {
   Modifier,
   StatModifier,
 } from '@classicalmoser/prevail-rules/domain';
-import { statModifiers } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor, JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { Button } from '../button';
 import { FormField } from '../form-field';
 import { Input } from '../input';
@@ -17,11 +17,15 @@ export const ModifierListEditor = (props: {
 }): JSX.Element => {
   const updateModifier = (index: number, patch: Partial<Modifier>): void => {
     props.onChange(
-      props
-        .modifiers()
-        .map((modifier, modifierIndex) =>
-          modifierIndex === index ? { ...modifier, ...patch } : modifier,
-        ),
+      props.modifiers().map((modifier, modifierIndex) => {
+        if (modifierIndex !== index) {
+          return modifier;
+        }
+        return {
+          type: patch.type === undefined ? modifier.type : patch.type,
+          value: patch.value === undefined ? modifier.value : patch.value,
+        };
+      }),
     );
   };
 

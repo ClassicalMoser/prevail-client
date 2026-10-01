@@ -1,8 +1,8 @@
+import { getLegalRangedAttackTargets } from '@classicalmoser/prevail-rules/domain';
 import type {
   GameState,
   LegalPlayerChoiceOptions,
 } from '@classicalmoser/prevail-rules/domain';
-import { getLegalRangedAttackTargets } from '@classicalmoser/prevail-rules/domain';
 import type { SeatSelection } from '@application/play/selection/core/types';
 import { selectionForOptions } from '@application/play/selection/dispatch/selectionForOptions';
 import { initialRangedSelection } from './initialSelection';

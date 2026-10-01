@@ -6,9 +6,9 @@ import { isCommitChoiceType } from './isCommitChoiceType';
 
 /** Refuse commit event (`committedCard: null`), if offered. */
 export function commitRefuseEvent(
-  options: LegalPlayerChoiceOptions | null,
+  options: LegalPlayerChoiceOptions | undefined,
 ): PlayerChoiceEvent | undefined {
-  if (options === null || !isCommitChoiceType(options.choiceType)) {
+  if (options === undefined || !isCommitChoiceType(options.choiceType)) {
     return undefined;
   }
   if (

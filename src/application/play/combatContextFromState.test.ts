@@ -1,15 +1,15 @@
-import type {
-  Board,
-  Coordinate,
-  GameState,
-  UnitInstance,
-} from '@classicalmoser/prevail-rules/domain';
 import {
   createEmptyGameState,
   createUnitInstance,
   tempCommandCards,
   tempUnits,
   updatePhaseState,
+} from '@classicalmoser/prevail-rules/domain';
+import type {
+  Board,
+  Coordinate,
+  GameState,
+  UnitInstance,
 } from '@classicalmoser/prevail-rules/domain';
 import { describe, expect, it } from 'vite-plus/test';
 import {
@@ -18,6 +18,37 @@ import {
   formatCombatEngagementLine,
   formatCommitmentStatus,
 } from './combatContextFromState';
+
+function withRevealedCommitments(state: GameState): GameState {
+  const phase = state.currentRoundState.currentPhaseState;
+  if (phase === 'none' || phase.phase !== 'resolveMelee') {
+    throw new Error('expected resolveMelee');
+  }
+  if (phase.currentMeleeResolutionState === 'pending') {
+    throw new Error('expected melee state');
+  }
+  return updatePhaseState(state, {
+    ...phase,
+    currentMeleeResolutionState: {
+      ...phase.currentMeleeResolutionState,
+      whiteCommitment: {
+        commitmentType: 'completed',
+        card: tempCommandCards[0],
+      },
+      blackCommitment: { commitmentType: 'declined' },
+    },
+  });
+}
+
+function requireCombatContext(
+  state: GameState,
+): NonNullable<ReturnType<typeof combatContextFromState>> {
+  const context = combatContextFromState(state);
+  if (context === undefined) {
+    throw new Error('expected context');
+  }
+  return context;
+}
 
 const firstCoord = (board: Board): Coordinate => {
   const key = Object.keys(board.board)[0];
@@ -77,15 +108,19 @@ const meleeState = (): GameState => {
   );
 };
 
-describe(combatContextFromState, () => {
-  it('returns null outside resolveMelee', () => {
-    expect(combatContextFromState(createEmptyGameState('mini'))).toBeNull();
-    expect(combatContextFromState()).toBeNull();
-  });
+describe('melee context derived from game state', () => {
+  it('returns undefined outside resolveMelee', () => {
+    expect.hasAssertions();
+    expect(
+      combatContextFromState(createEmptyGameState('mini')),
+    ).toBeUndefined();
+    expect(combatContextFromState()).toBeUndefined();
+  }, 1000);
 
   it('surfaces location, units, and commitment status during melee', () => {
+    expect.hasAssertions();
     const context = combatContextFromState(meleeState());
-    expect(context).not.toBeNull();
+    expect(context).toBeDefined();
     expect(context?.kind).toBe('melee');
     expect(context?.units).toHaveLength(2);
     expect(context?.whiteCommitment).toStrictEqual({ kind: 'pending' });
@@ -93,65 +128,49 @@ describe(combatContextFromState, () => {
       kind: 'completed',
       cardLabel: 'Hidden',
     });
-  });
+  }, 1000);
 
   it('labels completed revealed commitments by card name', () => {
-    const state = meleeState();
-    const phase = state.currentRoundState.currentPhaseState;
-    if (phase === 'none' || phase.phase !== 'resolveMelee') {
-      throw new Error('expected resolveMelee');
-    }
-    if (phase.currentMeleeResolutionState === 'pending') {
-      throw new Error('expected melee state');
-    }
-    const withReveal = updatePhaseState(state, {
-      ...phase,
-      currentMeleeResolutionState: {
-        ...phase.currentMeleeResolutionState,
-        whiteCommitment: {
-          commitmentType: 'completed',
-          card: tempCommandCards[0],
-        },
-        blackCommitment: { commitmentType: 'declined' },
-      },
-    });
-    const context = combatContextFromState(withReveal);
+    expect.hasAssertions();
+    const context = combatContextFromState(
+      withRevealedCommitments(meleeState()),
+    );
     expect(context?.whiteCommitment).toStrictEqual({
       kind: 'completed',
       cardLabel: tempCommandCards[0].name,
     });
     expect(context?.blackCommitment).toStrictEqual({ kind: 'declined' });
-  });
+  }, 1000);
 });
 
-describe(engagementLabelAtCoordinate, () => {
+describe('engagement labels', () => {
   it('falls back to Resolve coord when empty', () => {
+    expect.hasAssertions();
     const board = createEmptyGameState('mini').boardState;
     const coord = firstCoord(board);
     expect(engagementLabelAtCoordinate(board, coord)).toBe(`Resolve ${coord}`);
-  });
+  }, 1000);
 
   it('names engaged pair', () => {
+    expect.hasAssertions();
     const base = createEmptyGameState('mini').boardState;
     const coord = firstCoord(base);
     const board = placeEngagedPair(base, coord);
     const label = engagementLabelAtCoordinate(board, coord);
     expect(label).toContain('vs');
     expect(label).toContain(coord);
-  });
+  }, 1000);
 });
 
 describe('combat formatters', () => {
   it('formats engagement and commitment lines', () => {
-    const context = combatContextFromState(meleeState());
-    if (context === null) {
-      throw new Error('expected context');
-    }
+    expect.hasAssertions();
+    const context = requireCombatContext(meleeState());
     expect(formatCombatEngagementLine(context)).toContain('vs');
     expect(formatCommitmentStatus({ kind: 'pending' })).toBe('Pending');
     expect(formatCommitmentStatus({ kind: 'declined' })).toBe('Declined');
     expect(
       formatCommitmentStatus({ kind: 'completed', cardLabel: 'Advance' }),
     ).toBe('Advance');
-  });
+  }, 1000);
 });

@@ -13,11 +13,11 @@ import { handleSetupFacingClick } from '../phases/setup';
 export function handleFacingClick(args: {
   coordinate: Coordinate;
   facing: UnitFacing;
-  options: LegalPlayerChoiceOptions | null;
+  options: LegalPlayerChoiceOptions | undefined;
   selection: SeatSelection;
 }): CellClickResult {
   const { coordinate, facing, options, selection } = args;
-  if (options === null) {
+  if (options === undefined) {
     return { selection };
   }
 

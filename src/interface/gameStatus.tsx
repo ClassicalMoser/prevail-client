@@ -6,8 +6,8 @@ import {
   CardHeader,
   CardTitle,
 } from './components';
-import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 
 function formatPhaseSummary(summary: PhaseSummary | undefined): string {
   if (summary === undefined) {

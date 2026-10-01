@@ -29,7 +29,7 @@ import type {
  * One function per prevail-contracts unit-card route.
  * Wires contract constants to the matching caller; still returns HTTP envelopes.
  */
-export interface UnitCardResources {
+interface UnitCardResources {
   getAllUnitCards(): Promise<GetResponse<CardListItem[]>>;
   getUnitCardById(params: GetByIdParams): Promise<GetResponse<UnitType>>;
   getUnitCardsByIds(body: QueryByIdsBody): Promise<PostResponse<UnitType[]>>;
@@ -41,7 +41,7 @@ export interface UnitCardResources {
   previewUnitCard(card: UnitType): Promise<MediaPostResponse<string>>;
 }
 
-export function createUnitCardResources({
+function createUnitCardResources({
   callDelete,
   callGet,
   callMediaPost,
@@ -111,3 +111,5 @@ export function createUnitCardResources({
     },
   };
 }
+
+export { type UnitCardResources, createUnitCardResources };

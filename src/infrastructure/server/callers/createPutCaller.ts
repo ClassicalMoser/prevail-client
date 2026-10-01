@@ -1,9 +1,9 @@
 import type { PutRoute } from '@classicalmoser/prevail-contracts';
-import type { BodyRouteCallArgs, PutResponse } from '../http';
 import { buildRequestUrl } from '../http';
+import type { BodyRouteCallArgs, PutResponse } from '../http';
 import type { CallerDependencies } from './callerDependencies';
 
-export type CallPut = <
+type CallPut = <
   TData,
   TParams extends Record<string, unknown>,
   TQuery extends Record<string, unknown>,
@@ -13,7 +13,7 @@ export type CallPut = <
   args: BodyRouteCallArgs<TParams, TQuery, TBody>,
 ) => Promise<PutResponse<TData>>;
 
-export function createPutCaller({
+function createPutCaller({
   serverUrl,
   routeFetch,
 }: CallerDependencies): CallPut {
@@ -26,8 +26,14 @@ export function createPutCaller({
     route: PutRoute<TParams, TQuery, TBody, TData>,
     args: BodyRouteCallArgs<TParams, TQuery, TBody>,
   ): Promise<PutResponse<TData>> {
-    const url = buildRequestUrl(serverUrl, route.path, args.params, args.query);
+    const url = buildRequestUrl(serverUrl, {
+      path: route.path,
+      params: args.params,
+      query: args.query,
+    });
 
     return routeFetch.fetchPutResponse(url, route, args.body);
   };
 }
+
+export { type CallPut, createPutCaller };

@@ -12,9 +12,9 @@ import {
  * Reactivity lives inside the port (auth state via subscribe), not in the context
  * value, so the provider is mounted with a constant in composition.
  */
-export const AuthContext = createContext<AuthPort>();
+const AuthContext = createContext<AuthPort>();
 
-export const useAuthPort = (): AuthPort => {
+const useAuthPort = (): AuthPort => {
   const value = useContext(AuthContext);
   if (value === undefined) {
     throw new Error('useAuthPort must be used within an AuthContext.Provider');
@@ -22,7 +22,7 @@ export const useAuthPort = (): AuthPort => {
   return value;
 };
 
-export interface AuthViewModel {
+interface AuthViewModel {
   isAuthenticated: () => boolean;
   isLoading: () => boolean;
   authUser: () => AuthState['authUser'];
@@ -31,7 +31,7 @@ export interface AuthViewModel {
   logout: AuthPort['logout'];
 }
 
-export const useAuth = (): AuthViewModel => {
+const useAuth = (): AuthViewModel => {
   const port = useAuthPort();
   const [state, setState] = createSignal(port.getState());
 
@@ -49,3 +49,5 @@ export const useAuth = (): AuthViewModel => {
     logout: port.logout.bind(port),
   };
 };
+
+export { AuthContext, useAuthPort, type AuthViewModel, useAuth };

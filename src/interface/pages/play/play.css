@@ -31,6 +31,7 @@
 
 .play-tabletop {
   /* Quiet table surface — board sits on it; piles/hand live in gutters. */
+  position: relative;
   background: color-mix(in oklab, var(--play-paper) 92%, var(--play-bronze));
   overflow: visible;
 }
@@ -57,8 +58,8 @@
   position: relative;
   z-index: 2;
   align-items: end;
-  padding-top: 0.4rem;
-  padding-bottom: 0.55rem;
+  padding-top: 0.35rem;
+  padding-bottom: 0.4rem;
   pointer-events: none;
 }
 
@@ -70,28 +71,31 @@
 .play-card-row--you {
   position: relative;
   z-index: 6;
-  align-items: start;
-  padding-top: 0.55rem;
-  padding-bottom: 0.35rem;
+  align-items: end;
+  /* Flush to the bottom edge of the play column. */
+  padding: 0 0.75rem;
   pointer-events: none;
 }
 
 .play-tabletop .board-host {
   flex: 1 1 0;
   min-height: 0;
-  padding: 0.35rem 0.65rem 0.45rem;
+  padding: 0.25rem 0.65rem 0.35rem;
+  /* Don’t crop the felt — size the grid to the host instead. */
+  overflow: visible;
 }
 
-/* Soft depth so the felt reads apart from pile/hand gutters — no hard rule. */
-.play-tabletop .board-shell {
-  filter: drop-shadow(0 0.2rem 0.55rem rgb(0 0 0 / 0.18));
+/* Soft depth — box-shadow (not filter) so edge cells/arrows aren’t clipped. */
+.play-tabletop .board-grid {
+  box-shadow: 0 0.25rem 0.85rem rgb(0 0 0 / 0.16);
 }
 
 .play-field {
   position: relative;
   z-index: 1;
-  min-height: min(52vh, 28rem);
+  min-height: 0;
   gap: 0.35rem;
+  overflow: visible;
 }
 
 .play-card-row__spacer {
@@ -258,16 +262,28 @@
   color: var(--play-ink);
 }
 
-/* Your hand — title-band peek in its own gutter; dock enlarge on hover --- */
+/* Your hand — readable resting peeks; dock enlarge shows the full face ---- */
 .play-hand {
-  --play-hand-peek: 2.25rem;
-  --play-hand-full: 5.75rem;
-  --play-hand-face-width: 4.5rem;
-  --play-hand-scale: 3;
-  --play-hand-ease: cubic-bezier(0.34, 1.45, 0.64, 1);
-  --play-hand-spread: calc(
-    (var(--play-hand-face-width) * (var(--play-hand-scale) - 1)) / 2
+  /* Face is w-36 (9rem) at 5:7 → 12.6rem tall. Keep in sync with size="hand". */
+  --play-hand-face-width: 9rem;
+  --play-hand-full: calc(var(--play-hand-face-width) * 7 / 5);
+  /* Title + icon band readable at rest. */
+  --play-hand-peek: 5.25rem;
+  /* Base is already large — modest lift still reads the full face. */
+  --play-hand-scale: 2.15;
+  --play-hand-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --play-hand-duration: 320ms;
+  /* Shared by expand + collapse so mouse-out is the exact inverse. */
+  --play-hand-lift-y: calc(
+    var(--play-hand-peek) - (var(--play-hand-full) * var(--play-hand-scale)) -
+      0.4rem
   );
+  --play-hand-lift-x: calc(
+    (var(--play-hand-face-width) * (1 - var(--play-hand-scale))) / 2
+  );
+  /* Room outside the face for the lit drop-shadow (clip-path would otherwise cut it).
+     Sized for the expanded face — filter follows the scaled lift. */
+  --play-hand-halo: calc(0.95rem * var(--play-hand-scale));
   position: relative;
   z-index: 3;
   display: flex;
@@ -291,7 +307,7 @@
   justify-content: center;
   max-width: 100%;
   height: var(--play-hand-peek);
-  padding: 0 0.35rem;
+  padding: 0 0.5rem;
   overflow: visible;
   pointer-events: none;
 }
@@ -301,12 +317,12 @@
   flex: 0 0 auto;
   width: max-content;
   height: var(--play-hand-peek);
-  margin-left: -1.55rem;
-  overflow: hidden;
+  margin-left: -3.6rem;
+  overflow: visible;
   pointer-events: auto;
-  transition:
-    margin 220ms var(--play-hand-ease),
-    z-index 0s;
+  /* Rest: clip to peek box. Hover: expand clip with the lift (no overflow snap). */
+  clip-path: inset(0);
+  transition: clip-path var(--play-hand-duration) var(--play-hand-ease);
   z-index: 1;
 }
 
@@ -318,9 +334,17 @@
   opacity: 0.42;
 }
 
+/* Lit peeks: bleed the clip on sides/top so the halo isn’t squared off. */
+.play-hand__card--lit {
+  clip-path: inset(
+    calc(0px - var(--play-hand-halo)) calc(0px - var(--play-hand-halo)) 0
+      calc(0px - var(--play-hand-halo))
+  );
+}
+
 .play-hand__card--lit .play-hand__lift {
-  box-shadow: 0 0 0 2px color-mix(in oklab, var(--play-bronze) 75%, white);
-  border-radius: 0.2rem;
+  filter: drop-shadow(0 0 0.35rem rgb(34 211 238 / 0.95))
+    drop-shadow(0 0 0.9rem rgb(34 211 238 / 0.55));
 }
 
 /*
@@ -334,7 +358,7 @@
   margin: 0;
   padding: 0;
   border: none;
-  border-radius: 0.2rem;
+  border-radius: 0;
   background: transparent;
   cursor: pointer;
 }
@@ -349,24 +373,33 @@
 
 .play-hand__lift {
   position: relative;
+  width: var(--play-hand-face-width);
+  transform: translateY(0) scale(1);
   transform-origin: top center;
-  transition: transform 240ms var(--play-hand-ease);
+  transition: transform var(--play-hand-duration) var(--play-hand-ease);
   will-change: transform;
   pointer-events: none;
 }
 
+/* Skip / facedown tiles should match hand face width — no soft chrome. */
+.play-hand__lift .aspect-5\/7 {
+  width: var(--play-hand-face-width);
+  max-width: none;
+  border-radius: 0;
+}
+
 .play-hand__count {
   position: absolute;
-  top: 0.2rem;
-  right: 0.15rem;
+  top: 0.3rem;
+  right: 0.25rem;
   z-index: 2;
-  min-width: 1rem;
-  padding: 0.05rem 0.28rem;
+  min-width: 1.15rem;
+  padding: 0.1rem 0.35rem;
   border-radius: 999px;
   background: color-mix(in oklab, var(--play-ink) 82%, transparent);
   color: var(--play-paper);
   font-family: var(--font-display);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   line-height: 1.1;
   text-align: center;
   pointer-events: none;
@@ -376,27 +409,63 @@
 .play-hand__card:hover,
 .play-hand__card:focus-within {
   z-index: 40;
-  overflow: visible;
-  /* (a) Fan neighbors clear of the 3× face. */
-  margin-left: var(--play-hand-spread);
-  margin-right: var(--play-hand-spread);
+  /* Face bounds + halo bleed (exact face inset would clip the soft edge). */
+  clip-path: inset(
+    calc(var(--play-hand-lift-y) - var(--play-hand-halo))
+      calc(var(--play-hand-lift-x) - var(--play-hand-halo))
+      calc(0px - var(--play-hand-halo))
+      calc(var(--play-hand-lift-x) - var(--play-hand-halo))
+  );
+}
+
+/*
+ * Invisible bridge over the lifted face. The art is pointer-events: none;
+ * without this the cursor falls through to the board and hover oscillates.
+ * Width stays the resting face so side overhang can still reach neighbors.
+ */
+.play-hand__card:hover::before,
+.play-hand__card:focus-within::before {
+  content: '';
+  position: absolute;
+  z-index: 4;
+  top: var(--play-hand-lift-y);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: auto;
+}
+
+/* Selectable cards: same bridge is the click target. */
+.play-hand__card:hover .play-hand__hit:not(.play-hand__hit--static),
+.play-hand__card:focus-within .play-hand__hit:not(.play-hand__hit--static) {
+  top: var(--play-hand-lift-y);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: auto;
 }
 
 .play-hand__card:hover .play-hand__lift,
 .play-hand__card:focus-within .play-hand__lift {
-  /* Pull up over the board from the hand gutter. */
-  transform: translateY(
-      calc(
-        -0.55rem + var(--play-hand-peek) -
-          var(--play-hand-full) * var(--play-hand-scale)
-      )
-    )
-    scale(var(--play-hand-scale));
+  transform: translateY(var(--play-hand-lift-y)) scale(var(--play-hand-scale));
 }
 
-/* Lighten face chrome inside the dock (art already has an edge). */
+@media (max-height: 720px) {
+  .play-hand {
+    --play-hand-face-width: 7.5rem;
+    --play-hand-peek: 4.5rem;
+    --play-hand-scale: 1.95;
+  }
+
+  .play-hand .w-36 {
+    width: 7.5rem;
+  }
+}
+
+/* No extra face chrome in the dock — SVG edges only. */
 .play-hand__card img {
-  border-radius: 0.2rem;
+  border-radius: 0;
+  display: block;
 }
 
 /* FaceDown skip tile: hide caption text in the peek strip */
@@ -476,13 +545,7 @@
 
   .play-hand__card:hover,
   .play-hand__card:focus-within {
-    margin-left: -1.55rem;
-    margin-right: 0;
-  }
-
-  .play-hand__card:first-child:hover,
-  .play-hand__card:first-child:focus-within {
-    margin-left: 0;
+    clip-path: inset(0);
   }
 
   .play-hand__card:hover .play-hand__lift,

@@ -1,11 +1,11 @@
 import type { CardListItem } from '@classicalmoser/prevail-contracts';
 import type { UnitType } from '@classicalmoser/prevail-rules/domain';
 import type { UnitCards } from '@ports';
-import type { QueryOptions } from '@tanstack/solid-query';
 import { queryOptions } from '@tanstack/solid-query';
+import type { QueryOptions } from '@tanstack/solid-query';
 import { unitCardKeys } from '../keys';
 
-export function allUnitCardsQueryOptions(
+function allUnitCardsQueryOptions(
   unitCards: UnitCards,
 ): QueryOptions<
   CardListItem[],
@@ -19,7 +19,7 @@ export function allUnitCardsQueryOptions(
   });
 }
 
-export function currentUnitCardsQueryOptions(
+function currentUnitCardsQueryOptions(
   unitCards: UnitCards,
 ): QueryOptions<UnitType[], Error, UnitType[], typeof unitCardKeys.current> {
   return queryOptions({
@@ -28,7 +28,7 @@ export function currentUnitCardsQueryOptions(
   });
 }
 
-export function unitCardByIdQueryOptions(
+function unitCardByIdQueryOptions(
   unitCards: UnitCards,
   id: string,
 ): QueryOptions<
@@ -43,7 +43,7 @@ export function unitCardByIdQueryOptions(
   });
 }
 
-export function unitCardsByIdsQueryOptions(
+function unitCardsByIdsQueryOptions(
   unitCards: UnitCards,
   ids: readonly string[],
 ): QueryOptions<
@@ -57,3 +57,10 @@ export function unitCardsByIdsQueryOptions(
     queryFn: () => unitCards.getByIds(ids),
   });
 }
+
+export {
+  allUnitCardsQueryOptions,
+  currentUnitCardsQueryOptions,
+  unitCardByIdQueryOptions,
+  unitCardsByIdsQueryOptions,
+};

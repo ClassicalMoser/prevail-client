@@ -1,6 +1,6 @@
 import { useCore } from '@application';
-import type { JSX } from 'solid-js';
 import { createSignal } from 'solid-js';
+import type { JSX } from 'solid-js';
 import { HomeHero } from './home/HomeHero';
 import { HomeTutorial } from './home/HomeTutorial';
 import './home/home.css';

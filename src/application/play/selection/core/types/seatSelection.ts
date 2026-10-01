@@ -3,6 +3,7 @@ import type {
   Coordinate,
   UnitInstance,
   UnitPlacement,
+  UnitSupport,
   UnitWithPlacement,
 } from '@classicalmoser/prevail-rules/domain';
 
@@ -45,8 +46,8 @@ export type SeatSelection =
     }
   | {
       kind: 'assignUnitSupport';
-      /** Hand card currently receiving unit toggles. */
-      activeCardId: string | undefined;
-      /** Per-card covered units (omit empty on submit). */
-      assignments: { cardId: string; units: UnitInstance[] }[];
+      /** Summed hand category currently receiving unit toggles. */
+      activeSupport: UnitSupport | undefined;
+      /** Per-category covered units (omit empty on submit). */
+      assignments: { unitSupport: UnitSupport; units: UnitInstance[] }[];
     };

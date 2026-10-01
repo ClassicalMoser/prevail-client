@@ -13,10 +13,10 @@ import {
 } from '../phases/resolve';
 
 export function choiceListItems(
-  options: LegalPlayerChoiceOptions | null,
+  options: LegalPlayerChoiceOptions | undefined,
   board?: Board,
 ): ChoiceListItem[] {
-  if (options === null) {
+  if (options === undefined) {
     return [];
   }
 

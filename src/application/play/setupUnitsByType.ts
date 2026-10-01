@@ -1,7 +1,7 @@
 import type { UnitInstance } from '@classicalmoser/prevail-rules/domain';
-import { unitKey } from '@application/play/selection/core';
+import { unitKey } from './selection/core';
 
-export type SetupUnitTypeGroup = {
+interface SetupUnitTypeGroup {
   typeId: string;
   version: string;
   name: string;
@@ -9,16 +9,32 @@ export type SetupUnitTypeGroup = {
   total: number;
   /** Next instance to select: first unplaced, else first of type (reposition). */
   pick: UnitInstance;
-};
+}
 
 /**
  * Collapse setup roster to one row per unit type with remaining-to-place count.
  */
-export function setupUnitsByType(
+function recordAnotherUnitOfType(
+  group: SetupUnitTypeGroup,
+  unit: UnitInstance,
+  placedKeys: ReadonlySet<string>,
+): void {
+  group.total += 1;
+  const placed = placedKeys.has(unitKey(unit));
+  if (placed) {
+    return;
+  }
+  group.remaining += 1;
+  if (placedKeys.has(unitKey(group.pick))) {
+    group.pick = unit;
+  }
+}
+
+function setupUnitsByType(
   units: readonly UnitInstance[],
   placed: readonly UnitInstance[],
 ): SetupUnitTypeGroup[] {
-  const placedKeys = new Set(placed.map(unitKey));
+  const placedKeys = new Set(placed.map((unit) => unitKey(unit)));
   const groups: SetupUnitTypeGroup[] = [];
   const indexByType = new Map<string, number>();
 
@@ -35,22 +51,15 @@ export function setupUnitsByType(
         total: 1,
         pick: unit,
       });
-      continue;
-    }
-
-    const group = groups[existing];
-    if (group === undefined) {
-      continue;
-    }
-    group.total += 1;
-    const isPlaced = placedKeys.has(unitKey(unit));
-    if (!isPlaced) {
-      group.remaining += 1;
-      if (placedKeys.has(unitKey(group.pick))) {
-        group.pick = unit;
+    } else {
+      const group = groups[existing];
+      if (group !== undefined) {
+        recordAnotherUnitOfType(group, unit, placedKeys);
       }
     }
   }
 
   return groups;
 }
+
+export { type SetupUnitTypeGroup, setupUnitsByType };

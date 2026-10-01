@@ -1,12 +1,12 @@
+import {
+  getBoardSpace,
+  hasSingleUnit,
+} from '@classicalmoser/prevail-rules/domain';
 import type {
   Coordinate,
   GameState,
   PlayerSide,
   UnitInstance,
-} from '@classicalmoser/prevail-rules/domain';
-import {
-  getBoardSpace,
-  hasSingleUnit,
 } from '@classicalmoser/prevail-rules/domain';
 
 export function unitAtCoordinate(

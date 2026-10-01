@@ -1,10 +1,10 @@
+import { statModifiers } from '@classicalmoser/prevail-rules/domain';
 import type {
   CommandCard,
   StatModifier,
 } from '@classicalmoser/prevail-rules/domain';
-import { statModifiers } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor, JSX } from 'solid-js';
 import { For } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import {
   Card as UiCard,
   CardContent,

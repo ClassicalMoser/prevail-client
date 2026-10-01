@@ -9,9 +9,9 @@ import { initialSetupSelection } from '../phases/setup/initialSelection';
 import { initialSupportSelection } from '../phases/support/initialSelection';
 
 export function selectionForOptions(
-  options: LegalPlayerChoiceOptions | null,
+  options: LegalPlayerChoiceOptions | undefined,
 ): SeatSelection {
-  if (options === null) {
+  if (options === undefined) {
     return emptySelection();
   }
   switch (options.choiceType) {

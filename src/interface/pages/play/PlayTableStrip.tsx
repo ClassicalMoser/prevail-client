@@ -1,16 +1,16 @@
-import type { IssuedCommandView } from '@application';
 import { formatCommandLabel } from '@application';
+import type { IssuedCommandView } from '@application';
 import type { Command, PlayerSide } from '@classicalmoser/prevail-rules/domain';
 import { Button } from '@interface/components';
-import type { Accessor, JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 
 /**
  * Issue-phase remaining commands and issued log (rail only — not card table).
  */
 export function PlayTableStrip(props: {
   humanSide: Accessor<PlayerSide>;
-  remaining: Accessor<Partial<Record<PlayerSide, Command[]>> | null>;
+  remaining: Accessor<Partial<Record<PlayerSide, Command[]>> | undefined>;
   issued: Accessor<IssuedCommandView[]>;
   canSelectRemaining?: Accessor<boolean>;
   selectedRemainingIndex?: Accessor<number | undefined>;
@@ -38,7 +38,7 @@ export function PlayTableStrip(props: {
                 <div class="flex flex-wrap gap-1.5">
                   <For each={yourRemaining()}>
                     {(command, index) => {
-                      const selected = () =>
+                      const selected = (): boolean =>
                         canSelect() &&
                         props.selectedRemainingIndex?.() === index();
                       return (

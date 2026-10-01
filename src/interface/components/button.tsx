@@ -1,13 +1,13 @@
-import type { ButtonRootProps } from '@kobalte/core/button';
 import { Root } from '@kobalte/core/button';
+import type { ButtonRootProps } from '@kobalte/core/button';
 import type { PolymorphicProps } from '@kobalte/core/polymorphic';
 import type { VariantProps } from 'cva';
+import { splitProps } from 'solid-js';
 import type { ComponentProps, JSX, ValidComponent } from 'solid-js';
 import { cva } from '@interface/lib';
-import { splitProps } from 'solid-js';
 
 /** Zaidan vega — https://zaidan.carere.dev/r/kobalte/button.json */
-export const buttonVariants = cva({
+const buttonVariants = cva({
   base: 'group/button z-button inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap outline-none transition-all active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0',
   variants: {
     variant: {
@@ -35,14 +35,14 @@ export const buttonVariants = cva({
   },
 });
 
-export type ButtonProps<T extends ValidComponent = 'button'> = PolymorphicProps<
+type ButtonProps<T extends ValidComponent = 'button'> = PolymorphicProps<
   T,
   ButtonRootProps<T>
 > &
   VariantProps<typeof buttonVariants> &
   Pick<ComponentProps<T>, 'class'>;
 
-export const Button = <T extends ValidComponent = 'button'>(
+const Button = <T extends ValidComponent = 'button'>(
   props: ButtonProps<T>,
 ): JSX.Element => {
   const [local, others] = splitProps(props as ButtonProps, [
@@ -63,3 +63,5 @@ export const Button = <T extends ValidComponent = 'button'>(
     />
   );
 };
+
+export { buttonVariants, type ButtonProps, Button };

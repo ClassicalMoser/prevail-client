@@ -2,15 +2,15 @@ import type {
   CreatedPostRoute,
   PostRoute,
 } from '@classicalmoser/prevail-contracts';
+import { buildRequestUrl } from '../http';
 import type {
   BodyRouteCallArgs,
   CreatedPostResponse,
   PostResponse,
 } from '../http';
-import { buildRequestUrl } from '../http';
 import type { CallerDependencies } from './callerDependencies';
 
-export interface CallPost {
+interface CallPost {
   <
     TData,
     TParams extends Record<string, unknown>,
@@ -32,7 +32,7 @@ export interface CallPost {
 }
 
 /** POST caller: picks 200 vs 201 fetch based on contract `successStatus`. */
-export function createPostCaller({
+function createPostCaller({
   serverUrl,
   routeFetch,
 }: CallerDependencies): CallPost {
@@ -67,7 +67,11 @@ export function createPostCaller({
       | CreatedPostRoute<TParams, TQuery, TBody, TData>,
     args: BodyRouteCallArgs<TParams, TQuery, TBody>,
   ): Promise<PostResponse<TData> | CreatedPostResponse<TData>> {
-    const url = buildRequestUrl(serverUrl, route.path, args.params, args.query);
+    const url = buildRequestUrl(serverUrl, {
+      path: route.path,
+      params: args.params,
+      query: args.query,
+    });
 
     if (route.successStatus === 201) {
       return routeFetch.fetchCreatedPostResponse(url, route, args.body);
@@ -78,3 +82,5 @@ export function createPostCaller({
 
   return callPost;
 }
+
+export { type CallPost, createPostCaller };

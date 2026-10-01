@@ -1,11 +1,11 @@
+import { mergeProps, splitProps } from 'solid-js';
 import type { ComponentProps, JSX } from 'solid-js';
 import { cx } from '@interface/lib';
-import { mergeProps, splitProps } from 'solid-js';
 
 /** Zaidan vega — https://zaidan.carere.dev/r/kobalte/card.json */
-export type CardProps = ComponentProps<'div'> & { size?: 'default' | 'sm' };
+type CardProps = ComponentProps<'div'> & { size?: 'default' | 'sm' };
 
-export const Card = (props: CardProps): JSX.Element => {
+const Card = (props: CardProps): JSX.Element => {
   const mergedProps = mergeProps({ size: 'default' } as const, props);
   const [local, others] = splitProps(mergedProps, ['class', 'size']);
 
@@ -19,9 +19,9 @@ export const Card = (props: CardProps): JSX.Element => {
   );
 };
 
-export type CardHeaderProps = ComponentProps<'div'>;
+type CardHeaderProps = ComponentProps<'div'>;
 
-export const CardHeader = (props: CardHeaderProps): JSX.Element => {
+const CardHeader = (props: CardHeaderProps): JSX.Element => {
   const [local, others] = splitProps(props, ['class']);
 
   return (
@@ -36,9 +36,9 @@ export const CardHeader = (props: CardHeaderProps): JSX.Element => {
   );
 };
 
-export type CardTitleProps = ComponentProps<'div'>;
+type CardTitleProps = ComponentProps<'div'>;
 
-export const CardTitle = (props: CardTitleProps): JSX.Element => {
+const CardTitle = (props: CardTitleProps): JSX.Element => {
   const [local, others] = splitProps(props, ['class']);
 
   return (
@@ -50,9 +50,9 @@ export const CardTitle = (props: CardTitleProps): JSX.Element => {
   );
 };
 
-export type CardDescriptionProps = ComponentProps<'div'>;
+type CardDescriptionProps = ComponentProps<'div'>;
 
-export const CardDescription = (props: CardDescriptionProps): JSX.Element => {
+const CardDescription = (props: CardDescriptionProps): JSX.Element => {
   const [local, others] = splitProps(props, ['class']);
 
   return (
@@ -64,9 +64,9 @@ export const CardDescription = (props: CardDescriptionProps): JSX.Element => {
   );
 };
 
-export type CardActionProps = ComponentProps<'div'>;
+type CardActionProps = ComponentProps<'div'>;
 
-export const CardAction = (props: CardActionProps): JSX.Element => {
+const CardAction = (props: CardActionProps): JSX.Element => {
   const [local, others] = splitProps(props, ['class']);
 
   return (
@@ -81,9 +81,9 @@ export const CardAction = (props: CardActionProps): JSX.Element => {
   );
 };
 
-export type CardContentProps = ComponentProps<'div'>;
+type CardContentProps = ComponentProps<'div'>;
 
-export const CardContent = (props: CardContentProps): JSX.Element => {
+const CardContent = (props: CardContentProps): JSX.Element => {
   const [local, others] = splitProps(props, ['class']);
 
   return (
@@ -95,9 +95,9 @@ export const CardContent = (props: CardContentProps): JSX.Element => {
   );
 };
 
-export type CardFooterProps = ComponentProps<'div'>;
+type CardFooterProps = ComponentProps<'div'>;
 
-export const CardFooter = (props: CardFooterProps): JSX.Element => {
+const CardFooter = (props: CardFooterProps): JSX.Element => {
   const [local, others] = splitProps(props, ['class']);
 
   return (
@@ -107,4 +107,21 @@ export const CardFooter = (props: CardFooterProps): JSX.Element => {
       {...others}
     />
   );
+};
+
+export {
+  type CardProps,
+  Card,
+  type CardHeaderProps,
+  CardHeader,
+  type CardTitleProps,
+  CardTitle,
+  type CardDescriptionProps,
+  CardDescription,
+  type CardActionProps,
+  CardAction,
+  type CardContentProps,
+  CardContent,
+  type CardFooterProps,
+  CardFooter,
 };

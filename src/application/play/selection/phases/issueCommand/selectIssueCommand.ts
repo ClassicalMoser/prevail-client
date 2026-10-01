@@ -1,9 +1,9 @@
+import { getLegalUnitsForIssueCommand } from '@classicalmoser/prevail-rules/domain';
 import type {
   Command,
   GameState,
   LegalPlayerChoiceOptions,
 } from '@classicalmoser/prevail-rules/domain';
-import { getLegalUnitsForIssueCommand } from '@classicalmoser/prevail-rules/domain';
 import { emptySelection } from '@application/play/selection/core/emptySelection';
 import type { SeatSelection } from '@application/play/selection/core/types';
 

@@ -1,7 +1,17 @@
-export { applySupportHighlights } from './applySupportHighlights';
-export { buildAssignUnitSupportSubmit } from './buildAssignUnitSupportSubmit';
-export { canConfirmAssignUnitSupport } from './canConfirmAssignUnitSupport';
-export { handleSupportCellClick } from './handleSupportCellClick';
-export { initialSupportSelection } from './initialSelection';
-export { selectAssignUnitSupportCard } from './selectAssignUnitSupportCard';
-export { undoSupport } from './undoSupport';
+import { applySupportHighlights } from './applySupportHighlights';
+import { buildAssignUnitSupportSubmit } from './buildAssignUnitSupportSubmit';
+import { canConfirmAssignUnitSupport } from './canConfirmAssignUnitSupport';
+import { handleSupportCellClick } from './handleSupportCellClick';
+import { initialSupportSelection } from './initialSelection';
+import { selectAssignUnitSupportCard } from './selectAssignUnitSupportCard';
+import { undoSupport } from './undoSupport';
+
+export {
+  applySupportHighlights,
+  buildAssignUnitSupportSubmit,
+  canConfirmAssignUnitSupport,
+  handleSupportCellClick,
+  initialSupportSelection,
+  selectAssignUnitSupportCard,
+  undoSupport,
+};

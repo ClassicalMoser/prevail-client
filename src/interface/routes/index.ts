@@ -1,2 +1,4 @@
-export { router } from './router';
-export { routeTree } from './routeTree';
+import { router } from './router';
+import { routeTree } from './routeTree';
+
+export { router, routeTree };

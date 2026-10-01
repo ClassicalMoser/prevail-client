@@ -5,14 +5,15 @@ import type {
   PlayerChoiceEvent,
   UnitFacing,
   UnitInstance,
+  UnitSupport,
 } from '@classicalmoser/prevail-rules/domain';
 import type { ChoiceListItem, SeatSelection } from '../selection';
 
-export interface SeatPlayActionsDeps {
+interface SeatPlayActionsDeps {
   choicePending: () => boolean;
   setChoicePending: (pending: boolean) => void;
   setChoiceRejected: (rejection: FailValidationResult | undefined) => void;
-  legalOptions: () => LegalPlayerChoiceOptions | null;
+  legalOptions: () => LegalPlayerChoiceOptions | undefined;
   selection: () => SeatSelection;
   setSelection: (selection: SeatSelection) => void;
   readGameState: () => GameState | undefined;
@@ -20,7 +21,7 @@ export interface SeatPlayActionsDeps {
   submit: (choice: PlayerChoiceEvent) => void;
 }
 
-export interface SeatPlayActions {
+interface SeatPlayActions {
   onCellClick: (coordinate: string) => void;
   onFacingClick: (coordinate: string, facing: UnitFacing) => void;
   onChoiceItem: (item: ChoiceListItem) => void;
@@ -31,7 +32,7 @@ export interface SeatPlayActions {
   onRefuseCommit: () => void;
   onConfirmPerformRangedAttack: () => void;
   onConfirmAssignUnitSupport: () => void;
-  onSelectAssignUnitSupportCard: (cardId: string) => void;
+  onSelectAssignUnitSupportCard: (card: { unitSupport: UnitSupport }) => void;
   onToggleRoutCard: (cardId: string) => void;
   onChooseCardId: (cardId: string) => void;
   onUndo: () => void;
@@ -39,3 +40,5 @@ export interface SeatPlayActions {
   onRetryLastChoice: () => void;
   clearRejection: () => void;
 }
+
+export type { SeatPlayActionsDeps, SeatPlayActions };

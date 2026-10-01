@@ -1,10 +1,30 @@
 import type { Modifier } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
 import { createMemo, For, Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 import AttackIcon from '../assets/icons/Attack Icon.svg';
 import FlexibilityIcon from '../assets/icons/Flexibility Icon.svg';
 import RangeIcon from '../assets/icons/Ranged Icon.svg';
 import './modifier.css';
+
+/** Icon for modifier types that have one. Other stats render their type name. */
+function iconSrcForModifierType(
+  modifierType: Modifier['type'],
+): string | undefined {
+  switch (modifierType) {
+    case 'attack': {
+      return AttackIcon;
+    }
+    case 'range': {
+      return RangeIcon;
+    }
+    case 'flexibility': {
+      return FlexibilityIcon;
+    }
+    default: {
+      return undefined;
+    }
+  }
+}
 
 export const ModifierComponent = (props: {
   modifier: Modifier;
@@ -14,22 +34,7 @@ export const ModifierComponent = (props: {
     const modifierValue = props.modifier.value;
     const modifierPositive = modifierValue > 0;
     const displaySign = modifierPositive ? '+' : '-';
-    const displayIcon = ((): string | null => {
-      switch (modifierType) {
-        case 'attack': {
-          return AttackIcon;
-        }
-        case 'range': {
-          return RangeIcon;
-        }
-        case 'flexibility': {
-          return FlexibilityIcon;
-        }
-        default: {
-          return null;
-        }
-      }
-    })();
+    const displayIcon = iconSrcForModifierType(modifierType);
 
     return {
       modifierType,
@@ -46,9 +51,9 @@ export const ModifierComponent = (props: {
         {display().displaySign}
         <For each={Array.from({ length: Math.abs(display().modifierValue) })}>
           {() =>
-            display().displayIcon !== null ? (
+            display().displayIcon !== undefined ? (
               <img
-                src={display().displayIcon ?? undefined}
+                src={display().displayIcon}
                 alt={display().modifierType}
                 class="modifier-icon"
               />

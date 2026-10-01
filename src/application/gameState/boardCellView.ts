@@ -1,3 +1,8 @@
+import {
+  getOppositeFacing,
+  hasEngagedUnits,
+  hasSingleUnit,
+} from '@classicalmoser/prevail-rules/domain';
 import type {
   Board,
   BoardSpace,
@@ -5,14 +10,9 @@ import type {
   UnitFacing,
   UnitInstance,
 } from '@classicalmoser/prevail-rules/domain';
-import {
-  getOppositeFacing,
-  hasEngagedUnits,
-  hasSingleUnit,
-} from '@classicalmoser/prevail-rules/domain';
 import { resolveUnitArtSrc } from './unitArt';
 
-export interface BoardUnitView {
+interface BoardUnitView {
   label: string;
   facing: UnitFacing;
   imageSrc: string | undefined;
@@ -23,7 +23,7 @@ export interface BoardUnitView {
   unitTypeName: string;
 }
 
-export interface BoardCellView {
+interface BoardCellView {
   coordinate: string;
   commanders: PlayerSide[];
   units: BoardUnitView[];
@@ -42,7 +42,7 @@ const toUnitView = (unit: UnitInstance, facing: UnitFacing): BoardUnitView => ({
   unitTypeName: unit.unitType.name,
 });
 
-export const boardSpaceToCellView = (
+const boardSpaceToCellView = (
   coordinate: string,
   space: BoardSpace,
 ): BoardCellView => {
@@ -71,7 +71,7 @@ export const boardSpaceToCellView = (
 /**
  * Builds a coordinate → cell view map from board state for dumb board rendering.
  */
-export const projectBoardCells = (
+const projectBoardCells = (
   board: Board | undefined,
 ): Readonly<Partial<Record<string, BoardCellView>>> => {
   if (!board) {
@@ -80,10 +80,16 @@ export const projectBoardCells = (
 
   const cells: Partial<Record<string, BoardCellView>> = {};
   for (const [coordinate, space] of Object.entries(board.board)) {
-    if (space === undefined) {
-      continue;
+    if (space !== undefined) {
+      cells[coordinate] = boardSpaceToCellView(coordinate, space);
     }
-    cells[coordinate] = boardSpaceToCellView(coordinate, space);
   }
   return cells;
+};
+
+export {
+  type BoardUnitView,
+  type BoardCellView,
+  boardSpaceToCellView,
+  projectBoardCells,
 };

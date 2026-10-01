@@ -1,11 +1,11 @@
+import { splitProps } from 'solid-js';
 import type { ComponentProps, JSX } from 'solid-js';
 import { cx } from '@interface/lib';
-import { splitProps } from 'solid-js';
 
 /** Zaidan vega — https://zaidan.carere.dev/r/kobalte/input.json */
-export type InputProps = ComponentProps<'input'>;
+type InputProps = ComponentProps<'input'>;
 
-export const Input = (props: InputProps): JSX.Element => {
+const Input = (props: InputProps): JSX.Element => {
   const [local, others] = splitProps(props, ['class']);
 
   return (
@@ -19,3 +19,5 @@ export const Input = (props: InputProps): JSX.Element => {
     />
   );
 };
+
+export { type InputProps, Input };

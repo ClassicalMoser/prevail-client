@@ -1,4 +1,4 @@
-export {
+import {
   buildAssignUnitSupportSubmit,
   buildDoneIssuingSubmit,
   buildIssueCommandSubmit,
@@ -31,60 +31,136 @@ export {
   undoStagedSelection,
   unitKey,
 } from './selection';
-export type {
+import type {
   CellHighlight,
   ChoiceListItem,
   PlayHighlights,
   SeatSelection,
 } from './selection';
-export {
+import {
   formatCommandLabel,
   issuedCommandsFromState,
   playCardSlotsFromState,
   remainingCommandsBySide,
 } from './playVisibility';
-export type { IssuedCommandView, PlayCardSlotView } from './playVisibility';
-export {
+import type { IssuedCommandView, PlayCardSlotView } from './playVisibility';
+import {
   cardEconomyFromState,
   formatCardEconomyMeter,
 } from './cardEconomyFromState';
-export type { CardEconomyView, SideCardEconomy } from './cardEconomyFromState';
-export {
+import type { CardEconomyView, SideCardEconomy } from './cardEconomyFromState';
+import {
   combatContextFromState,
   engagementLabelAtCoordinate,
   formatCombatEngagementLine,
   formatCommitmentStatus,
   unitLabelsAtCoordinate,
 } from './combatContextFromState';
-export type {
+import type {
   CombatContextView,
   CombatUnitLabel,
   CommitmentStatusView,
 } from './combatContextFromState';
-export { setupUnitsByType } from './setupUnitsByType';
-export type { SetupUnitTypeGroup } from './setupUnitsByType';
-export {
+import { setupUnitsByType } from './setupUnitsByType';
+import type { SetupUnitTypeGroup } from './setupUnitsByType';
+import {
   ingestFoldedGameState,
   ingestSeatSnapshot,
   subscribeRouteGame,
 } from './gameStateIngest';
-export type {
+import type {
   GameStateIngestChange,
   GameStateIngestPorts,
 } from './gameStateIngest';
-export type {
+import { projectPlayBoardCells } from './playBoardProjection';
+import type {
   PlayBoardCellView,
   PlayBoardUnitView,
 } from './playBoardProjection';
-export { projectPlayBoardCells } from './playBoardProjection';
-export { createSeatPlayActions } from './seatPlayActions';
-export type { SeatPlayActions, SeatPlayActionsDeps } from './seatPlayActions';
-export { createSeatStreamSession } from './seatStreamSession';
-export type {
+import { createSeatPlayActions } from './seatPlayActions';
+import type { SeatPlayActions, SeatPlayActionsDeps } from './seatPlayActions';
+import { createSeatStreamSession } from './seatStreamSession';
+import type {
   SeatGameSnapshot,
   SeatStreamSession,
   SeatStreamSessionDeps,
 } from './seatStreamSession';
-export { submitPlayerChoice } from './submitPlayerChoice';
-export { useSeatPlaySession } from './useSeatPlaySession';
-export type { UseSeatPlaySessionResult } from './useSeatPlaySession';
+import { submitPlayerChoice } from './submitPlayerChoice';
+import { useSeatPlaySession } from './useSeatPlaySession';
+import type { UseSeatPlaySessionResult } from './useSeatPlaySession';
+
+export {
+  buildAssignUnitSupportSubmit,
+  buildDoneIssuingSubmit,
+  buildIssueCommandSubmit,
+  buildPerformRangedAttackSubmit,
+  canConfirmAssignUnitSupport,
+  canConfirmIssueCommand,
+  canConfirmPerformRangedAttack,
+  choiceListItems,
+  commitRefuseEvent,
+  computeHighlights,
+  defaultFacingForSide,
+  emptySelection,
+  handleCellClick,
+  handleFacingClick,
+  handCardsFromState,
+  hasStagedUndo,
+  isCommitChoiceType,
+  issueCommandLabels,
+  legalOptionsForSeat,
+  lineUnitsFromStartToEnd,
+  formatPlayerChoiceZodIssues,
+  patchEventNumber,
+  preflightPlayerChoice,
+  resetStagedSelection,
+  selectAssignUnitSupportCard,
+  selectIssueCommand,
+  selectSetupUnit,
+  selectionForOptions,
+  toggleRoutDiscardCard,
+  undoStagedSelection,
+  unitKey,
+  type CellHighlight,
+  type ChoiceListItem,
+  type PlayHighlights,
+  type SeatSelection,
+  formatCommandLabel,
+  issuedCommandsFromState,
+  playCardSlotsFromState,
+  remainingCommandsBySide,
+  type IssuedCommandView,
+  type PlayCardSlotView,
+  cardEconomyFromState,
+  formatCardEconomyMeter,
+  type CardEconomyView,
+  type SideCardEconomy,
+  combatContextFromState,
+  engagementLabelAtCoordinate,
+  formatCombatEngagementLine,
+  formatCommitmentStatus,
+  unitLabelsAtCoordinate,
+  type CombatContextView,
+  type CombatUnitLabel,
+  type CommitmentStatusView,
+  setupUnitsByType,
+  type SetupUnitTypeGroup,
+  ingestFoldedGameState,
+  ingestSeatSnapshot,
+  subscribeRouteGame,
+  type GameStateIngestChange,
+  type GameStateIngestPorts,
+  type PlayBoardCellView,
+  type PlayBoardUnitView,
+  projectPlayBoardCells,
+  createSeatPlayActions,
+  type SeatPlayActions,
+  type SeatPlayActionsDeps,
+  createSeatStreamSession,
+  type SeatGameSnapshot,
+  type SeatStreamSession,
+  type SeatStreamSessionDeps,
+  submitPlayerChoice,
+  useSeatPlaySession,
+  type UseSeatPlaySessionResult,
+};

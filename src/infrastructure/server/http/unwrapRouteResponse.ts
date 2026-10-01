@@ -25,21 +25,21 @@ function unwrapEnvelope<T>(response: Response200<T> | Response201<T>): T {
 }
 
 /** Unwrap a 200-envelope promise (GET, POST, PUT, PATCH, media POST). */
-export async function unwrapRouteResponsePromise<T>(
+async function unwrapRouteResponsePromise<T>(
   responsePromise: Promise<Response200<T>>,
 ): Promise<T> {
   return unwrapEnvelope(await responsePromise);
 }
 
 /** Unwrap a 201-envelope promise (created POST). */
-export async function unwrapCreatedRouteResponsePromise<T>(
+async function unwrapCreatedRouteResponsePromise<T>(
   responsePromise: Promise<Response201<T>>,
 ): Promise<T> {
   return unwrapEnvelope(await responsePromise);
 }
 
 /** Unwrap a DELETE promise (204 success returns undefined). */
-export async function unwrapDeleteRouteResponsePromise(
+async function unwrapDeleteRouteResponsePromise(
   responsePromise: Promise<ErrorResponse | undefined>,
 ): Promise<void> {
   const response = await responsePromise;
@@ -48,3 +48,9 @@ export async function unwrapDeleteRouteResponsePromise(
     throw new RouteResponseError(response.message, response.statusCode);
   }
 }
+
+export {
+  unwrapRouteResponsePromise,
+  unwrapCreatedRouteResponsePromise,
+  unwrapDeleteRouteResponsePromise,
+};

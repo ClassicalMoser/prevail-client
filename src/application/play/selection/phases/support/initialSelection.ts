@@ -9,7 +9,7 @@ export function initialSupportSelection(
 ): SeatSelection {
   return {
     kind: 'assignUnitSupport',
-    activeCardId: options.unitSupportGrants.grants[0]?.card.id,
+    activeSupport: options.assignUnitSupport.categories[0]?.unitSupport,
     assignments: [],
   };
 }

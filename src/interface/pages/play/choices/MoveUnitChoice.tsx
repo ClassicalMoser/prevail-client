@@ -1,9 +1,9 @@
-import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { DraftControls } from './DraftControls';
 
 export function MoveUnitChoice(props: {
-  progress: Accessor<string | null>;
+  progress: Accessor<string | undefined>;
   canUndo: Accessor<boolean>;
   choicePending: Accessor<boolean>;
   onUndo: () => void;

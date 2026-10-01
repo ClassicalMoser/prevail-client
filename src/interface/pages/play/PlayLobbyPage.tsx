@@ -14,8 +14,8 @@ import {
   CardTitle,
 } from '@interface/components';
 import { useNavigate } from '@tanstack/solid-router';
-import type { JSX } from 'solid-js';
 import { createMemo, createSignal, For, Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 
 const PLAY_MODE = 'mini' as const;
 
@@ -65,7 +65,7 @@ export function PlayLobbyPage(): JSX.Element {
     () => whiteArmyId() !== '' && blackArmyId() !== '' && !createGame.isPending,
   );
 
-  const handleCreate = () => {
+  const handleCreate = (): void => {
     const body: CreateVsBotGameBody = {
       humanSide: humanSide(),
       gameMode: PLAY_MODE,

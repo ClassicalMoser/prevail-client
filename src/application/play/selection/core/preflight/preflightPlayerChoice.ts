@@ -1,5 +1,5 @@
-import type { PlayerChoiceEvent } from '@classicalmoser/prevail-rules/domain';
 import { playerChoiceEventSchema } from '@classicalmoser/prevail-rules/domain';
+import type { PlayerChoiceEvent } from '@classicalmoser/prevail-rules/domain';
 import { cloneDraft } from '@application/authoring';
 import { formatPlayerChoiceZodIssues } from './formatPlayerChoiceZodIssues';
 

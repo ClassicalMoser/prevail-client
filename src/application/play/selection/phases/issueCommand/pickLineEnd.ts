@@ -1,12 +1,12 @@
+import {
+  getLegalLineEndsForIssueCommand,
+  getLineSegmentFromStart,
+} from '@classicalmoser/prevail-rules/domain';
 import type {
   Command,
   Coordinate,
   GameState,
   PlayerSide,
-} from '@classicalmoser/prevail-rules/domain';
-import {
-  getLegalLineEndsForIssueCommand,
-  getLineSegmentFromStart,
 } from '@classicalmoser/prevail-rules/domain';
 import { lineUnitsFromStartToEnd } from '@application/play/selection/core';
 import type {

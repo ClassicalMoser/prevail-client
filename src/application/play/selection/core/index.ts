@@ -1,25 +1,48 @@
-export { concretePlayer } from './concretePlayer';
-export { defaultFacingForSide } from './defaultFacingForSide';
-export { emptySelection } from './emptySelection';
-export { emptyHighlightDraft, finalizeHighlights } from './highlightDraft';
-export type { HighlightDraft } from './highlightDraft';
-export { isHumanTurn } from './isHumanTurn';
-export { lineUnitsFromStartToEnd } from './lineUnitsFromStartToEnd';
-export {
+import { concretePlayer } from './concretePlayer';
+import { defaultFacingForSide } from './defaultFacingForSide';
+import { emptySelection } from './emptySelection';
+import { emptyHighlightDraft, finalizeHighlights } from './highlightDraft';
+import type { HighlightDraft } from './highlightDraft';
+import { isHumanTurn } from './isHumanTurn';
+import { lineUnitsFromStartToEnd } from './lineUnitsFromStartToEnd';
+import {
   facingsForCoordinate,
   placementForCoordinate,
   placementForCoordinateAndFacing,
 } from './placementHelpers';
-export {
+import {
   formatPlayerChoiceZodIssues,
   patchEventNumber,
   preflightPlayerChoice,
 } from './preflight';
-export type {
+import type {
   CellClickResult,
   CellHighlight,
   ChoiceListItem,
   PlayHighlights,
   SeatSelection,
 } from './types';
-export { unitKey } from './unitKey';
+import { unitKey } from './unitKey';
+
+export {
+  concretePlayer,
+  defaultFacingForSide,
+  emptySelection,
+  emptyHighlightDraft,
+  finalizeHighlights,
+  type HighlightDraft,
+  isHumanTurn,
+  lineUnitsFromStartToEnd,
+  facingsForCoordinate,
+  placementForCoordinate,
+  placementForCoordinateAndFacing,
+  formatPlayerChoiceZodIssues,
+  patchEventNumber,
+  preflightPlayerChoice,
+  type CellClickResult,
+  type CellHighlight,
+  type ChoiceListItem,
+  type PlayHighlights,
+  type SeatSelection,
+  unitKey,
+};

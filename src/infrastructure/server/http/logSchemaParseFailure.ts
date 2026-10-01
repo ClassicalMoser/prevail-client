@@ -29,10 +29,7 @@ const valueAtPath = (value: unknown, path: PropertyKey[]): unknown => {
       }
 
       current = current[segment];
-      continue;
-    }
-
-    if (typeof segment === 'string') {
+    } else if (typeof segment === 'string') {
       current = (current as Record<string, unknown>)[segment];
     }
   }

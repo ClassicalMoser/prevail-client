@@ -1,8 +1,8 @@
+import { PLAYER_CHOICE_EVENT_TYPE } from '@classicalmoser/prevail-rules/domain';
 import type {
   LegalPlayerChoiceOptions,
   PlayerChoiceEvent,
 } from '@classicalmoser/prevail-rules/domain';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@classicalmoser/prevail-rules/domain';
 
 /**
  * Forfeit remaining issue-command slots.
@@ -10,9 +10,9 @@ import { PLAYER_CHOICE_EVENT_TYPE } from '@classicalmoser/prevail-rules/domain';
  * forced `doneIssuingCommands` choice when no slot is issuable.
  */
 export function buildDoneIssuingSubmit(
-  options: LegalPlayerChoiceOptions | null,
+  options: LegalPlayerChoiceOptions | undefined,
 ): PlayerChoiceEvent | undefined {
-  if (options === null) {
+  if (options === undefined) {
     return undefined;
   }
   if (options.choiceType === 'doneIssuingCommands') {

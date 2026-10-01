@@ -1,14 +1,15 @@
+import { isSameUnitInstance } from '@classicalmoser/prevail-rules/domain';
 import type {
   Coordinate,
   GameState,
   LegalPlayerChoiceOptions,
 } from '@classicalmoser/prevail-rules/domain';
-import { isSameUnitInstance } from '@classicalmoser/prevail-rules/domain';
 import type {
   CellClickResult,
   SeatSelection,
 } from '@application/play/selection/core/types';
-import { toggleUnitOnActiveCard } from './toggleUnitOnActiveCard';
+import { supportKind } from './supportKind';
+import { toggleUnitOnActiveCategory } from './toggleUnitOnActiveCategory';
 import { unitAtCoordinate } from './unitAtCoordinate';
 
 export function handleSupportCellClick(args: {
@@ -21,38 +22,36 @@ export function handleSupportCellClick(args: {
   state: GameState;
 }): CellClickResult {
   const { coordinate, options, state } = args;
+  const support = options.assignUnitSupport;
   const selection: Extract<SeatSelection, { kind: 'assignUnitSupport' }> =
     args.selection.kind === 'assignUnitSupport'
       ? args.selection
       : {
           kind: 'assignUnitSupport',
-          activeCardId: options.unitSupportGrants.grants[0]?.card.id,
+          activeSupport: support.categories[0]?.unitSupport,
           assignments: [],
         };
 
-  if (selection.activeCardId === undefined) {
+  const activeSupport = selection.activeSupport;
+  if (activeSupport === undefined) {
     return { selection };
   }
-  const grant = options.unitSupportGrants.grants.find(
-    (g) => g.card.id === selection.activeCardId,
+  const category = support.categories.find(
+    (entry) => supportKind(entry.unitSupport) === supportKind(activeSupport),
   );
-  if (grant === undefined) {
+  if (category === undefined) {
     return { selection };
   }
 
-  const spaceUnit = unitAtCoordinate(
-    state,
-    coordinate,
-    options.unitSupportGrants.player,
-  );
+  const spaceUnit = unitAtCoordinate(state, coordinate, support.player);
   if (spaceUnit === undefined) {
     return { selection };
   }
-  const eligible = grant.eligibleUnits.some(
-    (u) => isSameUnitInstance(u, spaceUnit).result,
+  const eligible = category.eligibleUnits.some(
+    (unit) => isSameUnitInstance(unit, spaceUnit).result,
   );
   if (!eligible) {
     return { selection };
   }
-  return toggleUnitOnActiveCard({ selection, spaceUnit, grant });
+  return toggleUnitOnActiveCategory({ selection, spaceUnit, category });
 }

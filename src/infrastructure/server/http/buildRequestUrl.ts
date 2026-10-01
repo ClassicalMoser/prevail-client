@@ -22,10 +22,12 @@ function buildQueryString(query: Record<string, unknown>): string {
 /** Compose the absolute URL callers hand to {@link RouteFetch}. */
 export function buildRequestUrl(
   serverUrl: string,
-  routePath: string,
-  params: Record<string, unknown>,
-  query: Record<string, unknown>,
+  route: {
+    path: string;
+    params: Record<string, unknown>;
+    query: Record<string, unknown>;
+  },
 ): string {
-  const path = buildPath(routePath, params);
-  return `${serverUrl.replace(/\/$/u, '')}${path}${buildQueryString(query)}`;
+  const path = buildPath(route.path, route.params);
+  return `${serverUrl.replace(/\/$/u, '')}${path}${buildQueryString(route.query)}`;
 }

@@ -11,18 +11,18 @@ import type {
 } from '@kobalte/core/checkbox';
 import type { PolymorphicProps } from '@kobalte/core/polymorphic';
 import { CheckIcon } from 'lucide-solid';
+import { splitProps } from 'solid-js';
 import type { ComponentProps, JSX, ValidComponent } from 'solid-js';
 import { cx } from '@interface/lib';
-import { splitProps } from 'solid-js';
 
 /** Zaidan vega — https://zaidan.carere.dev/r/kobalte/checkbox.json */
-export type CheckboxProps<T extends ValidComponent = 'div'> = PolymorphicProps<
+type CheckboxProps<T extends ValidComponent = 'div'> = PolymorphicProps<
   T,
   CheckboxRootProps<T>
 > &
   Pick<ComponentProps<T>, 'class'>;
 
-export const Checkbox = <T extends ValidComponent = 'div'>(
+const Checkbox = <T extends ValidComponent = 'div'>(
   props: CheckboxProps<T>,
 ): JSX.Element => {
   const [local, others] = splitProps(props as CheckboxProps, ['class', 'id']);
@@ -55,11 +55,13 @@ export const Checkbox = <T extends ValidComponent = 'div'>(
   );
 };
 
-export type CheckboxLabelProps<T extends ValidComponent = 'label'> =
-  PolymorphicProps<T, KobalteCheckboxLabelProps<T>> &
-    Pick<ComponentProps<T>, 'class' | 'children'>;
+type CheckboxLabelProps<T extends ValidComponent = 'label'> = PolymorphicProps<
+  T,
+  KobalteCheckboxLabelProps<T>
+> &
+  Pick<ComponentProps<T>, 'class' | 'children'>;
 
-export const CheckboxLabel = <T extends ValidComponent = 'label'>(
+const CheckboxLabel = <T extends ValidComponent = 'label'>(
   props: CheckboxLabelProps<T>,
 ): JSX.Element => {
   const [local, others] = splitProps(props as CheckboxLabelProps, [
@@ -80,3 +82,5 @@ export const CheckboxLabel = <T extends ValidComponent = 'label'>(
     </CheckboxLabelPrimitive>
   );
 };
+
+export { type CheckboxProps, Checkbox, type CheckboxLabelProps, CheckboxLabel };

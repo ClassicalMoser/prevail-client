@@ -11,7 +11,6 @@ import { useAuth } from '@application/authContext';
 import { useCore } from '@application/coreContext';
 import { useGameSeat } from '@application/serverPortsContext';
 import type { GameSeatConnectionStatus } from '@ports';
-import type { Accessor } from 'solid-js';
 import {
   createEffect,
   createMemo,
@@ -19,12 +18,16 @@ import {
   onCleanup,
   untrack,
 } from 'solid-js';
+import type { Accessor } from 'solid-js';
 import {
   ingestFoldedGameState,
   ingestSeatSnapshot,
   subscribeRouteGame,
 } from './gameStateIngest';
-import type { PlayBoardCellView } from './playBoardProjection';
+import type {
+  PlayBoardCellView,
+  PlayBoardUnitView,
+} from './playBoardProjection';
 import type { CardEconomyView } from './cardEconomyFromState';
 import type { CombatContextView } from './combatContextFromState';
 import type { IssuedCommandView, PlayCardSlotView } from './playVisibility';
@@ -37,17 +40,12 @@ import { legalOptionsForSeat, resetStagedSelection } from './selection';
 import type { CellHighlight, ChoiceListItem, SeatSelection } from './selection';
 import { submitPlayerChoice } from './submitPlayerChoice';
 
-export type {
-  PlayBoardCellView,
-  PlayBoardUnitView,
-} from './playBoardProjection';
-
-export type UseSeatPlaySessionResult = {
+type UseSeatPlaySessionResult = {
   connectionStatus: Accessor<GameSeatConnectionStatus>;
   choiceRejected: Accessor<FailValidationResult | undefined>;
   choicePending: Accessor<boolean>;
   canRetry: Accessor<boolean>;
-  legalOptions: Accessor<LegalPlayerChoiceOptions | null>;
+  legalOptions: Accessor<LegalPlayerChoiceOptions | undefined>;
   selection: Accessor<SeatSelection>;
   canUndo: Accessor<boolean>;
   choiceItems: Accessor<ChoiceListItem[]>;
@@ -62,9 +60,11 @@ export type UseSeatPlaySessionResult = {
     opponent: PlayCardSlotView;
   }>;
   issuedCommands: Accessor<IssuedCommandView[]>;
-  remainingCommands: Accessor<Partial<Record<PlayerSide, Command[]>> | null>;
+  remainingCommands: Accessor<
+    Partial<Record<PlayerSide, Command[]>> | undefined
+  >;
   cardEconomy: Accessor<CardEconomyView>;
-  combatContext: Accessor<CombatContextView | null>;
+  combatContext: Accessor<CombatContextView | undefined>;
   boardCells: Accessor<Readonly<Partial<Record<string, PlayBoardCellView>>>>;
   canRefuseCommit: Accessor<boolean>;
   canDoneIssuing: Accessor<boolean>;
@@ -74,7 +74,7 @@ export type UseSeatPlaySessionResult = {
  * Solid wire-up for seat play: signals, memos, and session lifecycle.
  * Transport/fold → {@link createSeatStreamSession}; actions → {@link createSeatPlayActions}.
  */
-export function useSeatPlaySession(
+function useSeatPlaySession(
   gameId: Accessor<string>,
   side: Accessor<PlayerSide>,
 ): UseSeatPlaySessionResult {
@@ -97,7 +97,7 @@ export function useSeatPlaySession(
     PlayerChoiceEvent | undefined
   >();
   const [selection, setSelection] = createSignal<SeatSelection>(
-    resetStagedSelection(null),
+    resetStagedSelection(),
   );
   const [sendChoice, setSendChoice] = createSignal<
     ((choice: PlayerChoiceEvent) => boolean) | undefined
@@ -212,3 +212,10 @@ export function useSeatPlaySession(
     ...actions,
   };
 }
+
+export {
+  type PlayBoardCellView,
+  type PlayBoardUnitView,
+  type UseSeatPlaySessionResult,
+  useSeatPlaySession,
+};

@@ -12,10 +12,10 @@ import { selectionForOptions } from './selectionForOptions';
 
 /** Drop the draft and rebuild the default selection for the current options. */
 export function resetStagedSelection(
-  options: LegalPlayerChoiceOptions | null,
+  options?: LegalPlayerChoiceOptions,
   state?: GameState,
 ): SeatSelection {
-  if (options === null) {
+  if (options === undefined) {
     return emptySelection();
   }
   if (options.choiceType === 'issueCommand' && state !== undefined) {

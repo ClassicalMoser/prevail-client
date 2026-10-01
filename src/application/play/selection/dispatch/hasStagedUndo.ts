@@ -28,8 +28,9 @@ export function hasStagedUndo(selection: SeatSelection): boolean {
     }
     case 'assignUnitSupport': {
       return (
-        selection.assignments.some((a) => a.units.length > 0) ||
-        selection.activeCardId !== undefined
+        selection.assignments.some(
+          (assignment) => assignment.units.length > 0,
+        ) || selection.activeSupport !== undefined
       );
     }
     default: {

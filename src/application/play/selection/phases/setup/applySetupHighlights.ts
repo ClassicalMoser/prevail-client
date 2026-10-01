@@ -1,5 +1,5 @@
-import type { LegalPlayerChoiceOptions } from '@classicalmoser/prevail-rules/domain';
 import { unitFacings } from '@classicalmoser/prevail-rules/domain';
+import type { LegalPlayerChoiceOptions } from '@classicalmoser/prevail-rules/domain';
 import type { SeatSelection } from '@application/play/selection/core/types';
 import type { HighlightDraft } from '@application/play/selection/core/highlightDraft';
 
@@ -23,12 +23,12 @@ export function applySetupHighlights(
   for (const coordinate of options.setupUnits.coordinates) {
     if (placed.has(coordinate)) {
       cells[coordinate] = 'selected';
-      continue;
-    }
-    cells[coordinate] = 'legal';
-    if (selection.kind === 'setup' && selection.selectedUnit !== undefined) {
-      facingPickerCells.add(coordinate);
-      facingPickerFacings[coordinate] = unitFacings;
+    } else {
+      cells[coordinate] = 'legal';
+      if (selection.kind === 'setup' && selection.selectedUnit !== undefined) {
+        facingPickerCells.add(coordinate);
+        facingPickerFacings[coordinate] = unitFacings;
+      }
     }
   }
 }

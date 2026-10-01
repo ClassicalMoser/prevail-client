@@ -1,3 +1,8 @@
+import {
+  armyCompositionByMode,
+  armyCompositionInitiatives,
+  gameModeNames,
+} from '@classicalmoser/prevail-rules/domain';
 import type {
   Army,
   ArmyCompositionRules,
@@ -6,13 +11,8 @@ import type {
   UnitCount,
   UnitType,
 } from '@classicalmoser/prevail-rules/domain';
-import {
-  armyCompositionByMode,
-  armyCompositionInitiatives,
-  gameModeNames,
-} from '@classicalmoser/prevail-rules/domain';
-import type { Accessor } from 'solid-js';
 import { createEffect, createMemo, createSignal } from 'solid-js';
+import type { Accessor } from 'solid-js';
 import type { UseMutationResult } from '@tanstack/solid-query';
 import {
   useOwnedArmyByIdQuery,
@@ -21,23 +21,24 @@ import {
 import {
   canAddCommandCard,
   canAddUnitType,
+  maxCommandCardsForMode,
   maxCopiesForUnit,
 } from './armyEditLimits';
 import { validateArmyShape } from './validateArmyDraft';
 
-export const isGameModeName = (value: string): value is GameModeName =>
+const isGameModeName = (value: string): value is GameModeName =>
   (gameModeNames as readonly string[]).includes(value);
 
 /**
  * UI pairing of a persisted {@link Army} with a mode lens for composition
  * feedback. Mode compliance is not persisted and makes no long-term claim.
  */
-export interface ArmyDraft {
+interface ArmyDraft {
   army: Army;
   gameMode: GameModeName;
 }
 
-export interface ArmyBudgetProjection {
+interface ArmyBudgetProjection {
   rules: ArmyCompositionRules;
   totalCost: number;
   totalMorale: number;
@@ -45,7 +46,7 @@ export interface ArmyBudgetProjection {
   unitTypeSlotsUsed: number;
   unitTypeSlotsMax: number;
   commandCardCount: number;
-  commandCardMax: number | null;
+  commandCardMax: number | undefined;
   /** Which composition requirements are currently met (for status-bar highlighting). */
   satisfied: {
     cost: boolean;
@@ -56,7 +57,7 @@ export interface ArmyBudgetProjection {
   };
 }
 
-export interface UseArmyEditorResult {
+interface UseArmyEditorResult {
   isLoading: Accessor<boolean>;
   gameMode: Accessor<GameModeName | undefined>;
   draft: Accessor<Army | undefined>;
@@ -96,10 +97,7 @@ const projectBudget = (
     cardsByInitiative[card.initiative] =
       (cardsByInitiative[card.initiative] ?? 0) + 1;
   }
-  const commandCardMax =
-    rules.cardsPerInitiative === null
-      ? null
-      : rules.cardsPerInitiative * armyCompositionInitiatives.length;
+  const commandCardMax = maxCommandCardsForMode(mode);
 
   const byInitiativeSatisfied: Record<number, boolean> = {};
   for (const initiative of armyCompositionInitiatives) {
@@ -123,13 +121,14 @@ const projectBudget = (
         rules.minMoraleValue === null || totalMorale >= rules.minMoraleValue,
       unitTypes: army.units.length <= rules.maxUnitTypeCount,
       commandTotal:
-        commandCardMax === null || army.commandCards.length === commandCardMax,
+        commandCardMax === undefined ||
+        army.commandCards.length === commandCardMax,
       byInitiative: byInitiativeSatisfied,
     },
   };
 };
 
-export function useArmyEditor(
+function useArmyEditor(
   armyId: Accessor<string | undefined>,
   gameModeParam: Accessor<string | undefined>,
 ): UseArmyEditorResult {
@@ -244,9 +243,6 @@ export function useArmyEditor(
     update.mutate(shape.data);
   };
 
-  const maxCopiesFor = (unitType: UnitType): number =>
-    maxCopiesForUnit(unitType);
-
   const canAddUnit = (unitType: UnitType): boolean => {
     const current = draft();
     const mode = gameMode();
@@ -281,7 +277,7 @@ export function useArmyEditor(
     const existing = current.units.find((u) => u.unitType.id === unitType.id);
     const clamped = Math.max(0, Math.min(count, maxCopiesForUnit(unitType)));
 
-    let units: UnitCount[];
+    let units: UnitCount[] = current.units;
     if (clamped === 0) {
       units = current.units.filter((u) => u.unitType.id !== unitType.id);
     } else if (existing === undefined) {
@@ -380,7 +376,7 @@ export function useArmyEditor(
     budget,
     save,
     update,
-    maxCopiesFor,
+    maxCopiesFor: maxCopiesForUnit,
     canAddUnit,
     canAddCommand,
     setUnitCount,
@@ -389,3 +385,11 @@ export function useArmyEditor(
     removeCommandCard,
   };
 }
+
+export {
+  isGameModeName,
+  type ArmyDraft,
+  type ArmyBudgetProjection,
+  type UseArmyEditorResult,
+  useArmyEditor,
+};

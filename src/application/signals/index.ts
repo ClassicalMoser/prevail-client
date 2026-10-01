@@ -1,2 +1,4 @@
-export { useGreetMsg } from './greetMsg';
-export { useName } from './name';
+import { useGreetMsg } from './greetMsg';
+import { useName } from './name';
+
+export { useGreetMsg, useName };

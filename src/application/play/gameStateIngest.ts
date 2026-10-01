@@ -4,19 +4,19 @@ import type {
 } from '@classicalmoser/prevail-rules/domain';
 import type { SeatGameSnapshot } from './seatStreamSession';
 
-export interface GameStateIngestChange {
+interface GameStateIngestChange {
   gameId: string;
   gameMode: GameModeName;
   gameState: GameState;
 }
 
-export interface GameStateIngestPorts {
+interface GameStateIngestPorts {
   setSubscribedGame: (gameId: string, gameMode: GameModeName) => void;
   ingest: (change: GameStateIngestChange) => void;
 }
 
 /** Bind the store to a route id before the first snapshot arrives. */
-export function subscribeRouteGame(
+function subscribeRouteGame(
   ports: GameStateIngestPorts,
   gameId: string,
   gameMode: GameModeName,
@@ -25,7 +25,7 @@ export function subscribeRouteGame(
 }
 
 /** Authoritative seat snapshot → subscription + ingest. */
-export function ingestSeatSnapshot(
+function ingestSeatSnapshot(
   ports: GameStateIngestPorts,
   snapshot: SeatGameSnapshot,
 ): void {
@@ -38,9 +38,17 @@ export function ingestSeatSnapshot(
 }
 
 /** Folded mid-round event → ingest (subscription already set). */
-export function ingestFoldedGameState(
+function ingestFoldedGameState(
   ports: GameStateIngestPorts,
   change: GameStateIngestChange,
 ): void {
   ports.ingest(change);
 }
+
+export {
+  type GameStateIngestChange,
+  type GameStateIngestPorts,
+  subscribeRouteGame,
+  ingestSeatSnapshot,
+  ingestFoldedGameState,
+};

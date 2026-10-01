@@ -1,21 +1,21 @@
-import type {
-  GameState,
-  PlayerSide,
-} from '@classicalmoser/prevail-rules/domain';
 import {
   getHiddenPlayerCardState,
   getOwnedPlayerCardState,
 } from '@classicalmoser/prevail-rules/domain';
+import type {
+  GameState,
+  PlayerSide,
+} from '@classicalmoser/prevail-rules/domain';
 import { oppositeSide } from './playVisibility';
 
-export interface SideCardEconomy {
+interface SideCardEconomy {
   hand: number;
   played: number;
   discarded: number;
   burnt: number;
 }
 
-export interface CardEconomyView {
+interface CardEconomyView {
   you: SideCardEconomy;
   opponent: SideCardEconomy;
 }
@@ -42,7 +42,7 @@ const countsFromPiles = (piles: {
 /**
  * Seat-safe hand/pile counts for you and opponent (identities never exposed).
  */
-export function cardEconomyFromState(
+function cardEconomyFromState(
   state: GameState | undefined,
   humanSide: PlayerSide,
 ): CardEconomyView {
@@ -70,6 +70,13 @@ export function cardEconomyFromState(
   }
 }
 
-export function formatCardEconomyMeter(economy: SideCardEconomy): string {
+function formatCardEconomyMeter(economy: SideCardEconomy): string {
   return `Hand ${economy.hand} · Played ${economy.played} · Discard ${economy.discarded} · Burnt ${economy.burnt}`;
 }
+
+export {
+  type SideCardEconomy,
+  type CardEconomyView,
+  cardEconomyFromState,
+  formatCardEconomyMeter,
+};

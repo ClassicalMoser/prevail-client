@@ -69,6 +69,9 @@ importers:
       '@types/node':
         specifier: ^25.5.0
         version: 25.6.0
+      classicalmoser-oxlint-config:
+        specifier: link:../../classicalmoser-oxlint-config
+        version: link:../../classicalmoser-oxlint-config
       eslint:
         specifier: ^10.1.0
         version: 10.2.1(jiti@2.6.1)

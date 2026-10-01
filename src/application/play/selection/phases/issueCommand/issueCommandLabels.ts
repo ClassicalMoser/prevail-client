@@ -5,9 +5,9 @@ import type {
 import { formatCommandLabel } from '@application/play/playVisibility';
 
 export function issueCommandLabels(
-  options: LegalPlayerChoiceOptions | null,
+  options: LegalPlayerChoiceOptions | undefined,
 ): { index: number; label: string; command: Command }[] {
-  if (options === null || options.choiceType !== 'issueCommand') {
+  if (options === undefined || options.choiceType !== 'issueCommand') {
     return [];
   }
   return options.issueCommands.commands.map((command, index) => ({

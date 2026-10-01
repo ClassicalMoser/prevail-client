@@ -1,13 +1,13 @@
 import type { UnitFacing } from '@classicalmoser/prevail-rules/domain';
-import type { BoardCellView } from '@application/gameState';
 import { resolveUnitArtSrc } from '@application/gameState';
+import type { BoardCellView } from '@application/gameState';
 import type { PlayHighlights, SeatSelection } from './selection';
 
-export type PlayBoardUnitView = BoardCellView['units'][number] & {
+type PlayBoardUnitView = BoardCellView['units'][number] & {
   pending?: boolean;
 };
 
-export type PlayBoardCellView = Omit<BoardCellView, 'units'> & {
+type PlayBoardCellView = Omit<BoardCellView, 'units'> & {
   units: PlayBoardUnitView[];
   highlight?: 'legal' | 'selected';
   facingPicker?: boolean;
@@ -15,7 +15,7 @@ export type PlayBoardCellView = Omit<BoardCellView, 'units'> & {
 };
 
 /** Merge board cells with selection highlights and pending setup placements. */
-export function projectPlayBoardCells(args: {
+function projectPlayBoardCells(args: {
   baseCells: Readonly<Partial<Record<string, BoardCellView>>>;
   highlights: PlayHighlights;
   selection: SeatSelection;
@@ -24,15 +24,14 @@ export function projectPlayBoardCells(args: {
   const merged: Partial<Record<string, PlayBoardCellView>> = {};
 
   for (const [coord, view] of Object.entries(baseCells)) {
-    if (view === undefined) {
-      continue;
+    if (view !== undefined) {
+      merged[coord] = {
+        ...view,
+        highlight: hl.cells[coord],
+        facingPicker: hl.facingPickerCells.has(coord),
+        enabledFacings: hl.facingPickerFacings[coord],
+      };
     }
-    merged[coord] = {
-      ...view,
-      highlight: hl.cells[coord],
-      facingPicker: hl.facingPickerCells.has(coord),
-      enabledFacings: hl.facingPickerFacings[coord],
-    };
   }
 
   for (const [coord, highlight] of Object.entries(hl.cells)) {
@@ -86,3 +85,9 @@ export function projectPlayBoardCells(args: {
 
   return merged;
 }
+
+export {
+  type PlayBoardUnitView,
+  type PlayBoardCellView,
+  projectPlayBoardCells,
+};

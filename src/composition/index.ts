@@ -1,2 +1,4 @@
-export { AppShell } from './AppShell';
-export { initializeAppDependencies } from './dependencies';
+import { AppShell } from './AppShell';
+import { initializeAppDependencies } from './dependencies';
+
+export { AppShell, initializeAppDependencies };

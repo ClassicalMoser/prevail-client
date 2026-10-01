@@ -1,6 +1,6 @@
 import type { UnitFacing } from '@classicalmoser/prevail-rules/domain';
-import type { JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 import './unit.css';
 
 export const UnitComponent = (props: {

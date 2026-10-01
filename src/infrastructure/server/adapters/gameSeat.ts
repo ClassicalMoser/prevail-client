@@ -13,7 +13,9 @@ import type {
   GameSeatOutbound,
 } from '@ports';
 
-const contractForSide = (side: PlayerSide) =>
+const contractForSide = (
+  side: PlayerSide,
+): typeof whiteInGameWsContract | typeof blackInGameWsContract =>
   side === 'white' ? whiteInGameWsContract : blackInGameWsContract;
 
 const seatPath = (side: PlayerSide, gameId: string): string => {
@@ -110,7 +112,7 @@ const parseOutbound = (
   side: PlayerSide,
   raw: string,
 ): GameSeatOutbound | undefined => {
-  let json: unknown;
+  let json: unknown = undefined;
   try {
     json = JSON.parse(raw) as unknown;
   } catch {
@@ -217,7 +219,7 @@ export function createGameSeatAdapter(wsBaseUrl: string): GameSeat {
       const pendingMessages: GameSeatOutbound[] = [];
       let status: GameSeatConnectionStatus = 'connecting';
 
-      const setStatus = (next: GameSeatConnectionStatus) => {
+      const setStatus = (next: GameSeatConnectionStatus): void => {
         status = next;
         for (const listener of statusListeners) {
           listener(next);

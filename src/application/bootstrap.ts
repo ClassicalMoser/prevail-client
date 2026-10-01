@@ -2,10 +2,10 @@ import type {
   GameModeName,
   PlayerChoiceEvent,
 } from '@classicalmoser/prevail-rules/domain';
-import type { GameStateChange, PortResponse } from '@domain';
 import { useEngine } from '@domain';
-import type { GameStateProjections } from './gameState';
+import type { GameStateChange, PortResponse } from '@domain';
 import { createGameStateProjections } from './gameState';
+import type { GameStateProjections } from './gameState';
 import { useEngineServices } from './repositories';
 
 /**
@@ -15,7 +15,7 @@ import { useEngineServices } from './repositories';
  */
 const TEMP_STUB_GAME_ID = '00000000-0000-0000-0000-000000000000';
 
-export interface Core {
+interface Core {
   startNewGame: (gameMode: GameModeName) => Promise<void>;
   handlePlayerChoiceSubmission: (
     gameId: string,
@@ -29,12 +29,12 @@ export interface Core {
   game: GameStateProjections;
 }
 
-export const createCore = (): Core => {
+const createCore = (): Core => {
   const { ports, gameStateStore } = useEngineServices();
   const engine = useEngine(ports);
   const game = createGameStateProjections(gameStateStore);
 
-  const startNewGame = async (gameMode: GameModeName) => {
+  const startNewGame = async (gameMode: GameModeName): Promise<void> => {
     gameStateStore.setSubscribedGame(TEMP_STUB_GAME_ID, gameMode);
     await engine.startNewGame(gameMode);
   };
@@ -47,3 +47,5 @@ export const createCore = (): Core => {
     game,
   };
 };
+
+export { type Core, createCore };

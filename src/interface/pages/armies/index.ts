@@ -1,3 +1,5 @@
-export { ArmiesPage } from './ArmiesPage';
-export { ArmyEditorPage } from './ArmyEditorPage';
-export { NewArmyPage } from './NewArmyPage';
+import { ArmiesPage } from './ArmiesPage';
+import { ArmyEditorPage } from './ArmyEditorPage';
+import { NewArmyPage } from './NewArmyPage';
+
+export { ArmiesPage, ArmyEditorPage, NewArmyPage };

@@ -1,14 +1,14 @@
 import type { SeatSelection } from '@application';
 import type { Command } from '@classicalmoser/prevail-rules/domain';
 import { Button } from '@interface/components';
-import type { Accessor, JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { DraftControls } from './DraftControls';
 
 export function IssueCommandChoice(props: {
   issueCommands: Accessor<{ index: number; label: string; command: Command }[]>;
   selection: Accessor<SeatSelection>;
-  progress: Accessor<string | null>;
+  progress: Accessor<string | undefined>;
   canConfirm: Accessor<boolean>;
   canDoneIssuing: Accessor<boolean>;
   canUndo: Accessor<boolean>;
@@ -28,7 +28,7 @@ export function IssueCommandChoice(props: {
       <div class="flex flex-wrap gap-2">
         <For each={props.issueCommands()}>
           {(entry) => {
-            const selected = () => {
+            const selected = (): boolean => {
               const sel = props.selection();
               return (
                 sel.kind === 'issueCommand' && sel.command === entry.command

@@ -1,4 +1,12 @@
-export type { SeatSelection } from './seatSelection';
-export type { CellHighlight, PlayHighlights } from './playHighlights';
-export type { ChoiceListItem } from './choiceListItem';
-export type { CellClickResult } from './cellClickResult';
+import type { SeatSelection } from './seatSelection';
+import type { CellHighlight, PlayHighlights } from './playHighlights';
+import type { ChoiceListItem } from './choiceListItem';
+import type { CellClickResult } from './cellClickResult';
+
+export type {
+  SeatSelection,
+  CellHighlight,
+  PlayHighlights,
+  ChoiceListItem,
+  CellClickResult,
+};

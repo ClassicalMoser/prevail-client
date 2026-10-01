@@ -1,11 +1,11 @@
 import type { CertificationResults } from '@classicalmoser/prevail-contracts';
 import type { UnitType } from '@classicalmoser/prevail-rules/domain';
-import type { UseMutationResult } from '@tanstack/solid-query';
 import { useMutation, useQueryClient } from '@tanstack/solid-query';
+import type { UseMutationResult } from '@tanstack/solid-query';
 import { useUnitCards } from '@application/serverPortsContext';
 import { unitCardKeys } from '../keys';
 
-export function useCreateEmptyUnitCardMutation(): UseMutationResult<
+function useCreateEmptyUnitCardMutation(): UseMutationResult<
   string,
   Error,
   void
@@ -13,15 +13,17 @@ export function useCreateEmptyUnitCardMutation(): UseMutationResult<
   const unitCards = useUnitCards();
   const queryClient = useQueryClient();
 
-  return useMutation(() => ({
-    mutationFn: () => unitCards.createDraft(),
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: unitCardKeys.all });
-    },
-  }));
+  return useMutation(
+    (): { mutationFn: () => Promise<string>; onSettled: () => void } => ({
+      mutationFn: (): Promise<string> => unitCards.createDraft(),
+      onSettled: (): void => {
+        queryClient.invalidateQueries({ queryKey: unitCardKeys.all });
+      },
+    }),
+  );
 }
 
-export function useCreateUnitCardVersionMutation(): UseMutationResult<
+function useCreateUnitCardVersionMutation(): UseMutationResult<
   UnitType,
   Error,
   UnitType
@@ -29,18 +31,28 @@ export function useCreateUnitCardVersionMutation(): UseMutationResult<
   const unitCards = useUnitCards();
   const queryClient = useQueryClient();
 
-  return useMutation(() => ({
-    mutationFn: (card: UnitType) => unitCards.publishVersion(card),
-    onSettled: (_data, _error, card) => {
-      queryClient.invalidateQueries({ queryKey: unitCardKeys.all });
-      queryClient.invalidateQueries({
-        queryKey: unitCardKeys.detail(card.id),
-      });
-    },
-  }));
+  return useMutation(
+    (): {
+      mutationFn: (card: UnitType) => Promise<UnitType>;
+      onSettled: (
+        _data: UnitType | undefined,
+        _error: Error | null,
+        card: UnitType,
+      ) => void;
+    } => ({
+      mutationFn: (card: UnitType): Promise<UnitType> =>
+        unitCards.publishVersion(card),
+      onSettled: (_data, _error, card): void => {
+        queryClient.invalidateQueries({ queryKey: unitCardKeys.all });
+        queryClient.invalidateQueries({
+          queryKey: unitCardKeys.detail(card.id),
+        });
+      },
+    }),
+  );
 }
 
-export function useCertifyLatestUnitCardVersionsMutation(): UseMutationResult<
+function useCertifyLatestUnitCardVersionsMutation(): UseMutationResult<
   CertificationResults,
   Error,
   void
@@ -48,15 +60,21 @@ export function useCertifyLatestUnitCardVersionsMutation(): UseMutationResult<
   const unitCards = useUnitCards();
   const queryClient = useQueryClient();
 
-  return useMutation(() => ({
-    mutationFn: () => unitCards.certifyLatest(),
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: unitCardKeys.all });
-    },
-  }));
+  return useMutation(
+    (): {
+      mutationFn: () => Promise<CertificationResults>;
+      onSettled: () => void;
+    } => ({
+      mutationFn: (): Promise<CertificationResults> =>
+        unitCards.certifyLatest(),
+      onSettled: (): void => {
+        queryClient.invalidateQueries({ queryKey: unitCardKeys.all });
+      },
+    }),
+  );
 }
 
-export function useDeleteEmptyUnitCardsMutation(): UseMutationResult<
+function useDeleteEmptyUnitCardsMutation(): UseMutationResult<
   void,
   Error,
   void
@@ -64,22 +82,34 @@ export function useDeleteEmptyUnitCardsMutation(): UseMutationResult<
   const unitCards = useUnitCards();
   const queryClient = useQueryClient();
 
-  return useMutation(() => ({
-    mutationFn: () => unitCards.deleteEmpty(),
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: unitCardKeys.all });
-    },
-  }));
+  return useMutation(
+    (): { mutationFn: () => Promise<void>; onSettled: () => void } => ({
+      mutationFn: (): Promise<void> => unitCards.deleteEmpty(),
+      onSettled: (): void => {
+        queryClient.invalidateQueries({ queryKey: unitCardKeys.all });
+      },
+    }),
+  );
 }
 
-export function usePreviewUnitCardMutation(): UseMutationResult<
+function usePreviewUnitCardMutation(): UseMutationResult<
   string,
   Error,
   UnitType
 > {
   const unitCards = useUnitCards();
 
-  return useMutation(() => ({
-    mutationFn: (card: UnitType) => unitCards.preview(card),
-  }));
+  return useMutation(
+    (): { mutationFn: (card: UnitType) => Promise<string> } => ({
+      mutationFn: (card: UnitType): Promise<string> => unitCards.preview(card),
+    }),
+  );
 }
+
+export {
+  useCreateEmptyUnitCardMutation,
+  useCreateUnitCardVersionMutation,
+  useCertifyLatestUnitCardVersionsMutation,
+  useDeleteEmptyUnitCardsMutation,
+  usePreviewUnitCardMutation,
+};

@@ -1,8 +1,8 @@
+import { PLAYER_CHOICE_EVENT_TYPE } from '@classicalmoser/prevail-rules/domain';
 import type {
   LegalPlayerChoiceOptions,
   PlayerChoiceEvent,
 } from '@classicalmoser/prevail-rules/domain';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@classicalmoser/prevail-rules/domain';
 import type { SeatSelection } from '@application/play/selection/core/types';
 import { canConfirmAssignUnitSupport } from './canConfirmAssignUnitSupport';
 
@@ -21,7 +21,9 @@ export function buildAssignUnitSupportSubmit(
     eventType: PLAYER_CHOICE_EVENT_TYPE,
     choiceType: 'assignUnitSupport',
     eventNumber: options.expectedEventNumber,
-    player: options.unitSupportGrants.player,
-    assignments: selection.assignments.filter((a) => a.units.length > 0),
+    player: options.assignUnitSupport.player,
+    assignments: selection.assignments.filter(
+      (assignment) => assignment.units.length > 0,
+    ),
   };
 }

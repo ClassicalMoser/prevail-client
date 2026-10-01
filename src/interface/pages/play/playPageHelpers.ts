@@ -4,14 +4,14 @@ import type {
   UnitInstance,
 } from '@classicalmoser/prevail-rules/domain';
 
-export function parseSide(raw: string): PlayerSide | undefined {
+function parseSide(raw: string): PlayerSide | undefined {
   if (raw === 'white' || raw === 'black') {
     return raw;
   }
   return undefined;
 }
 
-export function isSelectedSetupUnit(
+function isSelectedSetupUnit(
   selected: UnitInstance | undefined,
   unit: UnitInstance,
 ): boolean {
@@ -47,7 +47,7 @@ const STEP_LABELS: Record<string, string> = {
 };
 
 /** Engine phase/step for tooltips / debug. */
-export function formatPhase(summary: PhaseSummary | undefined): string {
+function formatPhase(summary: PhaseSummary | undefined): string {
   if (summary === undefined) {
     return '—';
   }
@@ -61,7 +61,7 @@ const titleCaseCamel = (value: string): string =>
   value.replaceAll(/([A-Z])/gu, ' $1').replace(/^./u, (c) => c.toUpperCase());
 
 /** Human-readable phase framing for the play header. */
-export function humanPhaseLabel(summary: PhaseSummary | undefined): string {
+function humanPhaseLabel(summary: PhaseSummary | undefined): string {
   if (summary === undefined) {
     return '—';
   }
@@ -92,11 +92,11 @@ const CHOICE_TITLES: Record<string, string> = {
   chooseWhetherToRetreat: 'Retreat?',
 };
 
-export function humanChoiceTitle(choiceType: string): string {
+function humanChoiceTitle(choiceType: string): string {
   return CHOICE_TITLES[choiceType] ?? titleCaseCamel(choiceType);
 }
 
-export function formatPressureChip(args: {
+function formatPressureChip(args: {
   routedCount: number;
   lostCommanders: readonly PlayerSide[];
 }): string | undefined {
@@ -109,3 +109,12 @@ export function formatPressureChip(args: {
   }
   return parts.length > 0 ? parts.join(' · ') : undefined;
 }
+
+export {
+  parseSide,
+  isSelectedSetupUnit,
+  formatPhase,
+  humanPhaseLabel,
+  humanChoiceTitle,
+  formatPressureChip,
+};

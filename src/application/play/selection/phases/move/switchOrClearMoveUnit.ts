@@ -30,14 +30,9 @@ export function switchOrClearMoveUnit(args: {
     return undefined;
   }
   if (unitKey(otherUnit.unit) === unitKey(moveSelection.unit.unit)) {
-    return {
-      selection: {
-        kind: 'moveUnit',
-        unit: undefined,
-        destinations: [],
-        pendingDestination: undefined,
-      },
-    };
+    // Same hex as the selected unit: stay put / rotate in place via destination
+    // Staging (legal moves include the origin). Do not clear selection.
+    return undefined;
   }
   return {
     selection: {

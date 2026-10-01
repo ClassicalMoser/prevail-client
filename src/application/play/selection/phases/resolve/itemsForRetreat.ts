@@ -1,7 +1,7 @@
 import type { LegalPlayerChoiceOptions } from '@classicalmoser/prevail-rules/domain';
 import type { ChoiceListItem } from '@application/play/selection/core/types';
 
-export function itemsForRetreatOption(
+function itemsForRetreatOption(
   options: Extract<
     LegalPlayerChoiceOptions,
     { choiceType: 'chooseRetreatOption' }
@@ -14,7 +14,7 @@ export function itemsForRetreatOption(
   }));
 }
 
-export function itemsForWhetherToRetreat(
+function itemsForWhetherToRetreat(
   options: Extract<
     LegalPlayerChoiceOptions,
     { choiceType: 'chooseWhetherToRetreat' }
@@ -26,3 +26,5 @@ export function itemsForWhetherToRetreat(
     event,
   }));
 }
+
+export { itemsForRetreatOption, itemsForWhetherToRetreat };

@@ -1,5 +1,5 @@
-export { useEngine } from './engine';
-export type {
+import { useEngine } from './engine';
+import type {
   EnginePorts,
   EventStreamStorage,
   GameStateChange,
@@ -8,3 +8,14 @@ export type {
   PortResponse,
   RoundSnapshotStorage,
 } from '@classicalmoser/prevail-rules/application';
+
+export {
+  useEngine,
+  type EnginePorts,
+  type EventStreamStorage,
+  type GameStateChange,
+  type GameStateSubscriber,
+  type GameStorage,
+  type PortResponse,
+  type RoundSnapshotStorage,
+};

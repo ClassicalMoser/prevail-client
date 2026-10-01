@@ -1,3 +1,4 @@
+import { Show } from 'solid-js';
 import type { JSX } from 'solid-js';
 import { cx } from '@interface/lib';
 
@@ -17,8 +18,8 @@ export const FormField = (props: {
       {props.label}
     </span>
     {props.children}
-    {props.description !== undefined ? (
+    <Show when={props.description !== undefined}>
       <p class="text-muted-foreground text-xs">{props.description}</p>
-    ) : null}
+    </Show>
   </label>
 );

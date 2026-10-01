@@ -1,8 +1,8 @@
-import type { GameOutcome } from '@application';
 import { gameOutcomeDetail, gameOutcomeHeadline } from '@application';
+import type { GameOutcome } from '@application';
 import type { PlayerSide } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 
 /** Endgame banner for the play rail / overlay. */
 export function PlayGameOverBanner(props: {

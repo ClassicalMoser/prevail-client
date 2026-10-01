@@ -1,12 +1,13 @@
 import type { LegalPlayerChoiceOptions } from '@classicalmoser/prevail-rules/domain';
 import type { SeatSelection } from '@application';
 
+/** Copy for the rout-discard penalty, or undefined when that choice is not active. */
 export function routDiscardHint(
-  options: LegalPlayerChoiceOptions | null,
+  options: LegalPlayerChoiceOptions | undefined,
   selection: SeatSelection,
-): string | null {
+): string | undefined {
   if (options?.choiceType !== 'chooseRoutDiscard') {
-    return null;
+    return undefined;
   }
   const need = options.routDiscard.numberToDiscard;
   const have = options.routDiscard.cardIds.length;

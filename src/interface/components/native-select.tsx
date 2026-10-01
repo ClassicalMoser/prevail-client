@@ -1,14 +1,14 @@
 import { ChevronDown } from 'lucide-solid';
+import { mergeProps, splitProps } from 'solid-js';
 import type { ComponentProps, JSX } from 'solid-js';
 import { cx } from '@interface/lib';
-import { mergeProps, splitProps } from 'solid-js';
 
 /** Zaidan vega — https://zaidan.carere.dev/r/kobalte/native-select.json */
-export type NativeSelectProps = ComponentProps<'select'> & {
+type NativeSelectProps = ComponentProps<'select'> & {
   size?: 'sm' | 'default';
 };
 
-export const NativeSelect = (props: NativeSelectProps): JSX.Element => {
+const NativeSelect = (props: NativeSelectProps): JSX.Element => {
   const mergedProps = mergeProps({ size: 'default' }, props);
   const [local, others] = splitProps(mergedProps, ['class', 'size']);
 
@@ -35,11 +35,11 @@ export const NativeSelect = (props: NativeSelectProps): JSX.Element => {
   );
 };
 
-export const NativeSelectOption = (
-  props: ComponentProps<'option'>,
-): JSX.Element => <option data-slot="native-select-option" {...props} />;
+const NativeSelectOption = (props: ComponentProps<'option'>): JSX.Element => (
+  <option data-slot="native-select-option" {...props} />
+);
 
-export const NativeSelectOptGroup = (
+const NativeSelectOptGroup = (
   props: ComponentProps<'optgroup'>,
 ): JSX.Element => {
   const [local, others] = splitProps(props, ['class']);
@@ -51,4 +51,11 @@ export const NativeSelectOptGroup = (
       {...others}
     />
   );
+};
+
+export {
+  type NativeSelectProps,
+  NativeSelect,
+  NativeSelectOption,
+  NativeSelectOptGroup,
 };

@@ -4,8 +4,8 @@ import {
 } from '@application';
 import type { CombatContextView } from '@application';
 import type { PlayerSide } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 
 function commitmentLine(
   label: string,
@@ -23,7 +23,7 @@ function commitmentLine(
 
 /** Active melee engagement + commitment status for the seat rail. */
 export function CombatContextPanel(props: {
-  context: Accessor<CombatContextView | null>;
+  context: Accessor<CombatContextView | undefined>;
   humanSide: Accessor<PlayerSide>;
 }): JSX.Element {
   const youLabel = (): string =>

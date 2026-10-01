@@ -1,10 +1,10 @@
-import type {
-  Coordinate,
-  GameState,
-} from '@classicalmoser/prevail-rules/domain';
 import {
   getLegalRangedAttackSupporters,
   getLegalRangedAttackTargets,
+} from '@classicalmoser/prevail-rules/domain';
+import type {
+  Coordinate,
+  GameState,
 } from '@classicalmoser/prevail-rules/domain';
 import { unitKey } from '@application/play/selection/core';
 import type {

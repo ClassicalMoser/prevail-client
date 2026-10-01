@@ -4,10 +4,9 @@ import type { JSX } from 'solid-js';
 
 const extractCSSregex = /((?:--)?\w+(?:-\w+)*)\s*:\s*([^;]*)/gu;
 
-export function stringStyleToObject(style: string): JSX.CSSProperties {
+function stringStyleToObject(style: string): JSX.CSSProperties {
   const object: Record<string, string> = {};
-  let match: RegExpExecArray | null;
-  match = extractCSSregex.exec(style);
+  let match = extractCSSregex.exec(style);
   while (match) {
     object[match[1]] = match[2];
     match = extractCSSregex.exec(style);
@@ -15,16 +14,16 @@ export function stringStyleToObject(style: string): JSX.CSSProperties {
   return object;
 }
 
-export function combineStyle(a: string, b: string): string;
-export function combineStyle(
+function combineStyle(a: string, b: string): string;
+function combineStyle(
   a: JSX.CSSProperties | undefined,
   b: JSX.CSSProperties | undefined,
 ): JSX.CSSProperties;
-export function combineStyle(
+function combineStyle(
   a: JSX.CSSProperties | string | undefined,
   b: JSX.CSSProperties | string | undefined,
 ): JSX.CSSProperties;
-export function combineStyle(
+function combineStyle(
   a: JSX.CSSProperties | string | undefined,
   b: JSX.CSSProperties | string | undefined,
 ): JSX.CSSProperties | string {
@@ -42,3 +41,5 @@ export function combineStyle(
 
   return { ...aString, ...bString };
 }
+
+export { stringStyleToObject, combineStyle };

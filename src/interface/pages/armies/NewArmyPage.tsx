@@ -1,7 +1,7 @@
 import { isGameModeName, useCreateOwnedArmyMutation } from '@application';
 import { useNavigate, useParams } from '@tanstack/solid-router';
-import type { JSX } from 'solid-js';
 import { createSignal, onMount, Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 
 /** Creates an owned army, then opens the editor under the route mode lens. */
 export function NewArmyPage(): JSX.Element {

@@ -10,8 +10,8 @@ import {
   buttonVariants,
 } from '@interface/components';
 import { Link } from '@tanstack/solid-router';
-import type { JSX } from 'solid-js';
 import { For, Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 
 export function ArmiesPage(): JSX.Element {
   const armies = useOwnedArmiesQuery();

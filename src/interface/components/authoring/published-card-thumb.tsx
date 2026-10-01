@@ -1,10 +1,10 @@
-import type { PublishedCardKind } from '@interface/lib';
 import { cx } from '@interface/lib';
-import type { JSX } from 'solid-js';
+import type { PublishedCardKind } from '@interface/lib';
 import { createSignal, onCleanup, Show } from 'solid-js';
+import type { JSX } from 'solid-js';
 import { AnchoredPublishedCardPreview } from './anchored-published-card-preview';
-import type { PublishedCardFaceSize } from './published-card-face';
 import { PublishedCardFace } from './published-card-face';
+import type { PublishedCardFaceSize } from './published-card-face';
 
 /**
  * Compact card tile with a larger preview on hover / keyboard focus.
@@ -33,7 +33,7 @@ export const PublishedCardThumb = (props: {
   children?: JSX.Element;
 }): JSX.Element => {
   const [anchor, setAnchor] = createSignal<DOMRect | undefined>();
-  let dismissScroll: (() => void) | undefined;
+  let dismissScroll: (() => void) | undefined = undefined;
 
   const clearPreview = (): void => {
     setAnchor(undefined);
@@ -52,7 +52,7 @@ export const PublishedCardThumb = (props: {
     };
     window.addEventListener('scroll', dismiss, true);
     window.addEventListener('resize', dismiss);
-    dismissScroll = () => {
+    dismissScroll = (): void => {
       window.removeEventListener('scroll', dismiss, true);
       window.removeEventListener('resize', dismiss);
     };

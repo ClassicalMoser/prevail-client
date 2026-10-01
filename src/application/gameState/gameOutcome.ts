@@ -1,8 +1,8 @@
+import { getGameOverWinner } from '@classicalmoser/prevail-rules/domain';
 import type {
   GameState,
   PlayerSide,
 } from '@classicalmoser/prevail-rules/domain';
-import { getGameOverWinner } from '@classicalmoser/prevail-rules/domain';
 
 /**
  * Client-facing endgame readout from authoritative state.
@@ -13,14 +13,12 @@ import { getGameOverWinner } from '@classicalmoser/prevail-rules/domain';
  * Both `ending` and `finished` carry the determined winner so the seat UI can
  * show Victory / Defeat / Draw immediately.
  */
-export type GameOutcome =
+type GameOutcome =
   | { status: 'ongoing' }
   | { status: 'ending'; winner: PlayerSide | null }
   | { status: 'finished'; winner: PlayerSide | null };
 
-export function gameOutcomeFromState(
-  state: GameState | undefined,
-): GameOutcome {
+function gameOutcomeFromState(state: GameState | undefined): GameOutcome {
   if (state === undefined) {
     return { status: 'ongoing' };
   }
@@ -41,7 +39,7 @@ function outcomeWinner(
 }
 
 /** Seat-relative short title for banners / header. */
-export function gameOutcomeHeadline(
+function gameOutcomeHeadline(
   outcome: GameOutcome,
   humanSide: PlayerSide,
 ): string | undefined {
@@ -56,7 +54,7 @@ export function gameOutcomeHeadline(
 }
 
 /** Seat-relative supporting line. */
-export function gameOutcomeDetail(
+function gameOutcomeDetail(
   outcome: GameOutcome,
   humanSide: PlayerSide,
 ): string | undefined {
@@ -80,3 +78,10 @@ export function gameOutcomeDetail(
   }
   return `${winner} wins.`;
 }
+
+export {
+  type GameOutcome,
+  gameOutcomeFromState,
+  gameOutcomeHeadline,
+  gameOutcomeDetail,
+};

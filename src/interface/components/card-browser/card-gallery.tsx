@@ -1,15 +1,15 @@
 import { cardSvgUrl } from '@interface/lib';
 import type { PublishedCardKind } from '@interface/lib';
-import type { Accessor, JSX } from 'solid-js';
 import { For } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 
-export interface CardGalleryItem {
+interface CardGalleryItem {
   id: string;
   name: string;
   version: string;
 }
 
-export const CardGallery = (props: {
+const CardGallery = (props: {
   cards: Accessor<readonly CardGalleryItem[] | undefined>;
   kind: PublishedCardKind;
 }): JSX.Element => (
@@ -34,3 +34,5 @@ export const CardGallery = (props: {
     </For>
   </ul>
 );
+
+export { type CardGalleryItem, CardGallery };

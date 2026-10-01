@@ -1,9 +1,9 @@
+import { PLAYER_CHOICE_EVENT_TYPE } from '@classicalmoser/prevail-rules/domain';
 import type {
   Coordinate,
   LegalPlayerChoiceOptions,
   UnitFacing,
 } from '@classicalmoser/prevail-rules/domain';
-import { PLAYER_CHOICE_EVENT_TYPE } from '@classicalmoser/prevail-rules/domain';
 import { cloneDraft } from '@application/authoring';
 import { placementForCoordinateAndFacing } from '@application/play/selection/core';
 import type {

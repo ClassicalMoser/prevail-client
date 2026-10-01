@@ -1,9 +1,9 @@
+import { getLegalUnitMoves } from '@classicalmoser/prevail-rules/domain';
 import type {
   GameState,
   UnitPlacement,
   UnitWithPlacement,
 } from '@classicalmoser/prevail-rules/domain';
-import { getLegalUnitMoves } from '@classicalmoser/prevail-rules/domain';
 import { cloneDraft } from '@application/authoring';
 
 export function legalDestinationsForUnit(

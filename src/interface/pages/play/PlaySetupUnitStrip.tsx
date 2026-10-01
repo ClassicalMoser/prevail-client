@@ -1,9 +1,9 @@
-import type { SeatSelection } from '@application';
 import { setupUnitsByType } from '@application';
+import type { SeatSelection } from '@application';
 import type { UnitInstance } from '@classicalmoser/prevail-rules/domain';
 import { PublishedCardThumb } from '@interface/components';
-import type { Accessor, JSX } from 'solid-js';
 import { createMemo, For, Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 
 /**
  * Setup units — one face per type; dock enlarge follows peek hit targets.
@@ -32,7 +32,7 @@ export function PlaySetupUnitStrip(props: {
         <div class="play-hand__row">
           <For each={groups()}>
             {(group) => {
-              const selected = () => {
+              const selected = (): boolean => {
                 const sel = props.selection();
                 return (
                   sel.kind === 'setup' &&
@@ -53,7 +53,7 @@ export function PlaySetupUnitStrip(props: {
                       id={group.typeId}
                       version={group.version}
                       name={group.name}
-                      size="xs"
+                      size="hand"
                       hideCaption
                       frame="bare"
                       disableHoverPreview

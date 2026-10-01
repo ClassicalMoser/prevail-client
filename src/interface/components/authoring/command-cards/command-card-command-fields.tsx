@@ -1,10 +1,10 @@
-import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
 import {
   commandSizes,
   commandTypes,
 } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor, JSX } from 'solid-js';
+import type { CommandCard } from '@classicalmoser/prevail-rules/domain';
 import { For } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { FormField } from '@interface/form-field';
 import { Input } from '@interface/input';
 import { NativeSelect } from '@interface/native-select';

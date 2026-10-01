@@ -5,7 +5,7 @@ import type {
 } from '@classicalmoser/prevail-rules/domain';
 import { patchEventNumber, preflightPlayerChoice } from './selection';
 
-export interface SubmitPlayerChoiceDeps {
+interface SubmitPlayerChoiceDeps {
   choicePending: () => boolean;
   readGameState: () => GameState | undefined;
   sendChoice: () => ((choice: PlayerChoiceEvent) => boolean) | undefined;
@@ -18,7 +18,7 @@ export interface SubmitPlayerChoiceDeps {
  * Prefight + send a player choice. Keeps draft until accept/reject;
  * unlocks pending when the socket cannot send.
  */
-export function submitPlayerChoice(
+function submitPlayerChoice(
   deps: SubmitPlayerChoiceDeps,
   choice: PlayerChoiceEvent,
 ): void {
@@ -62,3 +62,5 @@ export function submitPlayerChoice(
     });
   }
 }
+
+export { type SubmitPlayerChoiceDeps, submitPlayerChoice };

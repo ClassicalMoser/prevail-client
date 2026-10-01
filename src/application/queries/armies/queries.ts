@@ -1,20 +1,25 @@
 import type { Army } from '@classicalmoser/prevail-rules/domain';
 import type { Accessor } from 'solid-js';
-import type { UseQueryResult } from '@tanstack/solid-query';
 import { useQuery } from '@tanstack/solid-query';
+import type { UseQueryResult } from '@tanstack/solid-query';
 import { useArmies } from '@application/serverPortsContext';
 import { armyKeys } from '../keys';
 
-export function useOwnedArmiesQuery(): UseQueryResult<Army[], Error> {
+function useOwnedArmiesQuery(): UseQueryResult<Army[], Error> {
   const armies = useArmies();
 
-  return useQuery(() => ({
-    queryKey: armyKeys.all,
-    queryFn: () => armies.list(),
-  }));
+  return useQuery(
+    (): {
+      queryKey: readonly ['armies', 'list', 'owned'];
+      queryFn: () => Promise<Army[]>;
+    } => ({
+      queryKey: armyKeys.all,
+      queryFn: (): Promise<Army[]> => armies.list(),
+    }),
+  );
 }
 
-export function useOwnedArmyByIdQuery(
+function useOwnedArmyByIdQuery(
   id: Accessor<string | undefined>,
   options?: { enabled?: Accessor<boolean> },
 ): UseQueryResult<Army, Error> {
@@ -35,3 +40,5 @@ export function useOwnedArmyByIdQuery(
     };
   });
 }
+
+export { useOwnedArmiesQuery, useOwnedArmyByIdQuery };

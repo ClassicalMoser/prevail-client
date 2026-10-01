@@ -1,8 +1,8 @@
 import type { UseSeatPlaySessionResult } from '@application';
 import type { UnitInstance } from '@classicalmoser/prevail-rules/domain';
 import { Button } from '@interface/components';
-import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { humanChoiceTitle } from '../playPageHelpers';
 import { ChoiceListButtons } from './ChoiceListButtons';
 import { CommitChoice } from './CommitChoice';
@@ -18,10 +18,10 @@ export function PlayChoicePanel(props: {
   session: UseSeatPlaySessionResult;
   setupUnits: Accessor<UnitInstance[]>;
   awaitingCommander: Accessor<boolean>;
-  commitHint: Accessor<string | null>;
-  routDiscardHint: Accessor<string | null>;
-  assignUnitSupportHint: Accessor<string | null>;
-  boardProgress: Accessor<string | null>;
+  commitHint: Accessor<string | undefined>;
+  routDiscardHint: Accessor<string | undefined>;
+  assignUnitSupportHint: Accessor<string | undefined>;
+  boardProgress: Accessor<string | undefined>;
 }): JSX.Element {
   return (
     <Show when={props.session.legalOptions()}>

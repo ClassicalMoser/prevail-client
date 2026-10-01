@@ -21,8 +21,13 @@ function restrictionHint(command: Command): string {
   return parts.length > 0 ? parts.join(' · ') : 'no restrictions';
 }
 
-/** Progress copy for issue / move / ranged board drafts. */
-export function boardProgressHint(selection: SeatSelection): string | null {
+/**
+ * Progress copy for issue, move, and ranged drafts.
+ * Undefined for selections that do not use the board-progress line.
+ */
+export function boardProgressHint(
+  selection: SeatSelection,
+): string | undefined {
   if (selection.kind === 'issueCommand' && selection.command !== undefined) {
     if (selection.legalUnitCoordinates.length === 0) {
       return `No eligible units (${restrictionHint(selection.command)})`;
@@ -58,5 +63,5 @@ export function boardProgressHint(selection: SeatSelection): string | null {
       ? `Target locked · ${selection.supporters.length} supporter(s) — Confirm`
       : 'Target locked · optional supporters, then Confirm';
   }
-  return null;
+  return undefined;
 }

@@ -9,7 +9,7 @@ export function createRoutActions(deps: SeatPlayActionsDeps): {
     onToggleRoutCard: (cardId) => {
       unlockDraft(deps);
       const options = deps.legalOptions();
-      if (options === null) {
+      if (options === undefined) {
         return;
       }
       const result = toggleRoutDiscardCard(options, deps.selection(), cardId);

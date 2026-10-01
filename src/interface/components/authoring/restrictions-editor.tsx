@@ -1,7 +1,7 @@
-import type { Restrictions, Trait } from '@classicalmoser/prevail-rules/domain';
 import { traits } from '@classicalmoser/prevail-rules/domain';
-import type { Accessor, JSX } from 'solid-js';
+import type { Restrictions, Trait } from '@classicalmoser/prevail-rules/domain';
 import { For } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { Checkbox } from '../checkbox';
 import { FormField } from '../form-field';
 import { Input } from '../input';
