@@ -33,3 +33,5 @@ This project uses **Solid**, not React. React-style patterns compile but **silen
 - [ ] No `({ foo, bar })` component params
 - [ ] No `const x = props.foo` or `const x = signal()` at top of component body (except hook/store refs like `const query = useQuery(...)`)
 - [ ] Dumb components only see `Accessor<T>` props for changing data
+
+The same rules are stated in [`STYLE.md`](../../STYLE.md), [`DESIGN.md`](../../DESIGN.md), and [`src/ARCHITECTURE.md`](../../src/ARCHITECTURE.md). All four copies stay.

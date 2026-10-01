@@ -2,6 +2,8 @@
 
 This document describes the **target** layering for Prevail client code. It also states plainly where the repo **does not yet** match that target.
 
+Code shape is [`STYLE.md`](../STYLE.md). The same principles, the provider stack, and this status are restated in [`DESIGN.md`](../DESIGN.md). Layers are [`LAYERS.md`](../LAYERS.md). Import edges are [`boundaries.ts`](../boundaries.ts). Keep this file and `DESIGN.md` in agreement when either changes.
+
 ## Target principles
 
 ### 1. Interface stays dumb
