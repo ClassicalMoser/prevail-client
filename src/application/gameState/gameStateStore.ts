@@ -1,9 +1,5 @@
-import type { GameStateChange } from '@classicalmoser/prevail-rules/application';
-import type {
-  GameModeName,
-  GameState,
-} from '@classicalmoser/prevail-rules/domain';
-import type { GameStateSubscriber } from '@domain';
+import type { GameModeName, GameState } from '@classicalmoser/prevail-rules/domain';
+import type { GameStateChange, GameStateSubscriber } from '@domain';
 import { createMemo } from 'solid-js';
 import type { Accessor } from 'solid-js';
 import { createStore, reconcile, unwrap } from 'solid-js/store';
@@ -39,10 +35,12 @@ interface GameStateStore {
 function reconcileStoredGameState(
   next: GameState,
 ): (state: GameState | undefined) => GameState {
-  return reconcile(next, {
+  const options = {
     // oxlint-disable-next-line unicorn/no-null -- ReconcileOptions.key is string | null
     key: null,
-  });
+  };
+  const reconciler = reconcile(next, options);
+  return reconciler;
 }
 
 interface StoreShape {
@@ -118,7 +116,7 @@ const createGameStateStore = (): GameStateStore => {
   const gameId: Accessor<string> = createMemo(() => store.gameId);
   const gameMode: Accessor<GameModeName> = createMemo(() => store.gameMode);
 
-  return {
+  const storeValue: GameStateStore = {
     setSubscribedGame,
     ingest,
     clear,
@@ -127,6 +125,7 @@ const createGameStateStore = (): GameStateStore => {
     gameMode,
     engineSubscriber,
   };
+  return storeValue;
 };
 
 /**
@@ -134,7 +133,9 @@ const createGameStateStore = (): GameStateStore => {
  * Store proxies break array membership / trait checks in rules code.
  */
 function plainGameState(state: GameState): GameState {
-  return structuredClone(unwrap(state));
+  const unwrapped = unwrap(state);
+  const plain = structuredClone(unwrapped);
+  return plain;
 }
 
 export {

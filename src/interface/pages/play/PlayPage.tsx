@@ -148,14 +148,13 @@ export function PlayPage(): JSX.Element {
         {(humanSide) => (
           <>
             <PlayHeader
-              gameId={gameId}
               humanSide={humanSide}
               session={session}
               waitHint={waitHintText}
               hasGameState={core.game.hasGameState}
               roundNumber={core.game.roundNumber}
-              initiative={core.game.initiative}
-              phaseSummary={core.game.phaseSummary}
+              initiativeLabel={core.game.initiativeLabel}
+              phaseLabel={core.game.phaseLabel}
               outcome={core.game.outcome}
               pressure={pressure}
             />

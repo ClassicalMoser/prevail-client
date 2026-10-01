@@ -1,3 +1,4 @@
+import { phaseLabel } from '@application';
 import type { PhaseSummary } from '@application';
 import {
   Card,
@@ -10,13 +11,8 @@ import { Show } from 'solid-js';
 import type { Accessor, JSX } from 'solid-js';
 
 function formatPhaseSummary(summary: PhaseSummary | undefined): string {
-  if (summary === undefined) {
-    return '—';
-  }
-  if (summary.kind === 'none') {
-    return 'None (pre-phase)';
-  }
-  return `${summary.phase} / ${summary.step}`;
+  const label = phaseLabel(summary);
+  return label;
 }
 
 export const GameStatus = (props: {

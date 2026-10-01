@@ -1,26 +1,20 @@
-import { gameOutcomeHeadline } from '@application';
-import type {
-  GameOutcome,
-  PhaseSummary,
-  UseSeatPlaySessionResult,
-} from '@application';
+import { gameOutcomeHeadline, playerSideLabel } from '@application';
+import type { GameOutcome, UseSeatPlaySessionResult } from '@application';
 import type { PlayerSide } from '@classicalmoser/prevail-rules/domain';
 import { Button } from '@interface/components';
 import { Link } from '@tanstack/solid-router';
 import { X } from 'lucide-solid';
 import { Show } from 'solid-js';
 import type { Accessor, JSX } from 'solid-js';
-import { formatPhase, humanPhaseLabel } from './playPageHelpers';
 
 export function PlayHeader(props: {
-  gameId: Accessor<string>;
   humanSide: Accessor<PlayerSide>;
   session: UseSeatPlaySessionResult;
   waitHint: Accessor<string | undefined>;
   hasGameState: Accessor<boolean>;
   roundNumber: Accessor<number | undefined>;
-  initiative: Accessor<PlayerSide | undefined>;
-  phaseSummary: Accessor<PhaseSummary | undefined>;
+  initiativeLabel: Accessor<string | undefined>;
+  phaseLabel: Accessor<string>;
   outcome: Accessor<GameOutcome>;
   pressure: Accessor<string | undefined>;
 }): JSX.Element {
@@ -32,14 +26,14 @@ export function PlayHeader(props: {
       <Show when={props.hasGameState()}>
         <span
           class="play-header__phase text-foreground text-xs"
-          title={`${props.gameId()} · ${formatPhase(props.phaseSummary())}`}
+          title={props.phaseLabel()}
         >
-          R{props.roundNumber() ?? '—'} · {props.initiative() ?? '—'} ·{' '}
-          {humanPhaseLabel(props.phaseSummary())}
+          R{props.roundNumber() ?? '—'} · {props.initiativeLabel() ?? '—'} ·{' '}
+          {props.phaseLabel()}
         </span>
       </Show>
       <span class="text-muted-foreground text-[0.65rem]">
-        {props.humanSide()} · {props.session.connectionStatus()}
+        {playerSideLabel(props.humanSide())} · {props.session.connectionStatus()}
       </span>
       <Show when={props.pressure()}>
         {(chip) => (

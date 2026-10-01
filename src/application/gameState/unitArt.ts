@@ -30,5 +30,7 @@ const unitArtByName: Readonly<Record<string, string>> = {
 /**
  * Resolves a unit type name to a bundled image URL, or `undefined` when no asset exists.
  */
-export const resolveUnitArtSrc = (unitTypeName: string): string | undefined =>
-  unitArtByName[unitTypeName];
+export const resolveUnitArtSrc = (unitTypeName: string): string | undefined => {
+  const src = unitArtByName[unitTypeName];
+  return src;
+};

@@ -1,8 +1,4 @@
-import type { PhaseSummary } from '@application';
-import type {
-  PlayerSide,
-  UnitInstance,
-} from '@classicalmoser/prevail-rules/domain';
+import type { PlayerSide, UnitInstance } from '@classicalmoser/prevail-rules/domain';
 
 function parseSide(raw: string): PlayerSide | undefined {
   if (raw === 'white' || raw === 'black') {
@@ -22,56 +18,8 @@ function isSelectedSetupUnit(
   );
 }
 
-const PHASE_LABELS: Record<string, string> = {
-  playCards: 'Play cards',
-  issueCommands: 'Issue commands',
-  resolveMelee: 'Melee',
-  resolveRanged: 'Ranged',
-  moveCommanders: 'Commanders',
-  cleanup: 'Cleanup',
-  setup: 'Setup',
-};
-
-const STEP_LABELS: Record<string, string> = {
-  chooseCard: 'Choose card',
-  reveal: 'Reveal',
-  commit: 'Commit',
-  resolveMelee: 'Resolve',
-  complete: 'Complete',
-  issue: 'Issue',
-  move: 'Move',
-  ranged: 'Attack',
-  rout: 'Rout',
-  rally: 'Rally',
-  retreat: 'Retreat',
-};
-
-/** Engine phase/step for tooltips / debug. */
-function formatPhase(summary: PhaseSummary | undefined): string {
-  if (summary === undefined) {
-    return '—';
-  }
-  if (summary.kind === 'none') {
-    return 'pre-phase';
-  }
-  return `${summary.phase} / ${summary.step}`;
-}
-
 const titleCaseCamel = (value: string): string =>
   value.replaceAll(/([A-Z])/gu, ' $1').replace(/^./u, (c) => c.toUpperCase());
-
-/** Human-readable phase framing for the play header. */
-function humanPhaseLabel(summary: PhaseSummary | undefined): string {
-  if (summary === undefined) {
-    return '—';
-  }
-  if (summary.kind === 'none') {
-    return 'Preparing';
-  }
-  const phase = PHASE_LABELS[summary.phase] ?? titleCaseCamel(summary.phase);
-  const step = STEP_LABELS[summary.step] ?? titleCaseCamel(summary.step);
-  return `${phase} · ${step}`;
-}
 
 const CHOICE_TITLES: Record<string, string> = {
   setupUnits: 'Place units',
@@ -113,8 +61,6 @@ function formatPressureChip(args: {
 export {
   parseSide,
   isSelectedSetupUnit,
-  formatPhase,
-  humanPhaseLabel,
   humanChoiceTitle,
   formatPressureChip,
 };

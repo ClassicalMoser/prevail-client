@@ -3,6 +3,7 @@ import type {
   GameState,
   PlayerSide,
 } from '@classicalmoser/prevail-rules/domain';
+import { playerSideLabel } from './playerSideLabel';
 
 /**
  * Client-facing endgame readout from authoritative state.
@@ -18,7 +19,7 @@ type GameOutcome =
   | { status: 'ending'; winner: PlayerSide | null }
   | { status: 'finished'; winner: PlayerSide | null };
 
-function gameOutcomeFromState(state: GameState | undefined): GameOutcome {
+function gameOutcomeFromState(state?: GameState): GameOutcome {
   if (state === undefined) {
     return { status: 'ongoing' };
   }
@@ -64,19 +65,28 @@ function gameOutcomeDetail(
   const winner = outcomeWinner(outcome);
   if (outcome.status === 'ending') {
     if (winner === null) {
-      return 'Resolving a draw…';
+      const resolvingDraw = 'Resolving a draw…';
+      return resolvingDraw;
     }
-    return winner === humanSide
-      ? 'You won — resolving final result…'
-      : `${winner} wins — resolving final result…`;
+    const side = playerSideLabel(winner);
+    if (winner === humanSide) {
+      const resolvingWin = 'You won — resolving final result…';
+      return resolvingWin;
+    }
+    const resolvingLoss = `${side} wins — resolving final result…`;
+    return resolvingLoss;
   }
   if (winner === null) {
-    return 'The match ends in a draw.';
+    const draw = 'The match ends in a draw.';
+    return draw;
   }
   if (winner === humanSide) {
-    return 'You won this match.';
+    const win = 'You won this match.';
+    return win;
   }
-  return `${winner} wins.`;
+  const side = playerSideLabel(winner);
+  const loss = `${side} wins.`;
+  return loss;
 }
 
 export {

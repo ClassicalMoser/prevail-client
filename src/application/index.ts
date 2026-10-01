@@ -25,6 +25,8 @@ import {
   gameOutcomeDetail,
   gameOutcomeFromState,
   gameOutcomeHeadline,
+  phaseLabel,
+  playerSideLabel,
   projectBoardCells,
   resolveUnitArtSrc,
 } from './gameState';
@@ -149,6 +151,8 @@ export {
   gameOutcomeDetail,
   gameOutcomeFromState,
   gameOutcomeHeadline,
+  phaseLabel,
+  playerSideLabel,
   projectBoardCells,
   resolveUnitArtSrc,
   allCommandCardsQueryOptions,

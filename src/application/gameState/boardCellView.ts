@@ -10,6 +10,7 @@ import type {
   UnitFacing,
   UnitInstance,
 } from '@classicalmoser/prevail-rules/domain';
+import { playerSideLabel } from './playerSideLabel';
 import { resolveUnitArtSrc } from './unitArt';
 
 interface BoardUnitView {
@@ -29,8 +30,12 @@ interface BoardCellView {
   units: BoardUnitView[];
 }
 
-const unitLabel = (unit: UnitInstance): string =>
-  `${unit.unitType.name} (${unit.playerSide} #${unit.instanceNumber})`;
+const unitLabel = (unit: UnitInstance): string => {
+  const side = playerSideLabel(unit.playerSide);
+  const name = unit.unitType.name;
+  const label = `${side} ${name}`;
+  return label;
+};
 
 const toUnitView = (unit: UnitInstance, facing: UnitFacing): BoardUnitView => ({
   label: unitLabel(unit),
@@ -75,7 +80,8 @@ const projectBoardCells = (
   board: Board | undefined,
 ): Readonly<Partial<Record<string, BoardCellView>>> => {
   if (!board) {
-    return {};
+    const empty: Readonly<Partial<Record<string, BoardCellView>>> = {};
+    return empty;
   }
 
   const cells: Partial<Record<string, BoardCellView>> = {};

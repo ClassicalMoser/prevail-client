@@ -10,4 +10,4 @@ Read the human docs and follow them. This file is only a pointer.
 - [`LAYERS.md`](./LAYERS.md) — what each layer is for
 - [`boundaries.ts`](./boundaries.ts) — which package may import which
 - [`TESTING.md`](./TESTING.md) — how a spec is written
-- [`src/AUDIT.md`](./src/AUDIT.md) — conventions audit; the full walk has not started
+- [`src/AUDIT.md`](./src/AUDIT.md) — conventions audit; through `gameState`

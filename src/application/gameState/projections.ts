@@ -12,11 +12,9 @@ import type { BoardCellView } from './boardCellView';
 import { gameOutcomeFromState } from './gameOutcome';
 import type { GameOutcome } from './gameOutcome';
 import type { GameStateStore } from './gameStateStore';
-
-/** Safe phase readout; never calls `getExpectedEvent` (throws when phase is `'none'`). */
-type PhaseSummary =
-  | { kind: 'none' }
-  | { kind: 'phase'; phase: string; step: string };
+import { phaseLabel, phaseSummaryFromState } from './phaseSummary';
+import type { PhaseSummary } from './phaseSummary';
+import { playerSideLabel } from './playerSideLabel';
 
 interface GameStateProjections {
   state: Accessor<GameState | undefined>;
@@ -24,7 +22,11 @@ interface GameStateProjections {
   boardCells: Accessor<Readonly<Partial<Record<string, BoardCellView>>>>;
   roundNumber: Accessor<number | undefined>;
   initiative: Accessor<PlayerSide | undefined>;
+  /** Player-facing initiative. `undefined` until a game is loaded. */
+  initiativeLabel: Accessor<string | undefined>;
   phaseSummary: Accessor<PhaseSummary | undefined>;
+  /** Player-facing phase line, including the empty-state dash. */
+  phaseLabel: Accessor<string>;
   cardState: Accessor<CardState | undefined>;
   reservedUnits: Accessor<UnitInstance[] | undefined>;
   routedUnits: Accessor<UnitInstance[] | undefined>;
@@ -34,16 +36,9 @@ interface GameStateProjections {
   hasGameState: Accessor<boolean>;
 }
 
-const phaseSummaryFromState = (state: GameState): PhaseSummary => {
-  const phaseState = state.currentRoundState.currentPhaseState;
-  if (phaseState === 'none') {
-    return { kind: 'none' };
-  }
-  return { kind: 'phase', phase: phaseState.phase, step: phaseState.step };
-};
-
 /**
  * Read-only accessors derived from the authoritative {@link GameStateStore}.
+ * Display strings are computed here so a view renders them as given.
  */
 const createGameStateProjections = (
   store: GameStateStore,
@@ -60,10 +55,25 @@ const createGameStateProjections = (
 
   const initiative = createMemo(() => state()?.currentInitiative);
 
-  const phaseSummary = createMemo(() => {
-    const s = state();
-    return s === undefined ? undefined : phaseSummaryFromState(s);
+  const initiativeLabel = createMemo(() => {
+    const side = initiative();
+    if (side === undefined) {
+      return;
+    }
+    const label = playerSideLabel(side);
+    return label;
   });
+
+  const phaseSummary = createMemo(() => {
+    const current = state();
+    if (current === undefined) {
+      return;
+    }
+    const summary = phaseSummaryFromState(current);
+    return summary;
+  });
+
+  const labeledPhase = createMemo(() => phaseLabel(phaseSummary()));
 
   const cardState = createMemo(() => state()?.cardState);
 
@@ -77,13 +87,15 @@ const createGameStateProjections = (
 
   const hasGameState = createMemo(() => state() !== undefined);
 
-  return {
+  const projections: GameStateProjections = {
     state,
     board,
     boardCells,
     roundNumber,
     initiative,
+    initiativeLabel,
     phaseSummary,
+    phaseLabel: labeledPhase,
     cardState,
     reservedUnits,
     routedUnits,
@@ -91,10 +103,7 @@ const createGameStateProjections = (
     outcome,
     hasGameState,
   };
+  return projections;
 };
 
-export {
-  type PhaseSummary,
-  type GameStateProjections,
-  createGameStateProjections,
-};
+export { type GameStateProjections, createGameStateProjections };
