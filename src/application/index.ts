@@ -15,7 +15,6 @@ import type {
   ArmyDraftValidationResult,
   UseArmyEditorResult,
 } from './authoring';
-import { createCore } from './bootstrap';
 import type { Core } from './bootstrap';
 import { CoreProvider, useCore } from './coreContext';
 import {
@@ -126,7 +125,6 @@ import type {
 import { createRouteResponseError, isRouteResponseError } from '@ports';
 import type { RouteResponseError } from '@ports';
 import { createGameStorage } from './repositories';
-import { useGreetMsg, useName } from './signals';
 
 export {
   type AuthViewModel,
@@ -145,7 +143,6 @@ export {
   type ArmyDraftValidationResult,
   type UseArmyEditorResult,
   type Core,
-  createCore,
   CoreProvider,
   useCore,
   type BoardCellView,
@@ -245,6 +242,4 @@ export {
   createRouteResponseError,
   isRouteResponseError,
   createGameStorage,
-  useGreetMsg,
-  useName,
 };

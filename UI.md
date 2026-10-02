@@ -90,7 +90,7 @@ These exist in the code now. Do not copy them. Fix one only when your task alrea
 - Army unit count is a raw number input that commits on each keystroke (`army-units-section.tsx`)
 - The theme is still shadcn's gray. Prevail's palette lives in `--play-*` in `play.css`
 - `src/styles/zaidan-vega.css` holds styles for about 51 components. About 7 are used
-- Tauri template leftovers: the `greet` command, `useGreetMsg`, `useName`, and the unused dialog plugin
+- Tauri template leftovers: the `greet` command and the unused dialog plugin
 
 ## Before shipping UI
 

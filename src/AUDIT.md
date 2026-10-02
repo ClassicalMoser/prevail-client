@@ -2,7 +2,7 @@
 
 Running checklist for a manual, end-to-end conventions audit of this client (layers, import boundaries, Solid reactivity, commentary, colocated tests). Work up the dependency tree. Check a box only when that directory has been walked and brought in line.
 
-The full walk is in progress. Through `queries` and `authoring` (draft validation copy + edit-limit specs). Next: `signals` / bootstrap / contexts.
+The full walk is in progress. Application layer through bootstrap/contexts. Next: `infrastructure/`.
 
 **Criteria:** [`STYLE.md`](../STYLE.md), [`UI.md`](../UI.md), [`DESIGN.md`](../DESIGN.md), [`ARCHITECTURE.md`](./ARCHITECTURE.md), [`LAYERS.md`](../LAYERS.md), [`boundaries.ts`](../boundaries.ts), [`TESTING.md`](../TESTING.md), [`ports/README.md`](./ports/README.md), and [`application/repositories/README.md`](./application/repositories/README.md).
 
@@ -48,8 +48,8 @@ Audit in this order (dependencies flow downward):
   - [x] `hints/`
 - [x] `queries/`
 - [x] `authoring/`
-- [ ] `signals/`
-- [ ] Bootstrap and contexts (`bootstrap.ts`, `coreContext.tsx`, `authContext.tsx`, `serverPortsContext.tsx`)
+- [x] `signals/` (removed — Tauri leftovers)
+- [x] Bootstrap and contexts (`bootstrap.ts`, `coreContext.tsx`, `authContext.tsx`, `serverPortsContext.tsx`)
 
 ### `infrastructure/` (`@infrastructure`)
 

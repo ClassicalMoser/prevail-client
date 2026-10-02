@@ -11,8 +11,7 @@ Solid reactivity, query hooks, the play session, authoring, and the in-memory en
 | `play/`         | Seat session, selection by phase, highlights, labels. Pure transitions stay pure.             |
 | `queries/`      | TanStack Solid Query hooks and options for armies, cards, and games.                          |
 | `authoring/`    | Draft editors and draft validation. Validation returns a result and does not throw.           |
-| `signals/`      | Small UI signals that are not game state.                                                     |
-| `bootstrap.ts`  | `createCore`. One core, built by `CoreProvider`.                                              |
+| `bootstrap.ts`  | `createCore` (module-private to `CoreProvider`). One core per app.                            |
 | `*Context.tsx`  | Auth, server ports, and core. Hooks read the constant values `AppShell` mounted.              |
 
 The repositories note is [`repositories/README.md`](./repositories/README.md). Solid rules are [`../../STYLE.md`](../../STYLE.md).
