@@ -1,7 +1,3 @@
-import {
-  blackInGameWsContract,
-  whiteInGameWsContract,
-} from '@classicalmoser/prevail-contracts';
 import type {
   PlayerChoiceEvent,
   PlayerSide,
@@ -12,15 +8,15 @@ import type {
   GameSeatConnectionStatus,
   GameSeatOutbound,
 } from '@ports';
-
-const contractForSide = (
-  side: PlayerSide,
-): typeof whiteInGameWsContract | typeof blackInGameWsContract =>
-  side === 'white' ? whiteInGameWsContract : blackInGameWsContract;
+import {
+  contractForSide,
+  parseGameSeatOutbound,
+} from './parseGameSeatOutbound';
 
 const seatPath = (side: PlayerSide, gameId: string): string => {
   const contract = contractForSide(side);
-  return contract.path.replace(':gameId', encodeURIComponent(gameId));
+  const path = contract.path.replace(':gameId', encodeURIComponent(gameId));
+  return path;
 };
 
 const waitForWebSocketOpen = (
@@ -82,117 +78,6 @@ const waitForWebSocketOpen = (
     socket.addEventListener('error', handlers.onError);
     socket.addEventListener('close', handlers.onClose);
   });
-};
-
-type GameSnapshotPayload = Extract<
-  GameSeatOutbound,
-  { type: 'gameSnapshot' }
->['payload'];
-
-/** Minimal shape required to paint the board when full zod validation fails. */
-const asStructuralGameSnapshot = (
-  payload: unknown,
-): GameSnapshotPayload | undefined => {
-  if (payload === null || typeof payload !== 'object') {
-    return undefined;
-  }
-  const record = payload as Record<string, unknown>;
-  if (
-    typeof record.id !== 'string' ||
-    typeof record.gameMode !== 'string' ||
-    record.gameState === null ||
-    typeof record.gameState !== 'object'
-  ) {
-    return undefined;
-  }
-  return payload as GameSnapshotPayload;
-};
-
-const parseOutbound = (
-  side: PlayerSide,
-  raw: string,
-): GameSeatOutbound | undefined => {
-  let json: unknown = undefined;
-  try {
-    json = JSON.parse(raw) as unknown;
-  } catch {
-    console.error('Seat WS: invalid JSON', raw);
-    return undefined;
-  }
-
-  if (
-    json === null ||
-    typeof json !== 'object' ||
-    !('type' in json) ||
-    !('payload' in json)
-  ) {
-    console.error('Seat WS: envelope missing type/payload', json);
-    return undefined;
-  }
-
-  const type = (json as { type: unknown }).type;
-  const payload = (json as { payload: unknown }).payload;
-  const outbound = contractForSide(side).validators.outbound;
-
-  switch (type) {
-    case 'playerChoice': {
-      const parsed = outbound.playerChoice.safeParse(payload);
-      if (!parsed.success) {
-        console.error('Seat WS: invalid playerChoice', parsed.error);
-        return undefined;
-      }
-      return { type, payload: parsed.data } as GameSeatOutbound;
-    }
-    case 'gameEffect': {
-      const parsed = outbound.gameEffect.safeParse(payload);
-      if (!parsed.success) {
-        console.error('Seat WS: invalid gameEffect', parsed.error);
-        return undefined;
-      }
-      return { type, payload: parsed.data } as GameSeatOutbound;
-    }
-    case 'gameSnapshot': {
-      const parsed = outbound.gameSnapshot.safeParse(payload);
-      if (parsed.success) {
-        return { type, payload: parsed.data } as GameSeatOutbound;
-      }
-      // Server is source of truth — still deliver if the envelope is structural.
-      const structural = asStructuralGameSnapshot(payload);
-      if (structural !== undefined) {
-        console.error(
-          'Seat WS: gameSnapshot failed schema; ingesting structural payload',
-          parsed.error,
-        );
-        return { type, payload: structural } as GameSeatOutbound;
-      }
-      console.error(
-        'Seat WS: invalid gameSnapshot — state will stay empty',
-        parsed.error,
-        payload,
-      );
-      return undefined;
-    }
-    case 'choiceRejected': {
-      const parsed = outbound.choiceRejected.safeParse(payload);
-      if (!parsed.success) {
-        console.error('Seat WS: invalid choiceRejected', parsed.error);
-        // Still surface a rejection so the UI can unlock and retry.
-        return {
-          type: 'choiceRejected',
-          payload: {
-            result: false,
-            errorReason:
-              'Choice rejected (unreadable server payload). You can retry.',
-          },
-        } as GameSeatOutbound;
-      }
-      return { type, payload: parsed.data } as GameSeatOutbound;
-    }
-    default: {
-      console.error('Seat WS: unknown outbound type', type);
-      return undefined;
-    }
-  }
 };
 
 /**
@@ -289,7 +174,7 @@ export function createGameSeatAdapter(wsBaseUrl: string): GameSeat {
       socket.addEventListener('message', (event) => {
         const raw =
           typeof event.data === 'string' ? event.data : String(event.data);
-        const message = parseOutbound(side, raw);
+        const message = parseGameSeatOutbound(side, raw);
         if (message === undefined) {
           return;
         }
