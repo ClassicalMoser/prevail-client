@@ -1,3 +1,4 @@
+import type { GameSeatOutbound } from '@ports';
 import { describe, expect, it } from 'vite-plus/test';
 import {
   parseGameSeatOutbound,
@@ -49,13 +50,13 @@ describe('parse game seat outbound', () => {
       'white',
       JSON.stringify({ type: 'choiceRejected', payload: { broken: true } }),
     );
-    const reason =
-      message?.type === 'choiceRejected'
-        ? message.payload.errorReason
-        : undefined;
+    // Narrow the union so the assertion can read the rejection reason.
+    const rejected = message as
+      | Extract<GameSeatOutbound, { type: 'choiceRejected' }>
+      | undefined;
 
-    expect(message?.type).toBe('choiceRejected');
-    expect(reason).toBe(
+    expect(rejected?.type).toBe('choiceRejected');
+    expect(rejected?.payload.errorReason).toBe(
       'Choice rejected (unreadable server payload). You can retry.',
     );
   }, 1000);
@@ -73,10 +74,12 @@ describe('parse game seat outbound', () => {
         },
       }),
     );
-    const id =
-      message?.type === 'gameSnapshot' ? message.payload.id : undefined;
+    // Narrow the union so the assertion can read the snapshot id.
+    const snapshot = message as
+      | Extract<GameSeatOutbound, { type: 'gameSnapshot' }>
+      | undefined;
 
-    expect(message?.type).toBe('gameSnapshot');
-    expect(id).toBe('game-1');
+    expect(snapshot?.type).toBe('gameSnapshot');
+    expect(snapshot?.payload.id).toBe('game-1');
   }, 1000);
 });
