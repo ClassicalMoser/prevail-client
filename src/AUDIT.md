@@ -2,7 +2,9 @@
 
 Running checklist for a manual, end-to-end conventions audit of this client (layers, import boundaries, Solid reactivity, commentary, colocated tests). Work up the dependency tree. Check a box only when that directory has been walked and brought in line.
 
-The full walk is in progress. Through `play`; `queries` next (card list invalidation aligned with armies).
+The full walk is in progress. Through `queries` and `authoring` (draft validation copy + edit-limit specs). Next: `signals` / bootstrap / contexts.
+
+**Criteria:** [`STYLE.md`](../STYLE.md), [`UI.md`](../UI.md), [`DESIGN.md`](../DESIGN.md), [`ARCHITECTURE.md`](./ARCHITECTURE.md), [`LAYERS.md`](../LAYERS.md), [`boundaries.ts`](../boundaries.ts), [`TESTING.md`](../TESTING.md), [`ports/README.md`](./ports/README.md), and [`application/repositories/README.md`](./application/repositories/README.md).
 
 **Criteria:** [`STYLE.md`](../STYLE.md), [`UI.md`](../UI.md), [`DESIGN.md`](../DESIGN.md), [`ARCHITECTURE.md`](./ARCHITECTURE.md), [`LAYERS.md`](../LAYERS.md), [`boundaries.ts`](../boundaries.ts), [`TESTING.md`](../TESTING.md), [`ports/README.md`](./ports/README.md), and [`application/repositories/README.md`](./application/repositories/README.md).
 
@@ -45,7 +47,7 @@ Audit in this order (dependencies flow downward):
   - [x] `seatPlayActions/`
   - [x] `hints/`
 - [x] `queries/`
-- [ ] `authoring/`
+- [x] `authoring/`
 - [ ] `signals/`
 - [ ] Bootstrap and contexts (`bootstrap.ts`, `coreContext.tsx`, `authContext.tsx`, `serverPortsContext.tsx`)
 

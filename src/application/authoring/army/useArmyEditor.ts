@@ -26,8 +26,14 @@ import {
 } from './armyEditLimits';
 import { validateArmyShape } from './validateArmyDraft';
 
-const isGameModeName = (value: string): value is GameModeName =>
-  (gameModeNames as readonly string[]).includes(value);
+const isGameModeName = (value: string): value is GameModeName => {
+  for (const name of gameModeNames) {
+    if (name === value) {
+      return true;
+    }
+  }
+  return false;
+};
 
 /**
  * UI pairing of a persisted {@link Army} with a mode lens for composition
@@ -159,7 +165,7 @@ function useArmyEditor(
     if (!isGameModeName(modeRaw)) {
       setDraft(undefined);
       setGameMode(undefined);
-      setLoadErrorMessage(`Unknown game mode “${modeRaw}”.`);
+      setLoadErrorMessage('That game mode is not supported.');
       setShapeErrors([]);
       setHydratedId(undefined);
       return;

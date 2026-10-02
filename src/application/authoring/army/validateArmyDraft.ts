@@ -3,21 +3,11 @@ import {
   armySchemaForMode,
 } from '@classicalmoser/prevail-rules/domain';
 import type { Army, GameModeName } from '@classicalmoser/prevail-rules/domain';
+import { draftValidationMessages } from '../draftValidationMessages';
 
 type ArmyDraftValidationResult =
   | { success: true; data: Army }
   | { success: false; messages: string[] };
-
-const formatIssuePath = (path: PropertyKey[]): string =>
-  path.map(String).join('.');
-
-const messagesFromIssues = (
-  issues: { path: PropertyKey[]; message: string }[],
-): string[] =>
-  issues.map((issue) => {
-    const path = formatIssuePath(issue.path);
-    return path.length > 0 ? `${path}: ${issue.message}` : issue.message;
-  });
 
 /** Shape-only validation — use on load / reset. */
 function validateArmyShape(army: Army): ArmyDraftValidationResult {
@@ -25,7 +15,8 @@ function validateArmyShape(army: Army): ArmyDraftValidationResult {
   if (result.success) {
     return { success: true, data: result.data };
   }
-  return { success: false, messages: messagesFromIssues(result.error.issues) };
+  const messages = draftValidationMessages(result.error.issues);
+  return { success: false, messages };
 }
 
 /** Mode composition validation — use while editing with a prespecified mode. */
@@ -37,7 +28,8 @@ function validateArmyForMode(
   if (result.success) {
     return { success: true, data: result.data };
   }
-  return { success: false, messages: messagesFromIssues(result.error.issues) };
+  const messages = draftValidationMessages(result.error.issues);
+  return { success: false, messages };
 }
 
 export {
