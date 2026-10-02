@@ -2,7 +2,7 @@
 
 Running checklist for a manual, end-to-end conventions audit of this client (layers, import boundaries, Solid reactivity, commentary, colocated tests). Work up the dependency tree. Check a box only when that directory has been walked and brought in line.
 
-The full walk is in progress. Through `gameState`; `play` labels are in progress (`selection` player-facing strings fixed; seatPlayActions next).
+The full walk is in progress. Through `gameState`; `play` nearly done (`selection`, `seatPlayActions`, and play hints moved under application).
 
 **Criteria:** [`STYLE.md`](../STYLE.md), [`UI.md`](../UI.md), [`DESIGN.md`](../DESIGN.md), [`ARCHITECTURE.md`](./ARCHITECTURE.md), [`LAYERS.md`](../LAYERS.md), [`boundaries.ts`](../boundaries.ts), [`TESTING.md`](../TESTING.md), [`ports/README.md`](./ports/README.md), and [`application/repositories/README.md`](./application/repositories/README.md).
 
@@ -42,7 +42,8 @@ Audit in this order (dependencies flow downward):
 - [x] `gameState/`
 - [ ] `play/`
   - [x] `selection/`
-  - [ ] `seatPlayActions/`
+  - [x] `seatPlayActions/`
+  - [x] `hints/`
 - [ ] `queries/`
 - [ ] `authoring/`
 - [ ] `signals/`

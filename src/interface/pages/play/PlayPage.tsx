@@ -1,4 +1,13 @@
-import { isCommitChoiceType, useCore, useSeatPlaySession } from '@application';
+import {
+  assignUnitSupportHint,
+  boardProgressHint,
+  commitHint,
+  isCommitChoiceType,
+  routDiscardHint,
+  useCore,
+  useSeatPlaySession,
+  waitHint,
+} from '@application';
 import type {
   CommandCard,
   UnitInstance,
@@ -9,11 +18,6 @@ import { createMemo, Show } from 'solid-js';
 import type { JSX } from 'solid-js';
 import { PlayChoicePanel } from './choices/PlayChoicePanel';
 import { CombatContextPanel } from './CombatContextPanel';
-import { assignUnitSupportHint } from './hints/assignUnitSupportHint';
-import { boardProgressHint } from './hints/boardProgressHint';
-import { commitHint } from './hints/commitHint';
-import { routDiscardHint } from './hints/routDiscardHint';
-import { waitHint } from './hints/waitHint';
 import { PlayGameOverBanner } from './PlayGameOverBanner';
 import { PlayHandStrip } from './PlayHandStrip';
 import { PlayHeader } from './PlayHeader';

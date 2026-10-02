@@ -1,5 +1,5 @@
 import type { Command } from '@classicalmoser/prevail-rules/domain';
-import type { SeatSelection } from '@application';
+import type { SeatSelection } from '../selection';
 
 function restrictionHint(command: Command): string {
   const { restrictions } = command;
@@ -8,7 +8,9 @@ function restrictionHint(command: Command): string {
     parts.push(`traits: ${restrictions.traitRestrictions.join(', ')}`);
   }
   if (restrictions.unitRestrictions.length > 0) {
-    parts.push(`unit types: ${restrictions.unitRestrictions.length} id(s)`);
+    const count = restrictions.unitRestrictions.length;
+    const types = count === 1 ? 'unit type' : 'unit types';
+    parts.push(`${count} named ${types}`);
   }
   if (restrictions.inspirationRangeRestriction >= 0) {
     parts.push(
@@ -18,22 +20,27 @@ function restrictionHint(command: Command): string {
   if (command.size === 'units') {
     parts.push(`up to ${command.number}`);
   }
-  return parts.length > 0 ? parts.join(' · ') : 'no restrictions';
+  if (parts.length === 0) {
+    return 'no restrictions';
+  }
+  const joined = parts.join(' · ');
+  return joined;
 }
 
 /**
  * Progress copy for issue, move, and ranged drafts.
  * Undefined for selections that do not use the board-progress line.
  */
-export function boardProgressHint(
-  selection: SeatSelection,
-): string | undefined {
+function boardProgressHint(selection: SeatSelection): string | undefined {
   if (selection.kind === 'issueCommand' && selection.command !== undefined) {
     if (selection.legalUnitCoordinates.length === 0) {
-      return `No eligible units (${restrictionHint(selection.command)})`;
+      const restrictions = restrictionHint(selection.command);
+      const hint = `No eligible units (${restrictions})`;
+      return hint;
     }
     if (selection.command.size === 'units') {
-      return `${selection.selected.length} / up to ${selection.command.number} units`;
+      const hint = `${selection.selected.length} / up to ${selection.command.number} units`;
+      return hint;
     }
     if (selection.lineStart === undefined) {
       return 'Click a unit to start the line';
@@ -41,7 +48,8 @@ export function boardProgressHint(
     if (selection.selected.length === 0) {
       return 'Click an end (same unit = single)';
     }
-    return `Line: ${selection.selected.length} unit(s)`;
+    const hint = `Line: ${selection.selected.length} unit(s)`;
+    return hint;
   }
   if (selection.kind === 'moveUnit') {
     if (selection.unit === undefined) {
@@ -59,9 +67,13 @@ export function boardProgressHint(
     if (selection.target === undefined) {
       return 'Click an enemy in range / front arc';
     }
-    return selection.supporters.length > 0
-      ? `Target locked · ${selection.supporters.length} supporter(s) — Confirm`
-      : 'Target locked · optional supporters, then Confirm';
+    if (selection.supporters.length > 0) {
+      const hint = `Target locked · ${selection.supporters.length} supporter(s) — Confirm`;
+      return hint;
+    }
+    return 'Target locked · optional supporters, then Confirm';
   }
   return undefined;
 }
+
+export { boardProgressHint };

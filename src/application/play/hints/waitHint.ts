@@ -1,11 +1,13 @@
-import type { GameOutcome, PhaseSummary, PlayCardSlotView } from '@application';
 import type {
   Command,
   LegalPlayerChoiceOptions,
   PlayerSide,
 } from '@classicalmoser/prevail-rules/domain';
+import type { GameOutcome, PhaseSummary } from '@application/gameState';
+import type { PlayCardSlotView } from '../playVisibility';
+import { formatCommandLabel } from '../playVisibility';
 
-export function waitHint(args: {
+function waitHint(args: {
   options: LegalPlayerChoiceOptions | undefined;
   side: PlayerSide | undefined;
   phaseSummary: PhaseSummary | undefined;
@@ -31,7 +33,10 @@ export function waitHint(args: {
   ) {
     const yours = remaining?.[side] ?? [];
     if (phaseSummary.step.includes('Resolve') && yours.length > 0) {
-      return `Waiting for opponent to finish resolving — then you issue: ${yours.map((c) => `${c.type} ×${c.number} (${c.size})`).join(', ')}`;
+      const commands = yours.map((command) => formatCommandLabel(command));
+      const list = commands.join(', ');
+      const hint = `Waiting for opponent to finish resolving — then you issue: ${list}`;
+      return hint;
     }
     if (
       phaseSummary.step.includes('Issue') ||
@@ -55,3 +60,5 @@ export function waitHint(args: {
   }
   return undefined;
 }
+
+export { waitHint };

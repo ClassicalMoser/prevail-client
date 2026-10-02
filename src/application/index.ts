@@ -89,6 +89,9 @@ import {
   useUnitCards,
 } from './serverPortsContext';
 import {
+  assignUnitSupportHint,
+  boardProgressHint,
+  commitHint,
   computeHighlights,
   formatCardEconomyMeter,
   formatCombatEngagementLine,
@@ -96,10 +99,12 @@ import {
   formatCommandLabel,
   isCommitChoiceType,
   legalOptionsForSeat,
+  routDiscardHint,
   seatCommitmentSideLabel,
   setupUnitsByType,
   unitKey,
   useSeatPlaySession,
+  waitHint,
 } from './play';
 import type {
   CardEconomyView,
@@ -209,6 +214,11 @@ export {
   formatCommandLabel,
   isCommitChoiceType,
   legalOptionsForSeat,
+  assignUnitSupportHint,
+  boardProgressHint,
+  commitHint,
+  routDiscardHint,
+  waitHint,
   seatCommitmentSideLabel,
   setupUnitsByType,
   unitKey,

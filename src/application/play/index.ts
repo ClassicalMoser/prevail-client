@@ -89,6 +89,13 @@ import { submitPlayerChoice } from './submitPlayerChoice';
 import { seatCommitmentSideLabel } from './seatCommitmentSideLabel';
 import { useSeatPlaySession } from './useSeatPlaySession';
 import type { UseSeatPlaySessionResult } from './useSeatPlaySession';
+import {
+  assignUnitSupportHint,
+  boardProgressHint,
+  commitHint,
+  routDiscardHint,
+  waitHint,
+} from './hints';
 
 export {
   buildAssignUnitSupportSubmit,
@@ -165,4 +172,9 @@ export {
   seatCommitmentSideLabel,
   useSeatPlaySession,
   type UseSeatPlaySessionResult,
+  assignUnitSupportHint,
+  boardProgressHint,
+  commitHint,
+  routDiscardHint,
+  waitHint,
 };

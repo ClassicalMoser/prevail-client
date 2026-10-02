@@ -1,8 +1,8 @@
 import type { LegalPlayerChoiceOptions } from '@classicalmoser/prevail-rules/domain';
-import type { SeatSelection } from '@application';
+import type { SeatSelection } from '../selection';
 
 /** Copy for the rout-discard penalty, or undefined when that choice is not active. */
-export function routDiscardHint(
+function routDiscardHint(
   options: LegalPlayerChoiceOptions | undefined,
   selection: SeatSelection,
 ): string | undefined {
@@ -13,9 +13,13 @@ export function routDiscardHint(
   const have = options.routDiscard.cardIds.length;
   const cards = need === 1 ? 'card' : 'cards';
   if (have < need) {
-    return `Rout penalty: discard ${need} ${cards} — you only have ${have} in hand.`;
+    const hint = `Rout penalty: discard ${need} ${cards} — you only have ${have} in hand.`;
+    return hint;
   }
   const picked =
     selection.kind === 'routDiscard' ? selection.selectedCardIds.length : 0;
-  return `Rout penalty: discard ${need} ${cards} from your hand (tap to toggle) · ${picked}/${need}`;
+  const hint = `Rout penalty: discard ${need} ${cards} from your hand (tap to toggle) · ${picked}/${need}`;
+  return hint;
 }
+
+export { routDiscardHint };

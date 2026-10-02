@@ -1,9 +1,10 @@
-import { formatCombatEngagementLine, isCommitChoiceType } from '@application';
-import type { CombatContextView } from '@application';
 import type { LegalPlayerChoiceOptions } from '@classicalmoser/prevail-rules/domain';
+import { formatCombatEngagementLine } from '../combatContextFromState';
+import type { CombatContextView } from '../combatContextFromState';
+import { isCommitChoiceType } from '../selection';
 
 /** Copy for a commit choice, or undefined when the seat is not committing. */
-export function commitHint(
+function commitHint(
   options: LegalPlayerChoiceOptions | undefined,
   combat?: CombatContextView,
 ): string | undefined {
@@ -21,7 +22,12 @@ export function commitHint(
     combat !== undefined &&
     combat.kind === 'melee'
   ) {
-    return `Commit a highlighted hand card to ${formatCombatEngagementLine(combat)}.`;
+    const engagement = formatCombatEngagementLine(combat);
+    const hint = `Commit a highlighted hand card to ${engagement}.`;
+    return hint;
   }
-  return `Commit a highlighted hand card to ${phase}.`;
+  const hint = `Commit a highlighted hand card to ${phase}.`;
+  return hint;
 }
+
+export { commitHint };
