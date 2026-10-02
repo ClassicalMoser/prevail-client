@@ -1,4 +1,8 @@
-import { gameOutcomeHeadline, playerSideLabel } from '@application';
+import {
+  connectionStatusLabel,
+  gameOutcomeHeadline,
+  playerSideLabel,
+} from '@application';
 import type { GameOutcome, UseSeatPlaySessionResult } from '@application';
 import type { PlayerSide } from '@classicalmoser/prevail-rules/domain';
 import { Button } from '@interface/components';
@@ -33,7 +37,8 @@ export function PlayHeader(props: {
         </span>
       </Show>
       <span class="text-muted-foreground text-[0.65rem]">
-        {playerSideLabel(props.humanSide())} · {props.session.connectionStatus()}
+        {playerSideLabel(props.humanSide())} ·{' '}
+        {connectionStatusLabel(props.session.connectionStatus())}
       </span>
       <Show when={props.pressure()}>
         {(chip) => (

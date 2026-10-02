@@ -1,3 +1,4 @@
+import { choiceInstruction } from '@application';
 import type { UseSeatPlaySessionResult } from '@application';
 import type { UnitInstance } from '@classicalmoser/prevail-rules/domain';
 import { Button } from '@interface/components';
@@ -43,10 +44,10 @@ export function PlayChoicePanel(props: {
             />
           </Show>
 
-          <Show when={options().choiceType === 'chooseCard'}>
-            <p class="text-muted-foreground text-xs">
-              Select a highlighted command card from your hand.
-            </p>
+          <Show when={choiceInstruction(options())}>
+            {(instruction) => (
+              <p class="text-muted-foreground text-xs">{instruction()}</p>
+            )}
           </Show>
 
           <CommitChoice
@@ -86,10 +87,6 @@ export function PlayChoicePanel(props: {
           </Show>
 
           <Show when={options().choiceType === 'doneIssuingCommands'}>
-            <p class="text-muted-foreground text-xs">
-              No remaining command can be issued (for example ranged slots with
-              no eligible units). End the issue step to continue.
-            </p>
             <Button
               type="button"
               size="sm"

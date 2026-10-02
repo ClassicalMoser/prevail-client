@@ -92,10 +92,13 @@ import type { UseSeatPlaySessionResult } from './useSeatPlaySession';
 import {
   assignUnitSupportHint,
   boardProgressHint,
+  choiceInstruction,
   commitHint,
   routDiscardHint,
   waitHint,
 } from './hints';
+import { formatPressureChip } from './formatPressureChip';
+import { connectionStatusLabel } from './connectionStatusLabel';
 
 export {
   buildAssignUnitSupportSubmit,
@@ -174,7 +177,10 @@ export {
   type UseSeatPlaySessionResult,
   assignUnitSupportHint,
   boardProgressHint,
+  choiceInstruction,
   commitHint,
   routDiscardHint,
   waitHint,
+  formatPressureChip,
+  connectionStatusLabel,
 };

@@ -2,6 +2,7 @@ import {
   assignUnitSupportHint,
   boardProgressHint,
   commitHint,
+  formatPressureChip,
   isCommitChoiceType,
   routDiscardHint,
   useCore,
@@ -23,7 +24,7 @@ import { PlayHandStrip } from './PlayHandStrip';
 import { PlayHeader } from './PlayHeader';
 import { PlayInPlayRow } from './PlayInPlayRow';
 import { PlayOpponentHand } from './PlayOpponentHand';
-import { formatPressureChip, parseSide } from './playPageHelpers';
+import { parseSide } from './playPageHelpers';
 import { PlaySeatPiles } from './PlaySeatPiles';
 import { PlaySetupUnitStrip } from './PlaySetupUnitStrip';
 import { PlayTableStrip } from './PlayTableStrip';
