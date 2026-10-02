@@ -17,7 +17,7 @@ function useCreateEmptyCommandCardMutation(): UseMutationResult<
     (): { mutationFn: () => Promise<string>; onSettled: () => void } => ({
       mutationFn: (): Promise<string> => commandCards.createDraft(),
       onSettled: (): void => {
-        queryClient.invalidateQueries({ queryKey: commandCardKeys.all });
+        queryClient.invalidateQueries({ queryKey: commandCardKeys.lists });
       },
     }),
   );
@@ -43,7 +43,7 @@ function useCreateCommandCardVersionMutation(): UseMutationResult<
       mutationFn: (card: CommandCard): Promise<CommandCard> =>
         commandCards.publishVersion(card),
       onSettled: (_data, _error, card): void => {
-        queryClient.invalidateQueries({ queryKey: commandCardKeys.all });
+        queryClient.invalidateQueries({ queryKey: commandCardKeys.lists });
         queryClient.invalidateQueries({
           queryKey: commandCardKeys.detail(card.id),
         });
@@ -68,7 +68,7 @@ function useCertifyLatestCommandCardVersionsMutation(): UseMutationResult<
       mutationFn: (): Promise<CertificationResults> =>
         commandCards.certifyLatest(),
       onSettled: (): void => {
-        queryClient.invalidateQueries({ queryKey: commandCardKeys.all });
+        queryClient.invalidateQueries({ queryKey: commandCardKeys.lists });
       },
     }),
   );
@@ -86,7 +86,7 @@ function useDeleteEmptyCommandCardsMutation(): UseMutationResult<
     (): { mutationFn: () => Promise<void>; onSettled: () => void } => ({
       mutationFn: (): Promise<void> => commandCards.deleteEmpty(),
       onSettled: (): void => {
-        queryClient.invalidateQueries({ queryKey: commandCardKeys.all });
+        queryClient.invalidateQueries({ queryKey: commandCardKeys.lists });
       },
     }),
   );
