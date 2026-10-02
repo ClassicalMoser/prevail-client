@@ -49,6 +49,7 @@ type UseSeatPlaySessionResult = {
   selection: Accessor<SeatSelection>;
   canUndo: Accessor<boolean>;
   choiceItems: Accessor<ChoiceListItem[]>;
+  choiceTitle: Accessor<string | undefined>;
   issueCommands: Accessor<{ index: number; label: string; command: Command }[]>;
   canConfirmIssue: Accessor<boolean>;
   canConfirmPerformRanged: Accessor<boolean>;

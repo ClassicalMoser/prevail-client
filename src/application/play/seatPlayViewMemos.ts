@@ -20,6 +20,7 @@ import {
   remainingCommandsBySide,
 } from './playVisibility';
 import type { IssuedCommandView, PlayCardSlotView } from './playVisibility';
+import { playerChoiceTitle } from './playerChoiceTitle';
 import {
   canConfirmAssignUnitSupport,
   canConfirmIssueCommand,
@@ -46,6 +47,7 @@ export function createSeatPlayViewMemos(args: {
 }): {
   boardCells: Accessor<Readonly<Partial<Record<string, PlayBoardCellView>>>>;
   choiceItems: Accessor<ChoiceListItem[]>;
+  choiceTitle: Accessor<string | undefined>;
   issueCommands: Accessor<ReturnType<typeof issueCommandLabels>>;
   canRefuseCommit: Accessor<boolean>;
   canDoneIssuing: Accessor<boolean>;
@@ -90,6 +92,11 @@ export function createSeatPlayViewMemos(args: {
       return [];
     }
     return choiceListItems(options, args.readGameState()?.boardState);
+  });
+  const choiceTitle = createMemo(() => {
+    const options = args.legalOptions();
+    const title = playerChoiceTitle(options?.choiceType);
+    return title;
   });
   const cardEconomy = createMemo(() =>
     cardEconomyFromState(args.readGameState(), args.side()),
@@ -154,6 +161,7 @@ export function createSeatPlayViewMemos(args: {
   return {
     boardCells,
     choiceItems,
+    choiceTitle,
     issueCommands,
     canRefuseCommit,
     canDoneIssuing,

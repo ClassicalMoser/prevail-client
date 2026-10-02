@@ -87,7 +87,6 @@ These exist in the code now. Do not copy them. Fix one only when your task alrea
 - The facing-picker cell is a `<div>` with `aria-label` (`board.tsx`)
 - Unit and card previews are hover-only (`board.tsx`, `published-card-thumb.tsx`)
 - Hand cards use `aria-pressed` for "legal" (`PlayHandStrip.tsx`)
-- The choice panel shows `choiceType` and the event number (`PlayChoicePanel.tsx`)
 - Army unit count is a raw number input that commits on each keystroke (`army-units-section.tsx`)
 - The theme is still shadcn's gray. Prevail's palette lives in `--play-*` in `play.css`
 - `src/styles/zaidan-vega.css` holds styles for about 51 components. About 7 are used

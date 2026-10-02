@@ -3,7 +3,6 @@ import type { UnitInstance } from '@classicalmoser/prevail-rules/domain';
 import { Button } from '@interface/components';
 import { Show } from 'solid-js';
 import type { Accessor, JSX } from 'solid-js';
-import { humanChoiceTitle } from '../playPageHelpers';
 import { ChoiceListButtons } from './ChoiceListButtons';
 import { CommitChoice } from './CommitChoice';
 import { IssueCommandChoice } from './IssueCommandChoice';
@@ -29,10 +28,7 @@ export function PlayChoicePanel(props: {
         <div class="play-choice flex flex-col gap-2 border-t border-border pt-3">
           <div>
             <p class="play-choice__title text-sm font-medium">
-              {humanChoiceTitle(options().choiceType)}
-            </p>
-            <p class="text-muted-foreground text-[0.65rem]">
-              {options().choiceType} · event #{options().expectedEventNumber}
+              {props.session.choiceTitle()}
             </p>
           </div>
 
