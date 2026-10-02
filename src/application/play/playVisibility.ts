@@ -7,6 +7,7 @@ import type {
   IssueCommandEvent,
   PlayerSide,
 } from '@classicalmoser/prevail-rules/domain';
+import { unitInstanceLabel } from '@application/gameState';
 
 type PlayCardSlotView =
   | { kind: 'empty'; label: string }
@@ -21,11 +22,24 @@ interface IssuedCommandView {
 }
 
 function oppositeSide(side: PlayerSide): PlayerSide {
-  return side === 'white' ? 'black' : 'white';
+  if (side === 'white') {
+    return 'black';
+  }
+  return 'white';
 }
 
+/**
+ * Player-facing command line: type, count, and size in words.
+ * Does not show the enum keys `movement`, `rangedAttack`, `units`, or `lines`.
+ */
 function formatCommandLabel(command: Command): string {
-  return `${command.type} ×${command.number} (${command.size})`;
+  const typeLabel =
+    command.type === 'movement' ? 'Move' : 'Ranged attack';
+  const sizeSingular = command.size === 'units' ? 'unit' : 'line';
+  const sizeLabel =
+    command.number === 1 ? sizeSingular : `${sizeSingular}s`;
+  const label = `${typeLabel} ${command.number} ${sizeLabel}`;
+  return label;
 }
 
 function slotFromOwned(
@@ -33,12 +47,23 @@ function slotFromOwned(
   inPlay: CommandCard | null,
 ): PlayCardSlotView {
   if (inPlay !== null) {
-    return { kind: 'card', label: 'In play', card: inPlay };
+    const slot: PlayCardSlotView = {
+      kind: 'card',
+      label: 'In play',
+      card: inPlay,
+    };
+    return slot;
   }
   if (awaitingPlay !== null) {
-    return { kind: 'card', label: 'Selected', card: awaitingPlay };
+    const slot: PlayCardSlotView = {
+      kind: 'card',
+      label: 'Selected',
+      card: awaitingPlay,
+    };
+    return slot;
   }
-  return { kind: 'empty', label: 'No card yet' };
+  const empty: PlayCardSlotView = { kind: 'empty', label: 'No card yet' };
+  return empty;
 }
 
 function slotFromHidden(
@@ -46,12 +71,22 @@ function slotFromHidden(
   inPlay: CommandCard | null,
 ): PlayCardSlotView {
   if (inPlay !== null) {
-    return { kind: 'card', label: 'In play', card: inPlay };
+    const slot: PlayCardSlotView = {
+      kind: 'card',
+      label: 'In play',
+      card: inPlay,
+    };
+    return slot;
   }
   if (awaitingPlay === 'hidden') {
-    return { kind: 'facedown', label: 'Selected (hidden)' };
+    const slot: PlayCardSlotView = {
+      kind: 'facedown',
+      label: 'Selected (hidden)',
+    };
+    return slot;
   }
-  return { kind: 'empty', label: 'No card yet' };
+  const empty: PlayCardSlotView = { kind: 'empty', label: 'No card yet' };
+  return empty;
 }
 
 /**
@@ -73,7 +108,7 @@ function playCardSlotsFromState(
   const oppSide = oppositeSide(humanSide);
 
   if (cardState.visibility === 'authoritative') {
-    return {
+    const slots = {
       you: slotFromOwned(
         cardState[humanSide].awaitingPlay,
         cardState[humanSide].inPlay,
@@ -83,10 +118,11 @@ function playCardSlotsFromState(
         cardState[oppSide].inPlay,
       ),
     };
+    return slots;
   }
 
   if (cardState.visibility === 'whiteSeen') {
-    return {
+    const slots = {
       you:
         humanSide === 'white'
           ? slotFromOwned(cardState.white.awaitingPlay, cardState.white.inPlay)
@@ -99,9 +135,10 @@ function playCardSlotsFromState(
           ? slotFromHidden(cardState.black.awaitingPlay, cardState.black.inPlay)
           : slotFromOwned(cardState.white.awaitingPlay, cardState.white.inPlay),
     };
+    return slots;
   }
 
-  return {
+  const slots = {
     you:
       humanSide === 'black'
         ? slotFromOwned(cardState.black.awaitingPlay, cardState.black.inPlay)
@@ -111,6 +148,7 @@ function playCardSlotsFromState(
         ? slotFromHidden(cardState.white.awaitingPlay, cardState.white.inPlay)
         : slotFromOwned(cardState.black.awaitingPlay, cardState.black.inPlay),
   };
+  return slots;
 }
 
 function isIssueCommandEvent(event: Event): event is IssueCommandEvent {
@@ -124,19 +162,21 @@ function issuedCommandsFromState(
   state: GameState | undefined,
 ): IssuedCommandView[] {
   if (state === undefined) {
-    return [];
+    const none: IssuedCommandView[] = [];
+    return none;
   }
-  return state.currentRoundState.events
+  const issued = state.currentRoundState.events
     .filter(isIssueCommandEvent)
-    .map((event, index) => ({
-      id: `issue-${event.eventNumber}-${index}`,
-      player: event.player,
-      commandLabel: formatCommandLabel(event.command),
-      unitLabels: event.units.map(
-        (unit) =>
-          `${unit.unitType.name} (${unit.playerSide} #${unit.instanceNumber})`,
-      ),
-    }));
+    .map((event, index) => {
+      const view: IssuedCommandView = {
+        id: `issue-${event.eventNumber}-${index}`,
+        player: event.player,
+        commandLabel: formatCommandLabel(event.command),
+        unitLabels: event.units.map((unit) => unitInstanceLabel(unit)),
+      };
+      return view;
+    });
+  return issued;
 }
 
 /**
@@ -146,21 +186,20 @@ function issuedCommandsFromState(
 function remainingCommandsBySide(
   state: GameState | undefined,
 ): Partial<Record<PlayerSide, Command[]>> | undefined {
-  // No snapshot yet, so there is no remaining-command list.
   if (state === undefined) {
-    return undefined;
+    return;
   }
   try {
     const phase = getIssueCommandsPhaseState(state);
     const first = state.currentInitiative;
     const second = oppositeSide(first);
-    return {
+    const remaining: Partial<Record<PlayerSide, Command[]>> = {
       [first]: [...phase.remainingCommandsFirstPlayer],
       [second]: [...phase.remainingCommandsSecondPlayer],
     };
+    return remaining;
   } catch {
     // getIssueCommandsPhaseState throws outside the issueCommands phase.
-    return undefined;
   }
 }
 

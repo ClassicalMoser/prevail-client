@@ -1,6 +1,7 @@
 import {
   formatCombatEngagementLine,
   formatCommitmentStatus,
+  seatCommitmentSideLabel,
 } from '@application';
 import type { CombatContextView } from '@application';
 import type { PlayerSide } from '@classicalmoser/prevail-rules/domain';
@@ -11,7 +12,7 @@ function commitmentLine(
   label: string,
   status: CombatContextView['whiteCommitment'],
 ): JSX.Element {
-  return (
+  const line = (
     <p class="play-combat__commit">
       <span class="play-combat__commit-side">{label}</span>
       <span class="play-combat__commit-status">
@@ -19,6 +20,7 @@ function commitmentLine(
       </span>
     </p>
   );
+  return line;
 }
 
 /** Active melee engagement + commitment status for the seat rail. */
@@ -26,11 +28,6 @@ export function CombatContextPanel(props: {
   context: Accessor<CombatContextView | undefined>;
   humanSide: Accessor<PlayerSide>;
 }): JSX.Element {
-  const youLabel = (): string =>
-    props.humanSide() === 'white' ? 'You (white)' : 'You (black)';
-  const oppLabel = (): string =>
-    props.humanSide() === 'white' ? 'Opponent (black)' : 'Opponent (white)';
-
   return (
     <Show when={props.context()}>
       {(ctx) => (
@@ -40,13 +37,13 @@ export function CombatContextPanel(props: {
             {formatCombatEngagementLine(ctx())}
           </p>
           {commitmentLine(
-            youLabel(),
+            seatCommitmentSideLabel(props.humanSide(), 'you'),
             props.humanSide() === 'white'
               ? ctx().whiteCommitment
               : ctx().blackCommitment,
           )}
           {commitmentLine(
-            oppLabel(),
+            seatCommitmentSideLabel(props.humanSide(), 'opponent'),
             props.humanSide() === 'white'
               ? ctx().blackCommitment
               : ctx().whiteCommitment,

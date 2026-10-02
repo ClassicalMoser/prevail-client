@@ -1,4 +1,8 @@
-import { boardSpaceToCellView, projectBoardCells } from './boardCellView';
+import {
+  boardSpaceToCellView,
+  projectBoardCells,
+  unitInstanceLabel,
+} from './boardCellView';
 import type { BoardCellView, BoardUnitView } from './boardCellView';
 import {
   gameOutcomeDetail,
@@ -20,6 +24,7 @@ export {
   type BoardUnitView,
   boardSpaceToCellView,
   projectBoardCells,
+  unitInstanceLabel,
   type GameOutcome,
   gameOutcomeDetail,
   gameOutcomeFromState,

@@ -86,6 +86,7 @@ import type {
   SeatStreamSessionDeps,
 } from './seatStreamSession';
 import { submitPlayerChoice } from './submitPlayerChoice';
+import { seatCommitmentSideLabel } from './seatCommitmentSideLabel';
 import { useSeatPlaySession } from './useSeatPlaySession';
 import type { UseSeatPlaySessionResult } from './useSeatPlaySession';
 
@@ -161,6 +162,7 @@ export {
   type SeatStreamSession,
   type SeatStreamSessionDeps,
   submitPlayerChoice,
+  seatCommitmentSideLabel,
   useSeatPlaySession,
   type UseSeatPlaySessionResult,
 };

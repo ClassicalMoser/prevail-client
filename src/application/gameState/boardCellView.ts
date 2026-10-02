@@ -30,15 +30,16 @@ interface BoardCellView {
   units: BoardUnitView[];
 }
 
-const unitLabel = (unit: UnitInstance): string => {
+/** Player-facing unit name: side and type, no instance number. */
+function unitInstanceLabel(unit: UnitInstance): string {
   const side = playerSideLabel(unit.playerSide);
   const name = unit.unitType.name;
   const label = `${side} ${name}`;
   return label;
-};
+}
 
 const toUnitView = (unit: UnitInstance, facing: UnitFacing): BoardUnitView => ({
-  label: unitLabel(unit),
+  label: unitInstanceLabel(unit),
   facing,
   imageSrc: resolveUnitArtSrc(unit.unitType.name),
   playerSide: unit.playerSide,
@@ -98,4 +99,5 @@ export {
   type BoardCellView,
   boardSpaceToCellView,
   projectBoardCells,
+  unitInstanceLabel,
 };

@@ -1,5 +1,5 @@
 import type { UnitFacing } from '@classicalmoser/prevail-rules/domain';
-import { resolveUnitArtSrc } from '@application/gameState';
+import { resolveUnitArtSrc, unitInstanceLabel } from '@application/gameState';
 import type { BoardCellView } from '@application/gameState';
 import type { PlayHighlights, SeatSelection } from './selection';
 
@@ -52,7 +52,7 @@ function projectPlayBoardCells(args: {
       const coord = placement.placement.coordinate;
       const existing = merged[coord];
       const pendingUnit: PlayBoardUnitView = {
-        label: `${placement.unit.unitType.name} (${placement.unit.playerSide} #${placement.unit.instanceNumber})`,
+        label: unitInstanceLabel(placement.unit),
         facing: placement.placement.facing,
         imageSrc: resolveUnitArtSrc(placement.unit.unitType.name),
         playerSide: placement.unit.playerSide,

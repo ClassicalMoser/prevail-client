@@ -29,6 +29,7 @@ import {
   playerSideLabel,
   projectBoardCells,
   resolveUnitArtSrc,
+  unitInstanceLabel,
 } from './gameState';
 import type {
   BoardCellView,
@@ -95,6 +96,7 @@ import {
   formatCommandLabel,
   isCommitChoiceType,
   legalOptionsForSeat,
+  seatCommitmentSideLabel,
   setupUnitsByType,
   unitKey,
   useSeatPlaySession,
@@ -155,6 +157,7 @@ export {
   playerSideLabel,
   projectBoardCells,
   resolveUnitArtSrc,
+  unitInstanceLabel,
   allCommandCardsQueryOptions,
   allUnitCardsQueryOptions,
   armyKeys,
@@ -206,6 +209,7 @@ export {
   formatCommandLabel,
   isCommitChoiceType,
   legalOptionsForSeat,
+  seatCommitmentSideLabel,
   setupUnitsByType,
   unitKey,
   useSeatPlaySession,
